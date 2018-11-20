@@ -1,0 +1,41 @@
+diff -r cc0c69db5793 ar2/o2u.c
+--- a/ar2/o2u.c	Sun Aug 19 14:49:57 2018 -0700
++++ b/ar2/o2u.c	Fri Nov 02 11:21:31 2018 -0400
+@@ -41,7 +41,11 @@
+  */
+ 
+ # include "o2u.h"
++# if defined(__MINGW32__)
++#   include "mingw_time.h"
++# else
++#   include <time.h>
++# endif
+-# include <time.h>
+ 
+ # define YEAR_LENGTH(Y) (((Y) & 3) ? 365 : 366)
+ 
+
+diff -r cc0c69db5793 include/mingw_time.h
+--- /dev/null	Thu Jan 01 00:00:00 1970 +0000
++++ b/include/mingw_time.h	Fri Nov 02 11:21:31 2018 -0400
+@@ -0,0 +1,20 @@
++#ifndef MINGW_TIME_H_INCLUDED
++#define MINGW_TIME_H_INCLUDED
++
++#ifndef _TM_DEFINED
++#define _TM_DEFINED
++  struct tm {
++    int tm_sec;
++    int tm_min;
++    int tm_hour;
++    int tm_mday;
++    int tm_mon;
++    int tm_year;
++    int tm_wday;
++    int tm_yday;
++    int tm_isdst;
++  };
++#endif
++struct tm *localtime(const time_t *_Time);
++
++#endif  /* MINGW_TIME_H_INCLUDED */
