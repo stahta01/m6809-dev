@@ -1,0 +1,14 @@
+diff -r cc0c69db5793 build/unix/Makefile
+--- a/build/unix/Makefile	Sun Aug 19 14:49:57 2018 -0700
++++ b/build/unix/Makefile	Fri Nov 02 21:42:29 2018 -0400
+@@ -5,8 +5,8 @@
+ 
+ PACKAGENAME	= toolshed-$(VERSION).tgz
+ ifneq ($(DESTDIR),)
+-INSTALLDIR	= $(DESTDIR)/usr/bin
+-DOCDIR		= $(DESTDIR)/usr/share/doc/toolshed
++INSTALLDIR	= $(DESTDIR)/bin
++DOCDIR		= $(DESTDIR)/share/doc/toolshed
+ else
+ INSTALLDIR	= /usr/local/bin
+ DOCDIR		= /usr/local/share/toolshed
