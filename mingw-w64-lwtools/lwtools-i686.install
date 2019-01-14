@@ -1,0 +1,11 @@
+post_install() {
+  cp /bin/true /mingw32/bin/m6809-unknown-ranlib
+}
+
+post_upgrade() {
+  post_install
+}
+
+post_remove() {
+  rm -f /mingw32/bin/m6809-unknown-ranlib
+}

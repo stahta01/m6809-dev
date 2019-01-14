@@ -1,0 +1,67 @@
+# Maintainer: Tim S <stahta01@gmail.com>
+# Based on work from https://github.com/hpmachining/os9-dev
+
+_realname=lwtools
+_machine=m6809
+_target=${_machine}-unknown
+
+pkgbase=mingw-w64-${_realname}
+pkgname="${MINGW_PACKAGE_PREFIX}-${_realname}"
+pkgver=4.16
+pkgrel=1
+pkgdesc="Cross-development tools for the Motorola 6809 and Hitachi 6309 microprocessors (mingw-w64)"
+arch=('any')
+url="http://lwtools.projects.l-w.ca"
+license=('GPL3')
+groups=("${MINGW_PACKAGE_PREFIX}-${_target}-toolchain")
+makedepends=('patch' 'make' 'perl')
+conflicts=("${MINGW_PACKAGE_PREFIX}-as6809")
+# install=${_realname}-${CARCH}.install
+source=(
+  "$url/releases/${_realname}/${_realname}-$pkgver.tar.gz"
+  001-lwt-4.15-fix-makefile.patch
+)
+sha256sums=('e4de2be9cd2407036ffb45ae562d8df653a30776a2d838798e08cec558ee192a'
+            'c9cbcae3b95999e7d10e37ec01d33ff068af93c899aafa75d36605b2c35afda7')
+
+prepare() {
+  cd "${_realname}-${pkgver}"
+
+  patch -p1 -i ${srcdir}/001-lwt-4.15-fix-makefile.patch
+}
+
+build() {
+  cd "${_realname}-$pkgver"
+  make clean
+  make
+}
+
+check() {
+  cd "${_realname}-$pkgver"
+  make -k test
+}
+
+package() {
+  cd "${_realname}-$pkgver"
+  make DESTDIR="${pkgdir}${MINGW_PREFIX}" PROGSUFFIX=.exe install
+
+  mkdir -p "${pkgdir}${MINGW_PREFIX}/bin"
+  mkdir -p "${pkgdir}${MINGW_PREFIX}/lib"
+
+  # Install scripts and create symbolic links
+  install -Dm755 -t "$pkgdir${MINGW_PREFIX}/lib/${_realname}" extra/ar extra/as extra/ld
+
+  mkdir -p "$pkgdir${MINGW_PREFIX}/${_target}/bin"
+  cp -f $pkgdir${MINGW_PREFIX}/lib/${_realname}/ar  $pkgdir${MINGW_PREFIX}/${_target}/bin/ar
+  cp -f $pkgdir${MINGW_PREFIX}/lib/${_realname}/as  $pkgdir${MINGW_PREFIX}/${_target}/bin/as
+  cp -f $pkgdir${MINGW_PREFIX}/lib/${_realname}/ld  $pkgdir${MINGW_PREFIX}/${_target}/bin/ld
+
+  cp -f "$pkgdir${MINGW_PREFIX}/lib/${_realname}/ar" "$pkgdir${MINGW_PREFIX}/bin/m6809-unknown-ar"
+  cp -f "$pkgdir${MINGW_PREFIX}/lib/${_realname}/as" "$pkgdir${MINGW_PREFIX}/bin/m6809-unknown-as"
+  cp -f "$pkgdir${MINGW_PREFIX}/lib/${_realname}/ld" "$pkgdir${MINGW_PREFIX}/bin/m6809-unknown-ld"
+
+  # Install documentation
+  install -Dm644 -t "$pkgdir/${MINGW_PREFIX}/share/doc/${_realname}" docs/manual/manual.{html,pdf}
+}
+
+# vim:set ts=2 sw=2 et:
