@@ -1,0 +1,44 @@
+From 9408a73dd552dfa39638b30c48b3280b60f7e140 Mon Sep 17 00:00:00 2001
+From: Tim S <tim.stahlhut@gmail.com>
+Date: Mon, 25 Feb 2019 14:33:04 -0500
+Subject: build: edit gcc/config.gcc
+
+This patch is based on the work of
+Brian Dominy https://github.com/bcd/gcc and
+David Flamand https://gitlab.com/dfffffff/gcc6809
+---
+ gcc/config.gcc | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+diff --git a/gcc/config.gcc b/gcc/config.gcc
+index 6dc2427bc7ca..c2846b39fd6c 100644
+--- a/gcc/config.gcc
++++ b/gcc/config.gcc
+@@ -375,6 +375,9 @@ m32r*-*-*)
+         cpu_type=m32r
+ 	extra_options="${extra_options} g.opt"
+         ;;
++m6809-*-*)
++	cpu_type=m6809
++	;;
+ m68k-*-*)
+ 	extra_headers=math-68881.h
+ 	;;
+@@ -1724,6 +1727,15 @@ m68hc12-*-*|m6812-*-*)
+ 	extra_options="${extra_options} m68hc11/m68hc11.opt"
+ 	use_gcc_stdint=wrap
+         ;;
++m6809-coco-*)
++	tmake_file="${tmake_file} m6809/t-m6809 m6809/t-coco"
++	;;
++m6809-sim-*)
++	tmake_file="${tmake_file} m6809/t-m6809 m6809/t-sim"
++	;;
++m6809-*-*)
++	tmake_file="${tmake_file} m6809/t-m6809"
++	;;
+ m68k-*-elf* | fido-*-elf*)
+ 	case ${target} in
+ 	fido-*-elf*)
+-- 
+2.19.1.windows.1
