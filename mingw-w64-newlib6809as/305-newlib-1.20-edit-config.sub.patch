@@ -1,0 +1,47 @@
+From 88dcaacc8cbdd2f7c343ab27b5a5993944ed3f0c Mon Sep 17 00:00:00 2001
+From: Tim S <tim.stahlhut@gmail.com>
+Date: Tue, 29 Jan 2019 10:50:35 -0500
+Subject: [PATCH 1/2] Edit config.sub
+
+This patch is based on the work of
+Brian Dominy https://github.com/bcd/newlib-6809 and
+David Flamand https://gitlab.com/dfffffff/newlib-6809
+---
+ config.sub | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/config.sub b/config.sub
+index 78176a4..252ca3c 100644
+--- a/config.sub
++++ b/config.sub
+@@ -319,7 +319,7 @@ case $basic_machine in
+ 	c6x)
+ 		basic_machine=tic6x-unknown
+ 		;;
+-	m6811 | m68hc11 | m6812 | m68hc12 | picochip)
++	m6809 | m6811 | m68hc11 | m6812 | m68hc12 | picochip)
+ 		# Motorola 68HC11/12.
+ 		basic_machine=$basic_machine-unknown
+ 		os=-none
+@@ -376,6 +376,7 @@ case $basic_machine in
+ 	| le32-* | le64-* \
+ 	| lm32-* \
+ 	| m32c-* | m32r-* | m32rle-* \
++	| m6809-* \
+ 	| m68000-* | m680[012346]0-* | m68360-* | m683?2-* | m68k-* \
+ 	| m88110-* | m88k-* | maxq-* | mcore-* | metag-* | microblaze-* \
+ 	| mips-* | mipsbe-* | mipseb-* | mipsel-* | mipsle-* \
+@@ -533,6 +534,10 @@ case $basic_machine in
+ 		basic_machine=arm-unknown
+ 		os=-cegcc
+ 		;;
++	coco)
++		basic_machine=coco
++		os=-none
++		;;
+ 	convex-c1)
+ 		basic_machine=c1-convex
+ 		os=-bsd
+-- 
+2.19.1.windows.1
+

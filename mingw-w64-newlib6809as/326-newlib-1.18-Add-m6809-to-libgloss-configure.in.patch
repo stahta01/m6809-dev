@@ -1,0 +1,30 @@
+From b507bb77a6c6b7b753a8719c3aa307605b73079e Mon Sep 17 00:00:00 2001
+From: Tim S <tim.stahlhut@gmail.com>
+Date: Tue, 29 Jan 2019 10:56:51 -0500
+Subject: Add m6809 to libgloss/configure.in
+
+This patch is based on the work of
+Brian Dominy https://github.com/bcd/newlib-6809 and
+David Flamand https://gitlab.com/dfffffff/newlib-6809
+---
+ libgloss/configure.in | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/libgloss/configure.in b/libgloss/configure.in
+index 412630a..89ac5d9 100644
+--- a/libgloss/configure.in
++++ b/libgloss/configure.in
+@@ -43,6 +43,10 @@ case "${target}" in
+   m68hc11-*-* | m6811-*-* | m68hc12-*-* | m6812-*-*)
+ 	AC_CONFIG_SUBDIRS([m68hc11])
+ 	;;
++  m6809-*-*)
++	AC_CONFIG_SUBDIRS(m6809)
++	config_testsuite=false
++	;;
+   fido-*-* | m68*-*-*)
+ 	AC_CONFIG_SUBDIRS([m68k])
+ 	;;
+-- 
+2.19.1.windows.1
+

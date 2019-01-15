@@ -1,0 +1,27 @@
+From 61f19d4b57583fdd2887bdc00fb37d174b9ee360 Mon Sep 17 00:00:00 2001
+From: Tim S <tim.stahlhut@gmail.com>
+Date: Tue, 29 Jan 2019 18:06:18 -0500
+Subject: [PATCH] Regenerate configure
+
+After edit of configure.ac
+---
+ configure | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/configure b/configure
+index 2579c9f..db0a0fd 100644
+--- a/configure
++++ b/configure
+@@ -3293,6 +3293,9 @@ case "${target}" in
+   m68hc11-*-*|m6811-*-*|m68hc12-*-*|m6812-*-*)
+     libgloss_dir=m68hc11
+     ;;
++  m6809)
++    libgloss_dir=m6809
++    ;;
+   m68*-*-* | fido-*-*)
+     libgloss_dir=m68k
+     ;;
+-- 
+2.19.1.windows.1
+
