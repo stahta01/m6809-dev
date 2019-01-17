@@ -1,0 +1,25 @@
+From f97f7c1c690fdb8fe6bd3a3d5da9b3bf44f7d631 Mon Sep 17 00:00:00 2001
+From: Tim S <stahta01@users.sourceforge.net>
+Date: Thu, 15 Nov 2018 21:35:13 -0500
+Subject: [PATCH 4/5] gcc6809: Set M6809STRICT=0
+
+---
+ asxv5pxx/config.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/asxv5pxx/config.h b/asxv5pxx/config.h
+index 44e3b81..f4b4e47 100644
+--- a/asxv5pxx/config.h
++++ b/asxv5pxx/config.h
+@@ -5,7 +5,7 @@
+ #define FILSPC      (NINPUT+10)        /* File spec length */
+ #define MAXHASHBIT  16                 /* Maximum bits for a hash table */
+ #define NOFORMFEED  1                  /* Disable form feed in listing */
+-#define M6809STRICT 1                  /* No opcode compatibility */
++#define M6809STRICT 0                  /* No opcode compatibility */
+ 
+ /*
+  * To include NoICE Debugging set non-zero
+-- 
+2.19.1.windows.1
+
