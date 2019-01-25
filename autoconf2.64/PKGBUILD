@@ -1,0 +1,50 @@
+# Maintainer: Tim S <stahta01@gmail.com>
+
+pkgname=autoconf2.64
+pkgver=2.64
+pkgrel=1
+pkgdesc="A GNU tool for automatically configuring source code"
+arch=('any')
+license=('GPL2' 'GPL3' 'custom')
+url="https://www.gnu.org/software/autoconf"
+groups=('base-devel')
+depends=('awk' 'm4' 'diffutils' 'bash')
+conflicts=('autoconf')
+provides=('autoconf')
+#install=autoconf.install
+source=(https://ftp.gnu.org/pub/gnu/autoconf/autoconf-${pkgver}.tar.gz
+        002-ac-2.64-msys2.patch
+        003-ac-2.64-autotest-remove-cr-from-prog-stdout-stderr.patch)
+sha256sums=('a84471733f86ac2c1240a6d28b705b05a6b79c3cca8835c3712efbdf813c5eb6'
+            'd3dd6379db7772ebd9a238888e315f91617e27a59c09f7765db2e744b0275c64'
+            '74e2135a3f34f5692a77de85c21cb2f0fd8a1dcf396f7fbba7deb0c59faa54eb')
+prepare() {
+  cd ${srcdir}/autoconf-${pkgver}
+
+  patch -p1 -i ${srcdir}/002-ac-2.64-msys2.patch
+  patch -p1 -i ${srcdir}/003-ac-2.64-autotest-remove-cr-from-prog-stdout-stderr.patch
+}
+
+build() {
+  # --program-suffix=-2.64
+  cd ${srcdir}/autoconf-${pkgver}
+  ./configure --prefix=/usr 
+  make
+}
+
+check() {
+  cd ${srcdir}/autoconf-${pkgver}
+  make check
+}
+
+package() {
+  cd ${srcdir}/autoconf-${pkgver}
+  make prefix=${pkgdir}/usr install
+
+  # license exception
+  install -Dm644 COPYING \
+    $pkgdir/usr/share/licenses/autoconf/COPYING
+
+  # conflict with bintuils
+  rm -f ${pkgdir}/usr/share/info/standards.info
+}
