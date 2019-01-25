@@ -1,0 +1,53 @@
+# Maintainer: Tim S <stahta01@gmail.com>
+
+pkgname=autoconf2.59
+pkgver=2.59
+pkgrel=1
+pkgdesc="A GNU tool for automatically configuring source code"
+arch=('any')
+license=('GPL2' 'GPL3' 'custom')
+url="https://www.gnu.org/software/autoconf"
+groups=('base-devel')
+depends=('awk' 'm4' 'diffutils' 'bash')
+#conflicts=('autoconf' 'autoconf2.64')
+#provides=('autoconf')
+#install=autoconf.install
+source=(https://ftp.gnu.org/pub/gnu/autoconf/autoconf-${pkgver}.tar.gz
+        002-ac-2.59-msys2.patch)
+sha256sums=('9cd05c73c5fcb1f5ccae53dd6cac36bb8cb9c7b3e97ffae5a7c05c72594c88d8'
+            '2076fc1ef12ad54b418d9ef8955af17bff5e3a3d771afaffdcec1c6c51bb5d2d')
+prepare() {
+  cd ${srcdir}/autoconf-${pkgver}
+
+  patch -p1 -i ${srcdir}/002-ac-2.59-msys2.patch
+}
+
+build() {
+  cd ${srcdir}/autoconf-${pkgver}
+  ./configure --prefix=/usr \
+    --program-suffix=-2.59 \
+    --datadir=/usr/share/autoconf-2.59
+  make
+}
+
+check() {
+  cd ${srcdir}/autoconf-${pkgver}
+  make check
+}
+
+package() {
+  cd ${srcdir}/autoconf-${pkgver}
+  make DESTDIR=${pkgdir} install
+
+  # license exception
+  install -Dm644 COPYING \
+    $pkgdir/usr/share/licenses/autoconf2.59/COPYING
+
+  # conflict with bintuils
+  rm -f ${pkgdir}/usr/share/info/standards.info
+  # remove files that contains reference to source folder
+  rm -f ${pkgdir}/usr/share/autoconf/autoconf/autoconf.m4f
+  rm -f ${pkgdir}/usr/share/autoconf/autotest/autotest.m4f
+  rm -f ${pkgdir}/usr/share/autoconf/m4sugar/m4sh.m4f
+  rm -f ${pkgdir}/usr/share/autoconf/m4sugar/m4sugar.m4f
+}
