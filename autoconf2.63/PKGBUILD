@@ -1,0 +1,46 @@
+# Maintainer: Tim S <stahta01@gmail.com>
+
+pkgname=autoconf2.63
+pkgver=2.63
+pkgrel=1
+pkgdesc="A GNU tool for automatically configuring source code"
+arch=('any')
+license=('GPL2' 'GPL3' 'custom')
+url="https://www.gnu.org/software/autoconf"
+groups=('base-devel')
+depends=('awk' 'm4' 'diffutils' 'bash')
+conflicts=('autoconf')
+#install=autoconf.install
+source=(https://ftp.gnu.org/pub/gnu/autoconf/autoconf-${pkgver}.tar.gz
+        002-ac-2.63-msys2.patch)
+sha256sums=('b05a6cee81657dd2db86194a6232b895b8b2606a30a399c3a566d9259366744b'
+            'd3dd6379db7772ebd9a238888e315f91617e27a59c09f7765db2e744b0275c64')
+prepare() {
+  cd ${srcdir}/autoconf-${pkgver}
+
+  patch -p1 -i ${srcdir}/002-ac-2.63-msys2.patch
+}
+
+build() {
+  cd ${srcdir}/autoconf-${pkgver}
+  # --program-suffix=-2.63
+  ./configure --prefix=/usr 
+  make
+}
+
+check() {
+  cd ${srcdir}/autoconf-${pkgver}
+  make check
+}
+
+package() {
+  cd ${srcdir}/autoconf-${pkgver}
+  make prefix=${pkgdir}/usr install
+
+  # license exception
+  install -Dm644 COPYING \
+    $pkgdir/usr/share/licenses/autoconf/COPYING
+
+  # conflict with bintuils
+  rm -f ${pkgdir}/usr/share/info/standards.info
+}
