@@ -1,13 +1,11 @@
-*.tar
-*.tar.*
-*.jar
-*.exe
-*.msi
-*.zip
-*.tgz
-*.log
-*.log.*
-*.sig
-
-pkg/
-src/
+/*/*.log
+/*/logpipe.*.lnk
+/*/*.pkg.tar.xz
+/*/*.tar.bz2
+/*/*.tar.gz
+/*/*.zip
+# Folders to ignore
+/*/pkg/
+/*/src/
+/*toolshed*/toolshed*/
+/mingw-w64-boot-gcc6809lw-git/gcc
