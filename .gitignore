@@ -5,7 +5,5 @@
 /*/*.tar.gz
 /*/*.zip
 # Folders to ignore
-/*/pkg/
-/*/src/
 /*toolshed*/toolshed*/
 /mingw-w64-boot-gcc6809lw-git/gcc
