@@ -1,0 +1,57 @@
+From 9d5f628c8d7f9fd524b5964b4f5782692da5805c Mon Sep 17 00:00:00 2001
+From: Tim S <tim.stahlhut@gmail.com>
+Date: Wed, 13 Feb 2019 08:32:50 -0500
+Subject: core: fixed compile issue with gcc 5 in gcc/toplev
+
+This patch is based on the work of
+David Flamand https://gitlab.com/dfffffff/gcc6809
+---
+ gcc/toplev.c | 4 ++--
+ gcc/toplev.h | 2 ++
+ 2 files changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/gcc/toplev.c b/gcc/toplev.c
+index 14d878226..48024f210 100644
+--- a/gcc/toplev.c
++++ b/gcc/toplev.c
+@@ -536,7 +536,7 @@ read_integral_parameter (const char *p, const char *pname, const int  defval)
+    for floor_log2 and exact_log2; see toplev.h.  That construct, however,
+    conflicts with the ISO C++ One Definition Rule.   */
+ 
+-#if GCC_VERSION < 3004 || !defined (__cplusplus)
++#if GCC_VERSION >= 5000 || GCC_VERSION < 3004 || !defined (__cplusplus)
+ 
+ /* Given X, an unsigned number, return the largest int Y such that 2**Y <= X.
+    If X is 0, return -1.  */
+@@ -588,7 +588,7 @@ exact_log2 (unsigned HOST_WIDE_INT x)
+ #endif
+ }
+ 
+-#endif /*  GCC_VERSION < 3004 || !defined (__cplusplus)  */
++#endif /* GCC_VERSION >= 5000 || GCC_VERSION < 3004 || !defined (__cplusplus) */
+ 
+ /* Handler for fatal signals, such as SIGSEGV.  These are transformed
+    into ICE messages, which is much more user friendly.  In case the
+diff --git a/gcc/toplev.h b/gcc/toplev.h
+index 26a085d0c..f8eaeb066 100644
+--- a/gcc/toplev.h
++++ b/gcc/toplev.h
+@@ -173,6 +173,7 @@ extern int floor_log2                  (unsigned HOST_WIDE_INT);
+ #  define CTZ_HWI __builtin_ctz
+ # endif
+ 
++# if GCC_VERSION < 5000
+ extern inline int
+ floor_log2 (unsigned HOST_WIDE_INT x)
+ {
+@@ -184,6 +185,7 @@ exact_log2 (unsigned HOST_WIDE_INT x)
+ {
+   return x == (x & -x) && x ? (int) CTZ_HWI (x) : -1;
+ }
++# endif
+ #endif /* GCC_VERSION >= 3004 */
+ 
+ /* Functions used to get and set GCC's notion of in what directory
+-- 
+2.19.1.windows.1
+
