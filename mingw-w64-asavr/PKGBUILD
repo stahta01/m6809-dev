@@ -1,0 +1,62 @@
+# Maintainer: Tim S <stahta01@gmail.com>
+
+_filename=av
+_foldername=asxv5pxx
+_realname=asavr
+_target=avr
+
+
+pkgbase=mingw-w64-${_realname}
+pkgname=(
+  "${MINGW_PACKAGE_PREFIX}-${_realname}"
+  "${MINGW_PACKAGE_PREFIX}-asxxxx"
+)
+pkgver=5p10
+pkgrel=1
+pkgdesc="Cross Assembler for the AVR microprocessors (mingw-w64)"
+arch=('any')
+url="http://shop-pdp.net"
+license=('GPL3')
+groups=("${MINGW_PACKAGE_PREFIX}-${_target}-toolchain")
+makedepends=('make')
+conflicts=("${MINGW_PACKAGE_PREFIX}-${_target}-binutils")
+source=(
+  "http://shop-pdp.net/_ftp/asxxxx/${_filename}${pkgver}.zip"
+  001-as-5p10-Import-of-ASxxxx-update-u01510.patch
+)
+sha256sums=('5e7b3118f3aec34c02787693138bb5ed4bf94c6337425f769d2ee2938b8b3c45'
+            '5561c19bfddafbd7ea9a1f6c6bc70b653452a5115839e1941c80d0e4e3674c95')
+prepare() {
+  patch -p1 -i ${srcdir}/001-as-5p10-Import-of-ASxxxx-update-u01510.patch
+}
+
+build() {
+  cd ${_foldername}
+
+  make -C asxmak/cygwin/build clean
+  make -C asxmak/cygwin/build asavr
+  make -C asxmak/cygwin/build aslink 
+  # aslib
+}
+
+_package_asavr() {
+  optdepends=(${MINGW_PACKAGE_PREFIX}-asxxxx)
+
+  cd ${_foldername}
+
+  mkdir -p "$pkgdir${MINGW_PREFIX}/bin"
+  mv asxmak/cygwin/exe/asavr.exe     "$pkgdir${MINGW_PREFIX}/bin/"
+}
+
+_package_asxxxx() {
+  cd ${_foldername}
+
+  mkdir -p "$pkgdir${MINGW_PREFIX}/bin"
+#  mv asxmak/cygwin/exe/aslib.exe "$pkgdir${MINGW_PREFIX}/bin/"
+  mv asxmak/cygwin/exe/aslink.exe "$pkgdir${MINGW_PREFIX}/bin/"
+}
+
+eval "package_${MINGW_PACKAGE_PREFIX}-${_realname}() { _package_${_realname}; }"
+eval "package_${MINGW_PACKAGE_PREFIX}-asxxxx() { _package_asxxxx; }"
+
+# vim:set ts=2 sw=2 et:
