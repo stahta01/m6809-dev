@@ -1,0 +1,39 @@
+From f96bdbbdb4fbf23505c724eb9bc53c271009d661 Mon Sep 17 00:00:00 2001
+From: Tim S <tim.stahlhut@gmail.com>
+Date: Wed, 30 Jan 2019 07:17:22 -0500
+Subject: [PATCH 2/2] Regenerate libgloss/configure
+
+after edit of libgloss/configure.in
+---
+ libgloss/configure | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/libgloss/configure b/libgloss/configure
+index 4b17fd8..9ef5948 100644
+--- a/libgloss/configure
++++ b/libgloss/configure
+@@ -277,6 +277,7 @@ ac_subdirs_all="$ac_subdirs_all libnosys"
+ ac_subdirs_all="$ac_subdirs_all i386"
+ ac_subdirs_all="$ac_subdirs_all m32r"
+ ac_subdirs_all="$ac_subdirs_all m68hc11"
++ac_subdirs_all="$ac_subdirs_all m6809"
+ ac_subdirs_all="$ac_subdirs_all m68k"
+ ac_subdirs_all="$ac_subdirs_all pa"
+ ac_subdirs_all="$ac_subdirs_all i960"
+@@ -1848,6 +1849,13 @@ subdirs="$subdirs m68hc11"
+ 
+ 	config_testsuite=true
+ 	;;
++  m6809-*-*)
++
++
++subdirs="$subdirs m6809"
++
++	config_testsuite=false
++	;;
+   fido-*-* | m68*-*-*)
+ 
+ 
+-- 
+2.19.1.windows.1
+
