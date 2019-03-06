@@ -1,0 +1,300 @@
+# Maintainer: Tim S <stahta01@gmail.com>
+
+#_build_boot_gcc=yes
+_basename=gcc
+_machine_suffix=6809
+_realname_suffix=lw
+_realname=${_basename}${_machine_suffix}${_realname_suffix}-git
+_foldername=${_basename}
+_machine=m${_machine_suffix}
+_target=${_machine}-unknown
+_assembler=lwtools
+_patch_version=
+#_gitcommit=bbe6c295cf3aefba0f84f2fc1d1088637dc60930   # SVN133216 4.4.0- 20080314 newlib build works
+#_gitcommit=1d9353f38b1812c2edf869fc6abf08cdeaa845a1   # SVN133218 4.4.0- 20080314 newlib build fails
+ _gitcommit=68b6c514eeae31e5fb31e3cc726970d5914f8260   # SVN175516 4.3.6  20110627 newlib build works
+#_gitcommit=ed635cb211f42b70efa52f4b25aa91c29ee29c71   # SVN185318 4.4.7  20120313 newlib build fails
+#_gitcommit=93c5ebd73a4d1626d25203081d079cdd68222fcc   # SVN185674 4.7.0  20120322 GCC Build error missing m6809-common.c
+#_gitcommit=632cb4d5f22f598d1395fbae90a10fb679e06054   # SVN197894 4.6.4  20130412 newlib build fails
+_realpkgver=
+_datestamp=
+
+pkgbase=mingw-w64-${_realname}
+if [[ "${_build_boot_gcc}" == "yes" ]]; then
+  pkgname="${MINGW_PACKAGE_PREFIX}-boot-${_realname}"
+else
+  pkgname="${MINGW_PACKAGE_PREFIX}-${_realname}"
+fi
+pkgver=4.3.6.d20110627.p14.g68b6c514eeae
+pkgrel=1
+if [[ "${_build_boot_gcc}" == "yes" ]]; then
+  pkgdesc="The GNU bootstrap C compiler for the ${_machine} microprocessor (mingw-w64)"
+else
+  pkgdesc="The GNU C++ compiler for the ${_machine} microprocessor (mingw-w64)"
+fi
+arch=('any')
+url="https://github.com/stahta01/gcc4.3"
+license=('GPL3')
+groups=("${MINGW_PACKAGE_PREFIX}-${_target}-toolchain")
+conflicts=(${MINGW_PACKAGE_PREFIX}-boot-${_basename}${_machine_suffix})
+provides=(
+  ${MINGW_PACKAGE_PREFIX}-boot-${_basename}${_machine_suffix}
+  ${MINGW_PACKAGE_PREFIX}-boot-${_basename}${_machine_suffix}${_realname_suffix}
+)
+depends=(${MINGW_PACKAGE_PREFIX}-mpc ${MINGW_PACKAGE_PREFIX}-${_assembler})
+if [[ "${_build_boot_gcc}" == "yes" ]]; then
+  makedepends=(${MINGW_PACKAGE_PREFIX}-gettext
+    'bison' 'diffutils' 'gettext' 'gettext-devel'
+    'intltool' 'make' 'patch' 'perl' 'tar' 'texinfo')
+else
+  makedepends=(${MINGW_PACKAGE_PREFIX}-gettext
+    'bison' 'diffutils' 'gettext' 'gettext-devel'
+    'intltool' 'make' 'patch' 'perl' 'tar' 'texinfo'
+    ${MINGW_PACKAGE_PREFIX}-${_target}-newlib${_machine_suffix}${_realname_suffix})
+fi
+optdepends=("${MINGW_PACKAGE_PREFIX}-${_target}-newlib${_machine_suffix}${_realname_suffix}: Standard C library optimized for embedded systems")
+source=(${_foldername}::"git://gcc.gnu.org/git/gcc.git#commit=${_gitcommit}"
+        001-gcc-4.3-fixed-compile-issue-with-gcc-5-in-gcc-toplev.patch
+        002-gcc-4.4.7-add-DWARF2_UNWIND_INFO-guard.patch
+        003-gcc-4.5-add-GNUC_STDC_INLINE.patch
+        005-gcc-4.3-core-prevent-naked-function-from-creating-stack-slots.patch
+        006-gcc-4.3-PR_54300_rtl-optimization.patch
+        006-gcc-4.5-PR_54300_rtl-optimization.patch
+        008-gcc-4.6-PR-bootstrap-51969.patch
+        011-gcc-4.3-suppress-makeinfo-warning.patch
+        011-gcc-4.6-suppress-makeinfo-warning.patch
+        013-gcc-4.3-Change-default-NATIVE_SYSTEM_HEADER_DIR.patch
+        015-gcc-4.3-add-force-to-makeinfo.patch
+        015-gcc-4.6-add-force-to-makeinfo.patch
+        016-gcc-4.3-Fix-texi-docs-syntax-errors.patch
+        016-gcc-4.6.4-Fix-texi-docs-syntax-errors.patch
+        021-gcc-4.3-edit-core-source-files.patch
+        021-gcc-4.4-edit-core-source-files.patch
+        021-gcc-4.6-edit-core-source-files.patch
+        022-gcc-4.3-add-m6809-source-files.patch
+        022-gcc-4.6-add-m6809-source-files.patch
+        023-gcc-4.3-df-m6809-patch-to-prevent-naked-function-from-creat.patch
+        025-gcc-4.3-add-support-for-C-exception-handling.patch
+        026-gcc-4.3-add-lib-support-for-C-exception-handling.patch
+        031-gcc-4.3-fix-error-with-pod2man-version-2.4.2.patch
+        032-gcc-4.3-add-m6809-triplet.patch
+        032-gcc-4.6-add-m6809-triplet.patch
+        036-gcc-4.3-edit-configure.patch
+        036-gcc-4.5-edit-configure.patch)
+sha256sums=('SKIP'
+            'f826da4c7bfd816a68f95a81f1527e7c16a692f09f38b18a6731bf4d41c52b6d'
+            '5ba2dd1c4dec84162224ebccee8c7a6e6d9f18a2f6f281c42c05e7e7da89b7fd'
+            'a89f473c684f57ce116d8db7f5f06b9417942e7ae92f82f42e1298d15ccdbbf8'
+            'ca2a9e6730b736049ff4d79e67de819e55acba0605b1e934c260345311b3784b'
+            '076dfc1eb6b89b1ebb094175bb97263841cdf683f9eebc3d8273e4ae06060b6e'
+            'd5e04b2c677323188aa2faabab5dede328f49ee8d309df4d847b1012bfae76c7'
+            '03c721159461908051c1718770c4f79dbaa2d97f9ed67deeab7349e280017662'
+            'dd174b790a13d43e527a3d5807cf415407bd0c67532495da139afd14a6265462'
+            '7768073787b0240da36623b4ac1e81d18fc5cf76382eefd5f783f557a7b5cbcf'
+            'de101a8d3f7cbed56903b14c0270139ff5976f40a1a0199fda1733c070ff24da'
+            'd02434150e94b970603607e751718a96cbcbc7c080ddbd9517069968f0660ad4'
+            'bf17f425271c99ac73912face6f9c621e04c81bc5837b7c059cdd832d3815736'
+            'fa24610732f5eabf6f55424f8d179dc16eb287e5f23d5285041d095a1cf09444'
+            'dbcab13d95632aac90bfd116042807bbcc2d334d83f5d8d375a68e0cea08e186'
+            '6411ac2e423a9d551a43855163849416872c9c5cc4ac34a26788280c5ed41520'
+            '458c1111245f6e8c1617bab47f9c652a2f277c41ba2152a6a0625dd349c4c79f'
+            '365f47e2b06bc333cd90dec0d21d1b5f5b8e168b3cf3bd3f1aba930780d2bc31'
+            '8a29793500728eea04ed1fa21183d562dcfc2e6213a7f64388f4ff82fa5acb56'
+            '1f779c3c8bb3e9106328bd0ca9db71fddff9ca3cadd37e77d1c242426289d863'
+            'bde687e73ce75ac5929795672d22dc25d98fdc357c7423fdcbdc98e3dc6410d6'
+            'b33208d60e0daba22f8d7c62c6b05ab1b8b3d2359f0916a66d58e8c4d4dab007'
+            '015a9c5674794716b20eb4b6e7e705692c19b2706941827d84658ae33ae7ec08'
+            '2028c4544e5878e3b530d19b1e88012d885bb56d8f640c1efafadbd15c4f7606'
+            'dfa5c6d1993d964b5d86692ee91aea1045e8451b6f20d1df9ab842d1aa297ba2'
+            'c6907394e0ee1581579e43b3b7e441786f11783a2717dccb24873d18253a4d0c'
+            '4e9072755a8e0b5066f13ec23c14aec144be5b3a30f1cd6fbe471e06ba0b1f0a'
+            '9758d1da56ff8bb8f244721cc5cd2503e1009a0e32c30044c07ac18d6215fcd2')
+prepare() {
+  cd ${_foldername}
+
+  _realpkgver=$(head -n 1 gcc/BASE-VER | tr '\n' '.' | sed 's/.$/\n/')
+  echo ${_realpkgver}
+
+  _datestamp=$(head -n 1 gcc/DATESTAMP | tr '\n' '.' | sed 's/.$/\n/')
+  echo ${_datestamp}
+
+  GIT_AM="git am --committer-date-is-author-date"
+
+  # Fixes for building with GCC version 5 or newer
+  if [[ ${_realpkgver:0:3} == "4.3" || ${_realpkgver:0:3} == "4.4" ]] ; then
+    ${GIT_AM} "$srcdir"/001-gcc-4.3-fixed-compile-issue-with-gcc-5-in-gcc-toplev.patch
+  fi
+  if [[ ${_realpkgver} == "4.4.7" || ${_realpkgver} == "4.5.4" ]] ; then
+    ${GIT_AM} "$srcdir"/002-gcc-4.4.7-add-DWARF2_UNWIND_INFO-guard.patch
+  fi
+  if [[ ${_realpkgver:0:3} == "4.6" || ${_realpkgver:0:3} == "4.5" ]] ; then
+    ${GIT_AM} "$srcdir"/003-gcc-4.5-add-GNUC_STDC_INLINE.patch
+  fi
+
+  # Backported Pull Requests or other changes from other branches
+  if [[ ${_realpkgver:0:3} == "4.3" ]] ; then
+    ${GIT_AM} "$srcdir"/005-gcc-4.3-core-prevent-naked-function-from-creating-stack-slots.patch
+  fi
+  if [[ ${_realpkgver:0:3} == "4.3" || ${_realpkgver:0:3} == "4.4" ]] ; then
+    ${GIT_AM} "$srcdir"/006-gcc-4.3-PR_54300_rtl-optimization.patch
+  else
+    ${GIT_AM} "$srcdir"/006-gcc-4.5-PR_54300_rtl-optimization.patch
+  fi
+  if [[ ${_realpkgver:0:3} == "4.6" ]] ; then
+    if [[ ${_datestamp} > "20100407" && ${_datestamp} < "20130411" ]] ; then
+      ${GIT_AM} "$srcdir"/008-gcc-4.6-PR-bootstrap-51969.patch
+    else
+      echo "skipping 008-gcc-4.6-PR-bootstrap-51969.patch"
+    fi
+  else
+    echo "skipping 008-gcc-4.6-PR-bootstrap-51969.patch"
+  fi
+
+  # Warning reduction changes
+  if [[ ${_realpkgver:0:3} == "4.6" ]] ; then
+    ${GIT_AM} "$srcdir"/011-gcc-4.6-suppress-makeinfo-warning.patch
+  else
+    ${GIT_AM} "$srcdir"/011-gcc-4.3-suppress-makeinfo-warning.patch
+  fi
+
+  ${GIT_AM} "$srcdir"/013-gcc-4.3-Change-default-NATIVE_SYSTEM_HEADER_DIR.patch
+
+  # Build code or Sourcecode fix for documentation
+  if [[ ${_realpkgver:0:3} == "4.3" ]] ; then
+    ${GIT_AM} "$srcdir"/016-gcc-4.3-Fix-texi-docs-syntax-errors.patch
+  elif [[ ${_realpkgver} == "4.6.4" ]] ; then
+    ${GIT_AM} "$srcdir"/016-gcc-4.6.4-Fix-texi-docs-syntax-errors.patch
+  elif [[ ${_realpkgver:0:3} == "4.6" ]] ; then
+    ${GIT_AM} "$srcdir"/015-gcc-4.6-add-force-to-makeinfo.patch
+  else
+    ${GIT_AM} "$srcdir"/015-gcc-4.3-add-force-to-makeinfo.patch
+  fi
+
+  # GCC6809 source code changes
+  if [[ ${_realpkgver:0:3} == "4.6" || ${_realpkgver:0:3} == "4.5" ]] ; then
+    ${GIT_AM} "$srcdir"/021-gcc-4.6-edit-core-source-files.patch
+  elif [[ ${_realpkgver:0:3} == "4.3" || ${_datestamp} < "20080322" ]] ; then
+    ${GIT_AM} "$srcdir"/021-gcc-4.3-edit-core-source-files.patch
+  else
+    ${GIT_AM} "$srcdir"/021-gcc-4.4-edit-core-source-files.patch
+  fi
+  if [[ ${_realpkgver:0:3} == "4.6" ]] ; then
+    ${GIT_AM} "$srcdir"/022-gcc-4.6-add-m6809-source-files.patch
+  else
+    ${GIT_AM} "$srcdir"/022-gcc-4.3-add-m6809-source-files.patch
+  fi
+  if [[ ${_realpkgver:0:3} == "4.3" || ${_realpkgver:0:3} == "4.4" ]] ; then
+    ${GIT_AM} "$srcdir"/023-gcc-4.3-df-m6809-patch-to-prevent-naked-function-from-creat.patch
+  else
+    echo "skipping patch 023"
+  fi
+  if [[ ${_realpkgver:0:3} == "4.3" ]] ; then
+    ${GIT_AM} "$srcdir"/025-gcc-4.3-add-support-for-C-exception-handling.patch
+    ${GIT_AM} "$srcdir"/026-gcc-4.3-add-lib-support-for-C-exception-handling.patch
+  else
+    echo "skipping patch 025"
+    echo "skipping patch 026"
+  fi
+
+  if [[ ${_realpkgver:0:3} == "4.3" || ${_realpkgver:0:3} == "4.4" ]] ; then
+    ${GIT_AM} "$srcdir"/031-gcc-4.3-fix-error-with-pod2man-version-2.4.2.patch
+  fi
+
+  # GCC6809 build code changes
+  if [[ ${_realpkgver:0:3} == "4.3" ]] ; then
+    ${GIT_AM} "$srcdir"/032-gcc-4.3-add-m6809-triplet.patch
+  elif [[ ${_realpkgver:0:3} == "4.6" ]] ; then
+    ${GIT_AM} "$srcdir"/032-gcc-4.6-add-m6809-triplet.patch
+  fi
+
+  if [[ ${_realpkgver:0:3} == "4.5" || ${_realpkgver:0:3} == "4.6" ]] ; then
+    ${GIT_AM} "$srcdir"/036-gcc-4.5-edit-configure.patch
+  else
+    ${GIT_AM} "$srcdir"/036-gcc-4.3-edit-configure.patch
+  fi
+}
+
+pkgver() {
+  cd ${_foldername}
+
+  printf "%s.d%s.p%s.g%s" ${_realpkgver}  ${_datestamp} $(git rev-list --count ${_gitcommit}..HEAD) $(git rev-parse --short ${_gitcommit})
+}
+
+build() {
+  if [[ -d "build-gcc-${CARCH}" ]]; then
+    rm -rf build-gcc-${CARCH}
+  fi
+  mkdir build-gcc-${CARCH}
+  cd build-gcc-${CARCH}
+
+  local -a _gcc_pass_cfg_options
+  if [[ "${_build_boot_gcc}" == "yes" ]]; then
+    _gcc_pass_cfg_options+=("--without-headers")
+    _gcc_pass_cfg_options+=("--enable-languages=c")
+  else
+    _gcc_pass_cfg_options+=("--with-headers=${MINGW_PREFIX}/${_target}/include")
+    _gcc_pass_cfg_options+=("--oldincludedir=${MINGW_PREFIX}/${_target}/include")
+    _gcc_pass_cfg_options+=("--enable-languages=c,c++")
+    _gcc_pass_cfg_options+=("--with-sysroot=${MINGW_PREFIX}/${_target}")
+  fi
+
+  CPPFLAGS=""
+  CXXFLAGS="-O2 -Wno-error=format-security"
+  CFLAGS="-O2 -Wno-error=format-security"
+  ../${_foldername}/configure \
+    "${_gcc_pass_cfg_options[@]}" \
+    --with-newlib \
+    --prefix=${MINGW_PREFIX} \
+    --libexecdir=${MINGW_PREFIX}/lib \
+    --infodir=${MINGW_PREFIX}/share/info \
+    --mandir=${MINGW_PREFIX}/share/man \
+    --build=${MINGW_CHOST} \
+    --host=${MINGW_CHOST} \
+    --with-pkgversion="${_realname}${_patch_version}" \
+    --with-bugurl="${url}/issues" \
+    --target=${_target} \
+    --program-prefix="${_target}-" \
+    --disable-multilib \
+    --disable-werror \
+    --disable-nsl \
+    --disable-shared \
+    --disable-decimal-float \
+    --disable-lto \
+    --disable-threads \
+    --disable-tls \
+    --disable-libada \
+    --disable-libffi \
+    --disable-libgomp \
+    --disable-libmudflap \
+    --disable-libquadmath \
+    --disable-libsanitizer \
+    --disable-libssp \
+    --disable-libstdcxx-pch \
+    --with-as=${MINGW_PREFIX}/bin/lwasm.exe \
+    --with-ld=${MINGW_PREFIX}/bin/lwlink.exe \
+    --with-ar=${MINGW_PREFIX}/bin/lwar.exe
+
+  make -j1 all-gcc
+}
+
+#check() {
+#  cd "${_foldername}/build-gcc-${CARCH}"
+#  make -k check-gcc || true
+#}
+
+package() {
+  CPPFLAGS=""
+  CFLAGS="-O2"
+  cd "build-gcc-${CARCH}"
+  make -j1 DESTDIR="$pkgdir/" install-gcc
+
+  # empty folders
+  rm -fr "$pkgdir${MINGW_PREFIX}/share/info"
+  rm -fr "$pkgdir${MINGW_PREFIX}/share/man"
+  rm -fr "$pkgdir${MINGW_PREFIX}/share/locale"
+  cd "$pkgdir${MINGW_PREFIX}"
+  rmdir -p "${_target}/lib"
+  rmdir include
+}
+
+# vim:set ts=2 sw=2 et:
