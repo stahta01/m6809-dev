@@ -1,0 +1,50 @@
+# Maintainer: Tim S <stahta01@gmail.com>
+# Based on https://github.com/Alexpux/MINGW-packages/blob/master/mingw-w64-cross-binutils/PKGBUILD
+
+_realname=binutils
+_target=avr
+
+pkgbase=mingw-w64-avr-${_realname}
+pkgname=(${MINGW_PACKAGE_PREFIX}-${_target}-${_realname})
+pkgver=2.19.1
+pkgrel=1
+arch=('any')
+url="https://www.gnu.org/software/binutils/"
+license=('GPL')
+makedepends=("${MINGW_PACKAGE_PREFIX}-gcc")
+options=(staticlibs)
+source=("https://mirrors.kernel.org/sources.redhat.com/${_realname}/releases/${_realname}-${pkgver}.tar.bz2")
+md5sums=('09a8c5821a2dfdbb20665bc0bd680791')
+
+build() {
+    plain "building ${MINGW_PACKAGE_PREFIX}-${_target}-${_realname}"
+
+    cd ${srcdir}
+    [[ -d build-${MINGW_CHOST}-${_target} ]] && rm -rf build-${MINGW_CHOST}-${_target}
+    mkdir -p build-${MINGW_CHOST}-${_target} && cd build-${MINGW_CHOST}-${_target}
+
+    ../${_realname}-${pkgver}/configure \
+      --build="${MINGW_CHOST}" \
+      --host="${MINGW_CHOST}" \
+      --target="${_target}" \
+      --prefix="${MINGW_PREFIX}" \
+      --with-sysroot="${MINGW_PREFIX}" \
+      --disable-nls \
+      --disable-rpath \
+      --disable-werror \
+      --disable-multilib \
+      --enable-interwork
+
+    make
+}
+
+_package_target() {
+  pkgdesc="GNU Tools for ${1} target - Binutils (mingw-w64)"
+  groups=("${MINGW_PACKAGE_PREFIX}-${1}-toolchain")
+
+  cd ${srcdir}/build-${MINGW_CHOST}-${1}
+  make DESTDIR=${pkgdir} install
+  rm -rf ${pkgdir}${MINGW_PREFIX}/share/info
+}
+
+eval "package_${MINGW_PACKAGE_PREFIX}-${_target}-${_realname}() { _package_target ${_target}; }"
