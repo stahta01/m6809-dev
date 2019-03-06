@@ -1,0 +1,144 @@
+From 12e0dae816d8aa93edbca2357cc7c9709c03c969 Mon Sep 17 00:00:00 2001
+From: Tim S <tim.stahlhut@gmail.com>
+Date: Sat, 26 Jan 2019 04:00:24 -0500
+Subject: [PATCH 317/328] bcd added configure.in files
+
+This patch is based on the work of 
+Brian Dominy https://github.com/bcd/newlib-6809
+
+---
+ libgloss/m6809/configure.in            | 56 ++++++++++++++++++++++++++
+ newlib/libc/machine/m6809/configure.in | 14 +++++++
+ newlib/libc/sys/coco/configure.in      | 14 +++++++
+ newlib/libc/sys/m6809sim/configure.in  | 14 +++++++
+ 4 files changed, 98 insertions(+)
+ create mode 100644 libgloss/m6809/configure.in
+ create mode 100644 newlib/libc/machine/m6809/configure.in
+ create mode 100644 newlib/libc/sys/coco/configure.in
+ create mode 100644 newlib/libc/sys/m6809sim/configure.in
+
+diff --git a/libgloss/m6809/configure.in b/libgloss/m6809/configure.in
+new file mode 100644
+index 0000000..2ca0c39
+--- /dev/null
++++ b/libgloss/m6809/configure.in
+@@ -0,0 +1,56 @@
++dnl Process this file with autoconf to produce a configure script.
++AC_PREREQ(2.59)
++AC_INIT(crt0.c)
++
++if test "${enable_shared}" = "yes" ; then
++    echo "Shared libraries not supported for cross compiling, ignored"
++fi
++
++if test "$srcdir" = "." ; then
++  if test "${with_target_subdir}" != "." ; then
++    libgloss_topdir="${srcdir}/${with_multisrctop}../../.."
++  else
++    libgloss_topdir="${srcdir}/${with_multisrctop}../.."
++  fi
++else
++  libgloss_topdir="${srcdir}/../.."
++fi
++AC_CONFIG_AUX_DIR($libgloss_topdir)
++
++AC_CANONICAL_SYSTEM
++AC_ARG_PROGRAM
++
++AC_PROG_INSTALL
++
++LIB_AC_PROG_CC
++
++AS=${AS-as}
++AC_SUBST(AS)
++AR=${AR-ar}
++AC_SUBST(AR)
++LD=${LD-ld}
++AC_SUBST(LD)
++AC_PROG_RANLIB
++LIB_AM_PROG_AS
++
++host_makefile_frag=${srcdir}/../config/default.mh
++
++dnl We have to assign the same value to other variables because autoconf
++dnl doesn't provide a mechanism to substitute a replacement keyword with
++dnl arbitrary data or pathnames.
++dnl
++host_makefile_frag_path=$host_makefile_frag
++AC_SUBST(host_makefile_frag_path)
++AC_SUBST_FILE(host_makefile_frag)
++
++AC_CONFIG_FILES(Makefile,
++. ${libgloss_topdir}/config-ml.in,
++srcdir=${srcdir}
++target=${target}
++with_multisubdir=${with_multisubdir}
++#ac_configure_args="${ac_configure_args} --enable-multilib"
++CONFIG_SHELL=${CONFIG_SHELL-/bin/sh}
++libgloss_topdir=${libgloss_topdir}
++)
++AC_OUTPUT
++
+diff --git a/newlib/libc/machine/m6809/configure.in b/newlib/libc/machine/m6809/configure.in
+new file mode 100644
+index 0000000..6bce3d4
+--- /dev/null
++++ b/newlib/libc/machine/m6809/configure.in
+@@ -0,0 +1,14 @@
++dnl This is the newlib/libc/machine/m6809 configure.in file.
++dnl Process this file with autoconf to produce a configure script.
++
++AC_PREREQ(2.59)
++AC_INIT([newlib],[NEWLIB_VERSION])
++AC_CONFIG_SRCDIR([setjmp.S])
++
++dnl Can't be done in NEWLIB_CONFIGURE because that confuses automake. 
++AC_CONFIG_AUX_DIR(../../../..)
++
++NEWLIB_CONFIGURE(../../..)
++
++AC_CONFIG_FILES([Makefile])
++AC_OUTPUT
+diff --git a/newlib/libc/sys/coco/configure.in b/newlib/libc/sys/coco/configure.in
+new file mode 100644
+index 0000000..9137370
+--- /dev/null
++++ b/newlib/libc/sys/coco/configure.in
+@@ -0,0 +1,14 @@
++dnl This is the newlib/libc/sys/coco configure.in file.
++dnl Process this file with autoconf to produce a configure script.
++
++AC_PREREQ(2.59)
++AC_INIT([newlib],[NEWLIB_VERSION])
++AC_CONFIG_SRCDIR([kill.c])
++
++dnl Can't be done in NEWLIB_CONFIGURE because that confuses automake. 
++AC_CONFIG_AUX_DIR(../../../..)
++
++NEWLIB_CONFIGURE(../../..)
++
++AC_CONFIG_FILES([Makefile])
++AC_OUTPUT
+diff --git a/newlib/libc/sys/m6809sim/configure.in b/newlib/libc/sys/m6809sim/configure.in
+new file mode 100644
+index 0000000..9137370
+--- /dev/null
++++ b/newlib/libc/sys/m6809sim/configure.in
+@@ -0,0 +1,14 @@
++dnl This is the newlib/libc/sys/m6809sim configure.in file.
++dnl Process this file with autoconf to produce a configure script.
++
++AC_PREREQ(2.59)
++AC_INIT([newlib],[NEWLIB_VERSION])
++AC_CONFIG_SRCDIR([kill.c])
++
++dnl Can't be done in NEWLIB_CONFIGURE because that confuses automake. 
++AC_CONFIG_AUX_DIR(../../../..)
++
++NEWLIB_CONFIGURE(../../..)
++
++AC_CONFIG_FILES([Makefile])
++AC_OUTPUT
+-- 
+2.19.1.windows.1
+

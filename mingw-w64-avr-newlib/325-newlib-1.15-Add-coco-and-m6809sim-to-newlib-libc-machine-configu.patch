@@ -1,0 +1,34 @@
+From 644074773dd1ab8d3d307dce258dc147a04ba7b7 Mon Sep 17 00:00:00 2001
+From: Tim S <tim.stahlhut@gmail.com>
+Date: Sat, 26 Jan 2019 08:00:26 -0500
+Subject: [PATCH 25/26] Add coco and m6809sim to sys/configure.in
+
+This patch is based on the work of 
+Brian Dominy https://github.com/bcd/newlib-6809 and
+David Flamand https://gitlab.com/dfffffff/newlib-6809
+
+---
+ newlib/libc/sys/configure.in | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/newlib/libc/sys/configure.in b/newlib/libc/sys/configure.in
+index 1ab9ded..5091c7b 100644
+--- a/newlib/libc/sys/configure.in
++++ b/newlib/libc/sys/configure.in
+@@ -24,11 +24,13 @@ if test -n "${sys_dir}"; then
+ 	a29khif) AC_CONFIG_SUBDIRS(a29khif) ;;
+ 	arc) AC_CONFIG_SUBDIRS(arc) ;;
+ 	arm) AC_CONFIG_SUBDIRS(arm) ;;
++	coco) AC_CONFIG_SUBDIRS(coco) ;;
+ 	d10v) AC_CONFIG_SUBDIRS(d10v) ;;
+ 	decstation) AC_CONFIG_SUBDIRS(decstation) ;;
+ 	h8300hms) AC_CONFIG_SUBDIRS(h8300hms) ;;
+ 	h8500hms) AC_CONFIG_SUBDIRS(h8500hms) ;;
+ 	linux) AC_CONFIG_SUBDIRS(linux) ;;
++	m6809sim) AC_CONFIG_SUBDIRS(m6809sim) ;;
+ 	m88kbug) AC_CONFIG_SUBDIRS(m88kbug) ;;
+ 	mmixware) AC_CONFIG_SUBDIRS(mmixware) ;;
+ 	netware) AC_CONFIG_SUBDIRS(netware) ;;
+-- 
+2.19.1.windows.1
+
