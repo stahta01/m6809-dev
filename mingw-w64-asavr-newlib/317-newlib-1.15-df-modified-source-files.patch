@@ -1,0 +1,455 @@
+From afa88ca91f3a04a9199f055001cafa7ee495ab86 Mon Sep 17 00:00:00 2001
+From: Tim S <tim.stahlhut@gmail.com>
+Date: Sat, 26 Jan 2019 04:20:56 -0500
+Subject: [PATCH 320/328] df modified source files
+
+This patch is based on the work of 
+David Flamand https://gitlab.com/dfffffff/newlib-6809
+
+---
+ newlib/libc/include/machine/setjmp.h          |   8 +-
+ newlib/libc/include/sys/config.h              |   7 +-
+ .../libc/machine/m6809/include/machine/regs.h | 102 ++++++++++++-
+ newlib/libc/machine/m6809/setjmp.S            | 140 +++++++++---------
+ newlib/libc/stdlib/mallocr.c                  |   4 +
+ newlib/libc/stdlib/mlock.c                    |   8 +-
+ newlib/libc/stdlib/rand.c                     |   5 +
+
+diff --git a/newlib/libc/include/machine/setjmp.h b/newlib/libc/include/machine/setjmp.h
+index aa8c95d..0033efc 100644
+--- a/newlib/libc/include/machine/setjmp.h
++++ b/newlib/libc/include/machine/setjmp.h
+@@ -45,8 +45,12 @@ _BEGIN_STD_C
+ #endif
+ 
+ #if defined(__m6809__)
+-/* D, X, Y, U, S, PC, DP, CC, plus some padding */
+-#define _JBLEN 10
++/*
++ * D, X are not saved.
++ * Y, U, S, PC, DP, CC, plus some padding.
++ */
++#define _JBLEN  ((4*2+2*1+6)/2)
++#define _JBTYPE short
+ #endif
+ 
+ #if defined(__Z8001__) || defined(__Z8002__)
+diff --git a/newlib/libc/include/sys/config.h b/newlib/libc/include/sys/config.h
+index 1f3c3e0..c08cbd9 100644
+--- a/newlib/libc/include/sys/config.h
++++ b/newlib/libc/include/sys/config.h
+@@ -42,13 +42,18 @@
+ #define _POINTER_INT short
+ #endif
+ 
+-#if defined(__mc68hc11__) || defined(__mc68hc12__) || defined(__mc68hc1x__)
++#if defined(__m6809__) || defined(__mc68hc11__) || defined(__mc68hc12__) || defined(__mc68hc1x__)
+ #undef INT_MAX
+ #undef UINT_MAX
+ #define INT_MAX __INT_MAX__
+ #define UINT_MAX (__INT_MAX__ * 2U + 1)
+ #define _POINTER_INT short
+ #endif
++#if defined(__m6809__)
++/*#define _REENT_SMALL  <- code is bigger */
++#define __SINGLE_THREAD__
++#define __SMALL_BITFIELDS
++#endif
+ 
+ #ifdef ___AM29K__
+ #define _FLOAT_RET double
+diff --git a/newlib/libc/machine/m6809/include/machine/regs.h b/newlib/libc/machine/m6809/include/machine/regs.h
+index 8faba0e..174ccec 100644
+--- a/newlib/libc/machine/m6809/include/machine/regs.h
++++ b/newlib/libc/machine/m6809/include/machine/regs.h
+@@ -1,7 +1,13 @@
+-
+ #ifndef __M6809_REGS_H
+ #define __M6809_REGS_H
+ 
++#ifdef __NO_INLINE__
++#define ASM_DECL static
++#else
++#define ASM_DECL extern inline
++#endif
++
++
+ enum cc_flags
+ {
+ 	CC_CARRY = 0x1,
+@@ -14,27 +20,107 @@ enum cc_flags
+ 	CC_E = 0x80,
+ };
+ 
+-register unsigned char __cc asm ("cc");
++/* for bit testing CC reg */
++register const volatile unsigned char __cc asm ("cc");
++
++
++/*
++	WARNING: setstack() and getstack() must be used with precaution.
++	Only one local variable is allowed, they must be used with
++	function without or with one parameter,
++	also beware of function inlining and tail call optimization.
+ 
++	please consider this valid use case:
+ 
+-extern inline void setstack (const unsigned int s)
++	int add3 (int param1, int param2, int param3)
++	{
++		int result;
++		result = param1 + param2 + param3;
++		return result;
++	}
++
++	// make sure no inlining occur, can have one parameter
++	__attribute__((noinline)) void dosomework (int value)
++	{
++		// no restriction here
++		int result;
++		result = add3(value, 2, 3);
++		printf("%s=%d\n", "result", result);
++	}
++
++	// make sure no inlining occur, no parameter
++	__attribute__((noinline)) void func (void)
++	{
++		int oldstack;          // ok for one local variable
++		oldstack = getstack();
++		setstack(0xC000);
++		dosomework(1);         // ok for one parameter function call
++		setstack(oldstack);
++		__builtin_blockage();  // prevent tail call optimization on setstack
++	}
++
++	int main (...)
++	{
++		...
++		func();
++		...
++		return ...;
++	}
++*/
++
++#ifdef __NO_INLINE__
++ASM_DECL __attribute__((naked)) void setstack (const unsigned int s)
+ {
+-	asm __volatile__ ("lds\t%0" :: "g" (s) : "d");
++#if defined(__ABI_STACK__)
++#error setstack() unsupported at (__NO_INLINE__ && __ABI_STACK__)
++	/*asm volatile ("puls\td,x\n\tleas\t-2,x\n\ttfr\td,pc");*/
++#elif defined(__ABI_BX__) || defined(__ABI_REGS__)
++	asm volatile ("puls\td\n\tleas\t,x\n\ttfr\td,pc");
++#else
++#error UNKNOWN ABI
++#endif
+ }
++#else
++ASM_DECL void setstack (const unsigned int s)
++{
++	asm volatile ("leas\t,%0" :: "a" (s));
++}
++#endif
+ 
+ 
+-extern inline unsigned int getstack (void)
++#ifdef __NO_INLINE__
++ASM_DECL __attribute__((naked)) unsigned int getstack (void)
++{
++#ifdef __DRET__
++	asm volatile ("leax\t2,s\n\ttfr\tx,d\n\trts");
++#else
++	asm volatile ("leax\t2,s\n\trts");
++#endif
++}
++#else
++ASM_DECL unsigned int getstack (void)
+ {
+ 	unsigned int result;
+-	asm __volatile__ ("lea%0\t,s" : "=a" (result));
++	asm volatile ("lea%0\t,s" : "=a" (result));
+ 	return result;
+ }
++#endif
+ 
+ 
+-extern inline void setdp (const unsigned short dp)
++ASM_DECL void setdp (const unsigned char dp)
+ {
+-	asm __volatile__ ("tfr\tb, dp" :: "q" (dp));
++	asm volatile ("tfr\t%0,dp" :: "q" (dp));
+ }
+ 
+ 
++ASM_DECL unsigned char getdp (void)
++{
++	unsigned char result;
++	asm volatile ("tfr\tdp,%0" : "=q" (result));
++	return result;
++}
++
++
++#undef ASM_DECL
++
+ #endif /* __M6809_REGS_H */
+diff --git a/newlib/libc/machine/m6809/setjmp.S b/newlib/libc/machine/m6809/setjmp.S
+index d79d24e..d2c390f 100644
+--- a/newlib/libc/machine/m6809/setjmp.S
++++ b/newlib/libc/machine/m6809/setjmp.S
+@@ -1,70 +1,72 @@
+ ;;;
+ ;;; Copyright 2006 by Brian Dominy <brian@oddchange.com>
+ ;;;
++;;; Changes by David Flamand <dflamand@gmail.com> (May 2016)
++;;;  added support for -mdret and -mabi=stack
++;;;  added check for zero in longjmp return value
++;;;  reduced size of jmp_buf
++;;;  some optimizations
++;;;
+ ;;; setjmp/longjmp for m6809
+ ;;;
+ 
++;;; TODO:
++;;; - Support nonstandard compiler options
++;;; - Support other state (i.e. HW registers for various platforms)
++
+ ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+ ; The jmp_buf is structured as follows:
+ ;
+ ; Offset       Value
+-; 0            A
+-; 1            B
+-; 2-3          X
+-; 4-5          Y
+-; 6-7          U
+-; 8-9          S
+-; 10-11        PC
+-; 12           DP
+-; 13           CC
++; 0-1          Y
++; 2-3          U
++; 4-5          S
++; 6-7          PC
++; 8            DP
++; 9            CC
+ ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+ 
+-;;; TODO:
+-;;; - Reduce size of jmp_buf a little more
+-;;; - Optimize
+-;;; - Support nonstandard compiler options
+-;;; - Support other state (i.e. HW registers for various platforms)
+-
+-SAVE_A = 0
+-SAVE_B = 1
+-SAVE_X = 2
+-SAVE_Y = 4
+-SAVE_U = 6
+-SAVE_S = 8
+-SAVE_PC = 10
+-SAVE_DP = 12
+-SAVE_CC = 13
++SAVE_Y = 0
++SAVE_U = 2
++SAVE_S = 4
++SAVE_PC = 6
++SAVE_DP_CC = 8
+ 
+-SETJMP_S = 4
++SETJMP_S = 2
+ 
+-.module sjlj
+-.area .text
++	.module	setjmp.S
++	.area	.text
+ 
+ ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+ ;
+ ; int setjmp(jmp_buf env)
+ ;
+ ; A pointer to env is passed in register X.
+-; The return value is placed in X.
++; The return value is placed in X or D.
+ ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+ 
+-	.globl _setjmp 
++	.globl	_setjmp
+ _setjmp:
+-	pshs y,u              ; Save registers gcc requires
+-	std SAVE_A,x          ; Save the A/B registers
+-	sty SAVE_Y,x          ; Save the Y register
+-	stu SAVE_U,x          ; Save the U register
+-	leay SETJMP_S+2,s
+-	sty SAVE_S,x          ; Save the S register
+-	ldy SETJMP_S,s
+-	sty SAVE_PC,x         ; Save the PC register
+-
+-	tfr dp,a
+-	tfr cc,b
+-	std SAVE_DP,x         ; Save the DP/CC registers
+-
+-	ldx #0                ; Return zero
+-	puls y,u,pc           ; Restore nonvolatile registers
++#ifdef __ABI_STACK__
++	ldx	2,s           ; X = env
++#endif
++	pshs	u             ; Save nonvolatile U register
++	sty	SAVE_Y,x      ; Save the Y register
++	stu	SAVE_U,x      ; Save the U register
++	leau	SETJMP_S+2,s
++	stu	SAVE_S,x      ; Save the S register
++	ldd	SETJMP_S,s
++	std	SAVE_PC,x     ; Save the PC register
++	tfr	dp,a
++	tfr	cc,b
++	std	SAVE_DP_CC,x  ; Save the DP/CC registers
++#ifdef __DRET__
++	clra                  ; Return zero in D
++	clrb
++#else
++	ldx	#0            ; Return zero in X
++#endif
++	puls	u,pc          ; Restore U and PC registers (returning)
+ 
+ 
+ ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+@@ -75,32 +77,26 @@ _setjmp:
+ ; val is placed on the stack.
+ ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+ 
+-	.globl _longjmp 
++	.globl	_longjmp
+ _longjmp:
+-	;-----------------------------------------------
+-	; TODO: this sequence assumes that the first
+-	; function argument is passed directly in X.
+-	; If all args go onto the stack, this is wrong.
+-	;-----------------------------------------------
+-                         ; X = env
+-	ldd 2,s               ; D = return value
+-
+-	;---------------------------------------------------------
+-	; TODO : storing the return value and then reloading it
+-	; at the end of the function is wasteful.  Just reference
+-	; it from the stack directly at the end, and eliminate
+-	; the ldd/std here.
+-	;---------------------------------------------------------
+-	std SAVE_A,x          ; Store return value into jmp_buf
+-
+-	ldu SAVE_U,x          ; Restore the U register
+-	lds SAVE_S,x          ; Restore the S register
+-	lda SAVE_DP,x
+-	tfr a,dp              ; Restore the DP register
+-	lda SAVE_CC,x
+-	ldy SAVE_PC,x
+-	pshs y,a              ; Push restored CC/PC onto stack
+-	ldy SAVE_Y,x          ; Restore the Y register
+-	ldx SAVE_A,x          ; Restore the X register (return val)
+-	puls cc,pc            ; Restore CC and PC registers (returning)
+-
++#ifdef __ABI_STACK__
++	ldx	2,s           ; X = env
++	ldd	4,s           ; D = val
++#else
++	ldd	2,s           ; D = val
++#endif
++	bne	l1
++	incb                  ; Zero is not allowed
++l1:	lds	SAVE_S,x      ; Restore the S register
++	ldu	SAVE_PC,x     ; Load the PC register
++	pshs	u,d           ; Save PC and return value onto stack
++	ldu	SAVE_U,x      ; Restore the U register
++	ldy	SAVE_Y,x      ; Restore the Y register
++	ldd	SAVE_DP_CC,x  ; Load the DP/CC registers
++	tfr	a,dp          ; Restore the DP register
++	tfr	b,cc          ; Restore the CC register
++#ifdef __DRET__
++	puls	d,pc          ; Restore D and PC registers (returning)
++#else
++	puls	x,pc          ; Restore X and PC registers (returning)
++#endif
+diff --git a/newlib/libc/stdlib/mallocr.c b/newlib/libc/stdlib/mallocr.c
+index e7cdace..2b40bf0 100644
+--- a/newlib/libc/stdlib/mallocr.c
++++ b/newlib/libc/stdlib/mallocr.c
+@@ -303,8 +303,10 @@ extern "C" {
+ #define HAVE_MMAP 0
+ #define MORECORE(size) _sbrk_r(reent_ptr, (size))
+ #define MORECORE_CLEARS 0
++#ifndef __SINGLE_THREAD__
+ #define MALLOC_LOCK __malloc_lock(reent_ptr)
+ #define MALLOC_UNLOCK __malloc_unlock(reent_ptr)
++#endif
+ 
+ #ifdef __CYGWIN__
+ # undef _WIN32
+@@ -319,6 +321,7 @@ extern "C" {
+ #endif
+ #endif
+ 
++#ifndef __SINGLE_THREAD__
+ #if __STD_C
+ extern void __malloc_lock(struct _reent *);
+ extern void __malloc_unlock(struct _reent *);
+@@ -326,6 +329,7 @@ extern void __malloc_unlock(struct _reent *);
+ extern void __malloc_lock();
+ extern void __malloc_unlock();
+ #endif
++#endif
+ 
+ #if __STD_C
+ #define RARG struct _reent *reent_ptr,
+diff --git a/newlib/libc/stdlib/mlock.c b/newlib/libc/stdlib/mlock.c
+index 888c986..10abe08 100644
+--- a/newlib/libc/stdlib/mlock.c
++++ b/newlib/libc/stdlib/mlock.c
+@@ -40,25 +40,23 @@ that it already holds.
+ #include <sys/lock.h>
+ 
+ #ifndef __SINGLE_THREAD__
++
+ __LOCK_INIT_RECURSIVE(static, __malloc_lock_object);
+-#endif
+ 
+ void
+ __malloc_lock (ptr)
+      struct _reent *ptr;
+ {
+-#ifndef __SINGLE_THREAD__
+   __lock_acquire_recursive (__malloc_lock_object);
+-#endif
+ }
+ 
+ void
+ __malloc_unlock (ptr)
+      struct _reent *ptr;
+ {
+-#ifndef __SINGLE_THREAD__
+   __lock_release_recursive (__malloc_lock_object);
+-#endif
+ }
+ 
+ #endif
++
++#endif
+diff --git a/newlib/libc/stdlib/rand.c b/newlib/libc/stdlib/rand.c
+index 131e5cf..94f7928 100644
+--- a/newlib/libc/stdlib/rand.c
++++ b/newlib/libc/stdlib/rand.c
+@@ -84,8 +84,13 @@ _DEFUN_VOID (rand)
+      Edition, Addison-Wesley, 1998, p. 106 (line 26) & p. 108 */
+   _REENT_CHECK_RAND48(_REENT);
+   _REENT_RAND_NEXT(_REENT) = 
++#if RAND_MAX == 32767
++     _REENT_RAND_NEXT(_REENT) * __extension__ 1284865837L + 1;
++  return (int)((_REENT_RAND_NEXT(_REENT) >> 16) & RAND_MAX);
++#else
+      _REENT_RAND_NEXT(_REENT) * __extension__ 6364136223846793005LL + 1;
+   return (int)((_REENT_RAND_NEXT(_REENT) >> 32) & RAND_MAX);
++#endif
+ }
+ 
+ #endif /* _REENT_ONLY */
+-- 
+2.19.1.windows.1
+
