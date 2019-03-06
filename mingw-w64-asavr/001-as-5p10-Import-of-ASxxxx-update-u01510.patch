@@ -1,0 +1,252 @@
+From 7225c9833fd74516eeb8a51d5c577c48c896da0d Mon Sep 17 00:00:00 2001
+From: Tim S <stahta01@users.sourceforge.net>
+Date: Thu, 15 Nov 2018 21:26:03 -0500
+Subject: [PATCH 1/5] Import of ASxxxx update u01510
+
+---
+ asxv5pxx/as6500/r65mch.c    | 26 ++++++++------------------
+ asxv5pxx/as6500/t6500.asm   |  4 ----
+ asxv5pxx/asxhtml/aschng.htm | 14 ++++++++++++++
+ asxv5pxx/asxxsrc/asmain.c   |  9 ++++++---
+ asxv5pxx/asxxsrc/asxxxx.h   | 13 ++++++-------
+ asxv5pxx/linksrc/aslink.h   |  4 ++--
+ asxv5pxx/u01510.txt         | 37 +++++++++++++++++++++++++++++++++++++
+ 7 files changed, 73 insertions(+), 34 deletions(-)
+ create mode 100644 asxv5pxx/u01510.txt
+
+diff --git a/asxv5pxx/as6500/r65mch.c b/asxv5pxx/as6500/r65mch.c
+index 016bff6..40a4203 100644
+--- a/asxv5pxx/as6500/r65mch.c
++++ b/asxv5pxx/as6500/r65mch.c
+@@ -1,7 +1,7 @@
+ /* r65mch.c */
+ 
+ /*
+- *  Copyright (C) 1995-2014  Alan R. Baldwin
++ *  Copyright (C) 1995-2015  Alan R. Baldwin
+  *
+  *  This program is free software: you can redistribute it and/or modify
+  *  it under the terms of the GNU General Public License as published by
+@@ -455,24 +455,14 @@ struct mne *mp;
+ 			outab(op+0x0C);
+ 			outrw(&e1, 0);
+ 			break;
++		case S_IMMED:
++			outab(op);
++			outrb(&e1, 0);
++			break;
+ 		default:
+-			if (r65c02) {	/* Check 65C02 Extensions */
+-				switch(t1) {
+-				case S_IMMED:
+-					outab(op);
+-					outrb(&e1, 0);
+-					break;
+-				default:
+-					outab(op);
+-					outab(0);
+-					aerr();
+-					break;
+-				}
+-			} else {
+-				outab(op);
+-				outab(0);
+-				aerr();
+-			}
++			outab(op);
++			outab(0);
++			aerr();
+ 			break;
+ 		}
+ 		break;
+diff --git a/asxv5pxx/as6500/t6500.asm b/asxv5pxx/as6500/t6500.asm
+index c339d6e..96f5ca1 100644
+--- a/asxv5pxx/as6500/t6500.asm
++++ b/asxv5pxx/as6500/t6500.asm
+@@ -277,9 +277,7 @@ cmp [*extdir]	; D2*00
+ cmp [extext]	; D2*00
+ .endif
+ 
+-.if	r65c02
+ cpx #12		; E0 12
+-.endif
+ 		; ---
+ cpx 12		; E4 12
+ cpx *dir	; E4 83
+@@ -289,9 +287,7 @@ cpx 1234	; EC 34 12
+ cpx ext		; EC 22 81
+ cpx extext	; ECr00s00
+ 
+-.if	r65c02
+ cpy #12		; C0 12
+-.endif
+ 		; ---
+ cpy 12		; C4 12
+ cpy *dir	; C4 83
+diff --git a/asxv5pxx/asxhtml/aschng.htm b/asxv5pxx/asxhtml/aschng.htm
+index 0038692..bccc3f8 100644
+--- a/asxv5pxx/asxhtml/aschng.htm
++++ b/asxv5pxx/asxhtml/aschng.htm
+@@ -12,6 +12,19 @@
+ <IMG width=576 height=5 border=0 SRC="rnbow.gif">
+ 
+ <H4><B><PRE>
++Version 5.10 Update 1
++2015_06_27
++
++   This  update  for  Version  5.10  of the  ASxxxx Cross
++Assemblers includes fixes for the following errors:
++
++   (1)  The as6500 assembler incorrectly assembled
++        cpx # and cpy # instructions.
++
++   (2)  An error in asmain.c inhibited the listing of
++        all .if.. assembler directives.
++
++
+    Asxxxx/ASlink version 5.10 is considered
+ a major release version.  
+ 
+@@ -28,6 +41,7 @@ Version 5.10
+ 
+    (3)  Add as78k0s assembler (Renesas/NEC 78K/0S) 
+ 
++
+    Summary  of  changes/additions  to the ASxxxx Assemblers from
+ Version 4.11 to Version 5.06.  
+ 
+diff --git a/asxv5pxx/asxxsrc/asmain.c b/asxv5pxx/asxxsrc/asmain.c
+index 05a19cd..708b9a7 100644
+--- a/asxv5pxx/asxxsrc/asmain.c
++++ b/asxv5pxx/asxxsrc/asmain.c
+@@ -1014,7 +1014,8 @@ loop:
+ 					err('i');
+ 				}
+ 				if (!iflvl[tlevel]) {
+-					lmode = ILIST;
++					lmode = ELIST;
++					eqt_area = NULL;
+ 					laddr = n;
+ 				} else {
+ 					lmode = SLIST;
+@@ -1045,7 +1046,8 @@ loop:
+ 						case O_IFTF:	flevel = 0;	break;
+ 						}
+ 					}
+-					lmode = ILIST;
++					lmode = ELIST;
++					eqt_area = NULL;
+ 					laddr = flevel ? 0 : 1;
+ 				} else {
+ 					lmode = SLIST;
+@@ -1221,7 +1223,8 @@ loop:
+ 					ifcnd[tlevel] = 1;
+ 				}
+ 				if (!iflvl[tlevel]) {
+-					lmode = ILIST;
++					lmode = ELIST;
++					eqt_area = NULL;
+ 					laddr = ifcnd[tlevel];
+ 					return;
+ 				}
+diff --git a/asxv5pxx/asxxsrc/asxxxx.h b/asxv5pxx/asxxsrc/asxxxx.h
+index f786998..09060c0 100644
+--- a/asxv5pxx/asxxsrc/asxxxx.h
++++ b/asxv5pxx/asxxsrc/asxxxx.h
+@@ -50,8 +50,8 @@
+  * Local Definitions
+  */
+ 
+-#define	VERSION	"V05.10"
+-#define	COPYRIGHT "2014"
++#define	VERSION	"V05.11"
++#define	COPYRIGHT "2015"
+ 
+ /*
+  * To include NoICE Debugging set non-zero
+@@ -151,11 +151,11 @@
+ #define	LFTERM	'('		/* Left expression delimeter */
+ #define	RTTERM	')'		/* Right expression delimeter */
+ 
+-#define NCPS	80		/* Characters per symbol */
++#define NCPS	256		/* Characters per symbol */
+ #define	HUGE	1000		/* A huge number */
+ #define NERR	2		/* Errors per line */
+-#define NINPUT	128		/* Input buffer size */
+-#define NCODE	128		/* Listing code buffer size */
++#define NINPUT	380		/* Input buffer size */
++#define NCODE	380		/* Listing code buffer size */
+ #define NTITL	80		/* Title buffer size */
+ #define	NSBTL	80		/* SubTitle buffer size */
+ #define	NHASH	(1 << 6)	/* Buckets in hash table */
+@@ -172,8 +172,7 @@
+ #define ALIST	2		/* Address only */
+ #define	BLIST	3		/* Address only with allocation */
+ #define CLIST	4		/* Code */
+-#define	ELIST	5		/* Equate only */
+-#define	ILIST	6		/* IF conditional evaluation */
++#define	ELIST	5		/* Equate or IF conditional evaluation */
+ 
+ #define	HLR_NLST	0x0080	/* For HLR file only */
+ 
+diff --git a/asxv5pxx/linksrc/aslink.h b/asxv5pxx/linksrc/aslink.h
+index ef97171..ef485c2 100644
+--- a/asxv5pxx/linksrc/aslink.h
++++ b/asxv5pxx/linksrc/aslink.h
+@@ -39,8 +39,8 @@
+  * Local Definitions
+  */
+ 
+-#define	VERSION "V05.10"
+-#define	COPYRIGHT "2014"
++#define	VERSION "V05.11"
++#define	COPYRIGHT "2015"
+ 
+ /*
+  * To include NoICE Debugging set non-zero
+diff --git a/asxv5pxx/u01510.txt b/asxv5pxx/u01510.txt
+new file mode 100644
+index 0000000..788234e
+--- /dev/null
++++ b/asxv5pxx/u01510.txt
+@@ -0,0 +1,37 @@
++Version 5.10 Update 1
++2015_06_27
++
++   This  update  for  Version  5.10  of the  ASxxxx Cross
++Assemblers includes fixes for the following errors:
++
++   (1)  The as6500 assembler incorrectly assembled
++        cpx # and cpy # instructions.
++
++   (2)  An error in asmain.c inhibited the listing of
++        all .if.. assembler directives.
++
++   Merge the update asxv5pxx directory and subdirectories
++with the V5.10 distribution.  The following files will be
++overwritten:
++
++[asxv5pxx\as6500]
++      m65mch.c
++      t6500.asm
++
++[asxv5pxx\asxxsrc]
++      asmain.c
++      asxxxx.h
++
++[asxv5pxx\linksrc]
++      aslink.h
++
++[asxv5pxx\asxhtml]
++      aschng.htm
++
++[asxv5pxx]
++      u01510.txt
++
++
++   You must recompile the ASxxxx Assemblers and Linker
++to incorporate the update.
++
+-- 
+2.19.1.windows.1
+
