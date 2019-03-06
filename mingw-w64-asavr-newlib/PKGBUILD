@@ -1,0 +1,159 @@
+# Maintainer: Tim S <stahta01@gmail.com>
+
+_basename=newlib
+_cpu=avr
+_realname_prefix=as${_cpu}-
+_realname=${_realname_prefix}${_basename}
+_filename=${_basename}
+_foldername=${_basename}
+_target=${_cpu}
+
+pkgbase=mingw-w64-${_realname}
+pkgname=("${MINGW_PACKAGE_PREFIX}-${_realname}")
+pkgver=1.16.0
+pkgrel=1
+pkgdesc="A C standard library implementation for the AVR microprocessors (mingw-w64)"
+arch=('any')
+url="https://sourceware.org/newlib/"
+license=('Various')
+groups=("${MINGW_PACKAGE_PREFIX}-${_target}-toolchain")
+depends=()
+makedepends=("${MINGW_PACKAGE_PREFIX}-${_realname_prefix}boot-gcc" "${MINGW_PACKAGE_PREFIX}-as${_cpu}")
+options=('staticlibs' '!strip' '!emptydirs')
+if [[ ${pkgver} == "1.16.0" ]] ; then
+  _source_sha256sum='db426394965c48c1d29023e1cc6d965ea6b9a9035d8a849be2750ca4659a3d07'
+elif [[ ${pkgver} == "1.18.0" ]] ; then
+  _source_sha256sum='d608f22b0b2e7725d2fca13cac19f34bc652d9773acadae778db9881746cb071'
+elif [[ ${pkgver} == "1.19.0" ]] ; then
+  _source_sha256sum='4f43807236b2274c220881ca69f7dc6aecc52f14bb32a6f03404d30780c25007'
+elif [[ ${pkgver} == "1.20.0" ]] ; then
+  _source_sha256sum='c644b2847244278c57bec2ddda69d8fab5a7c767f3b9af69aa7aa3da823ff692'
+else
+  echo "Skipping newlib sha256sums check!"
+  _source_sha256sum='SKIP'
+fi
+source=("ftp://sourceware.org/pub/newlib/newlib-${pkgver}.tar.gz"
+        301-newlib-1.15-df-changed-seek-offset-from-int-to-_fpos_t.patch
+        302-newlib-1.16-include-string-h.patch
+        305-newlib-1.15-edit-config-sub.patch
+        306-newlib-1.15-edit-newlib-configure-host.patch
+        310-newlib-1.15-bcd-modified-source-files.patch
+        311-newlib-1.15-bcd-added-source-files.patch
+        312-newlib-1.15-bcd-added-.m4-files.patch
+        313-newlib-1.15-bcd-added-.am-files.patch
+        314-newlib-1.15-bcd-added-Makefile.in-files.patch
+        315-newlib-1.15-bcd-added-configure.in-files.patch
+        316-newlib-1.15-bcd-added-configure-files.patch
+        317-newlib-1.15-df-modified-source-files.patch
+        318-newlib-1.15-df-added-source-files.patch
+        319-newlib-1.15-df-modified-build-files-except-for-configure-files.patch
+        324-newlib-1.16-Add-m6809-to-configure.ac.patch
+        325-newlib-1.15-Add-coco-and-m6809sim-to-newlib-libc-machine-configu.patch
+        326-newlib-1.15-Add-m6809-to-libgloss-configure.in.patch
+        327-newlib-1.16-Add-m6809-to-newlib-libc-machine-configure.in.patch
+        328-newlib-1.16-Regenerate-configure.patch
+        329-newlib-1.16-Regenerate-libgloss-configure.patch
+        330-newlib-1.16-Regenerate-newlib-libc-machine-configure.patch
+        331-newlib-1.16-Regenerate-newlib-libc-sys-configure.patch)
+sha256sums=(${_source_sha256sum}
+            '8c0f1fbcc985631a7b6efc37ff9c12837fc61531797c7189dc27986c70b18a00'
+            '97ec4d5af573a29e29242c8e8ddeae87577cf2bce46a880c3f92c3d18ffaab3f'
+            '0daeca7d26418ea46ba7eb68af0aa78ffb47642af809e7834f86623ba8dd84f6'
+            'ec140344e41fb1ea12ce79dcbcd6b70b93e0a3c198a34ec56eed052238735ec4'
+            '6fb87c7acb8ac797b8f43559fbcbbbe7956028367e5a0e35a21e3b39db9b18a2'
+            '0db2d8148d5fd8eb0f2e4a5d5a031ae9b06670203e0c54519496c45391ed37a7'
+            '28c7cc1d2586526f0d860d931777cf0f2158ac8e4953c49701d2e8bd5fb32bcf'
+            '88e6b76fb8e4c294f8d69e6e8612ebd7c3f6e7368ef38b11cd7d092ba3dcda61'
+            '8209aaace642e347ca19e539e736934a6e906636b03263a22f4fd7f44ee22c60'
+            '9917500976cde31371e0525e6093f0fe57d4c4e68d46da2816b3779849ce343b'
+            'f85c57e8b235ac447acb14c578f99e63d8bca4c698dc80454083e608d60b3ba4'
+            'e890ff111058dc255dd82568102a9c3bcb335923e88ea6d8469b5962e8d04cf4'
+            '38e848e035511a5a6a46534bdcba49e5169c2f9091661d6477760fc5af4f17f0'
+            'ff1d628718c6c5fe16a24fe6bd2902eb61435cb7f2d364d8bb4e3d0c701151c7'
+            '121565fba6c751412f087c4ca1bd58f4b4210471a06e33b4c607ff2464b19cec'
+            'def9d7fed162bc0f13b504db847096b50792b5a4ec040d0bd791b86dbbd708eb'
+            '21f2cc27fa79711d73391bb9c7b9cddfb314bf2392c8624d9951b25dca78ecd1'
+            '4de2490e6399eaf5205cc7694ac06a67e774eecd9ceafe826e220e037fd31186'
+            '675e59108564f96c3d69f519f04bcdc1f3d1594c7fc4ba3cf0c4e73995b596cd'
+            '9b5034112e55752753cd14015e5cb9d926113686dfe900bc048c7cb265e80b1e'
+            '61f8579441da78545cd8b1ede633ff0f2d96e483a3d20f82ef5e46a5679ae976'
+            'f20b2012296b9b28760bf7ccc227e30f679e88a6274a29f524c50d8a05290157')
+prepare() {
+  cd ${srcdir}/${_filename}-${pkgver}
+
+  # Changes that should work with non m6809 targets
+  patch --forward -p1 -i "$srcdir"/301-newlib-1.15-df-changed-seek-offset-from-int-to-_fpos_t.patch
+  if [[ ${pkgver} == "1.16.0" || ${pkgver} == "1.17.0" ]] ; then
+    patch --forward -p1 -i "$srcdir"/302-newlib-1.16-include-string-h.patch
+  fi
+
+  # m6809 changes
+  patch -p1 -i "$srcdir"/305-newlib-1.15-edit-config-sub.patch
+  patch -p1 -i "$srcdir"/306-newlib-1.15-edit-newlib-configure-host.patch
+
+  patch -p1 -i "$srcdir"/310-newlib-1.15-bcd-modified-source-files.patch
+  patch -p1 -i "$srcdir"/311-newlib-1.15-bcd-added-source-files.patch
+  patch -p1 -i "$srcdir"/312-newlib-1.15-bcd-added-.m4-files.patch
+  patch -p1 -i "$srcdir"/313-newlib-1.15-bcd-added-.am-files.patch
+  patch -p1 -i "$srcdir"/314-newlib-1.15-bcd-added-Makefile.in-files.patch
+  patch -p1 -i "$srcdir"/315-newlib-1.15-bcd-added-configure.in-files.patch
+  patch -p1 -i "$srcdir"/316-newlib-1.15-bcd-added-configure-files.patch
+  patch -p1 -i "$srcdir"/317-newlib-1.15-df-modified-source-files.patch
+  patch -p1 -i "$srcdir"/318-newlib-1.15-df-added-source-files.patch
+  patch -p1 -i "$srcdir"/319-newlib-1.15-df-modified-build-files-except-for-configure-files.patch
+  
+  patch -p1 -i "$srcdir"/324-newlib-1.16-Add-m6809-to-configure.ac.patch
+
+  patch -p1 -i "$srcdir"/325-newlib-1.15-Add-coco-and-m6809sim-to-newlib-libc-machine-configu.patch
+  patch -p1 -i "$srcdir"/326-newlib-1.15-Add-m6809-to-libgloss-configure.in.patch
+
+  patch -p1 -i "$srcdir"/327-newlib-1.16-Add-m6809-to-newlib-libc-machine-configure.in.patch
+
+  patch -p1 -i "$srcdir"/328-newlib-1.16-Regenerate-configure.patch
+  patch -p1 -i "$srcdir"/329-newlib-1.16-Regenerate-libgloss-configure.patch
+  patch -p1 -i "$srcdir"/330-newlib-1.16-Regenerate-newlib-libc-machine-configure.patch
+  patch -p1 -i "$srcdir"/331-newlib-1.16-Regenerate-newlib-libc-sys-configure.patch
+}
+
+build() {
+  # Build newlib
+  if check_option "debug" "y"; then
+    NEWLIB_CFLAGS="-O0"
+  else
+    # -O3 has a history of bugs in Win32 GCC; instead, use -O2
+    NEWLIB_CFLAGS="-O2"
+  fi
+  NEWLIB_CFLAGS+=" -g -ffunction-sections -fdata-sections"
+  cd $srcdir
+  rm -rf build-${CARCH}
+
+  mkdir -p $srcdir/build-${CARCH} && cd $srcdir/build-${CARCH}
+  CCAS="${_target}-gcc" \
+  CC_FOR_TARGET="${_target}-gcc" \
+  AS_FOR_TARGET="asavr.exe" \
+  LD_FOR_TARGET="aslink.exe" \
+  RANLIB_FOR_TARGET="/bin/true" \
+  CFLAGS="${NEWLIB_CFLAGS}" \
+  ../${_filename}-${pkgver}/configure \
+    --build=${MINGW_CHOST} \
+    --host=${MINGW_CHOST} \
+    --prefix=${MINGW_PREFIX} \
+    --target=${_target} \
+    --program-prefix="${_target}-" \
+    --disable-float \
+    --disable-newlib-io-float \
+    PATH="${MINGW_PREFIX}/${_target}/bin:${MINGW_PREFIX}/bin:${PATH}"
+
+  cd $srcdir/build-${CARCH}
+  make -j1 PATH="${MINGW_PREFIX}/${_target}/bin:${MINGW_PREFIX}/bin:${PATH}"
+}
+
+package() {
+  cd ${srcdir}/build-${CARCH}
+  make -j1 DESTDIR=${pkgdir} install
+
+  # Remove files that conflict with host
+  rm -rf "${pkgdir}${MINGW_PREFIX}/share/info"
+  rm -rf "${pkgdir}${MINGW_PREFIX}/info"
+}
+

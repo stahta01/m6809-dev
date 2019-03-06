@@ -1,0 +1,28 @@
+From 8281ecd8bc6a03390c3718a0f322e1a10effff20 Mon Sep 17 00:00:00 2001
+From: Tim S <tim.stahlhut@gmail.com>
+Date: Wed, 30 Jan 2019 08:52:26 -0500
+Subject: Regenerate configure
+
+After edit of configure.ac
+libgloss_dir=m6809
+---
+ configure | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/configure b/configure
+index 18648c7..8542461 100644
+--- a/configure
++++ b/configure
+@@ -2442,6 +2442,10 @@ case "${target}" in
+     noconfigdirs="$noconfigdirs target-libiberty target-libstdc++-v3 ${libgcj}"
+     libgloss_dir=m68hc11
+     ;;
++  m6809-*-*)
++    noconfigdirs="$noconfigdirs target-libiberty target-libstdc++-v3 ${libgcj}"
++    libgloss_dir=m6809
++    ;;
+   m68k-*-elf*)
+     noconfigdirs="$noconfigdirs ${libgcj}"
+     ;;
+-- 
+2.19.1.windows.1
