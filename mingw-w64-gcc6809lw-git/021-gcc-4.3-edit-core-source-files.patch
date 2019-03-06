@@ -1,0 +1,225 @@
+From e622e4f2e97660ca4f8859703bf3e123bedd6b6f Mon Sep 17 00:00:00 2001
+From: Tim S <tim.stahlhut@gmail.com>
+Date: Fri, 1 Feb 2019 09:33:11 -0500
+Subject: core: modified source files
+
+This patch is based on the work of
+Brian Dominy https://github.com/bcd/gcc
+---
+ gcc/builtin-types.def |  2 ++
+ gcc/builtins.c        |  3 +++
+ gcc/builtins.def      |  1 +
+ gcc/calls.c           |  2 +-
+ gcc/libgcc2.c         | 10 ++++++----
+ gcc/longlong.h        |  5 +++++
+ gcc/recog.c           |  6 ++++++
+ gcc/tree.c            |  2 ++
+ gcc/tree.h            |  4 ++++
+ 9 files changed, 30 insertions(+), 5 deletions(-)
+
+diff --git a/gcc/builtin-types.def b/gcc/builtin-types.def
+index 604845255..8d2aa7dd7 100644
+--- a/gcc/builtin-types.def
++++ b/gcc/builtin-types.def
+@@ -74,6 +74,7 @@ DEF_PRIMITIVE_TYPE (BT_LONGLONG, long_long_integer_type_node)
+ DEF_PRIMITIVE_TYPE (BT_ULONGLONG, long_long_unsigned_type_node)
+ DEF_PRIMITIVE_TYPE (BT_INTMAX, intmax_type_node)
+ DEF_PRIMITIVE_TYPE (BT_UINTMAX, uintmax_type_node)
++DEF_PRIMITIVE_TYPE (BT_UINT16, uint16_type_node)
+ DEF_PRIMITIVE_TYPE (BT_UINT32, uint32_type_node)
+ DEF_PRIMITIVE_TYPE (BT_UINT64, uint64_type_node)
+ DEF_PRIMITIVE_TYPE (BT_WORD, (*lang_hooks.types.type_for_mode) (word_mode, 1))
+@@ -215,6 +216,7 @@ DEF_FUNCTION_TYPE_1 (BT_FN_VOID_PTRPTR, BT_VOID, BT_PTR_PTR)
+ DEF_FUNCTION_TYPE_1 (BT_FN_UINT_UINT, BT_UINT, BT_UINT)
+ DEF_FUNCTION_TYPE_1 (BT_FN_ULONG_ULONG, BT_ULONG, BT_ULONG)
+ DEF_FUNCTION_TYPE_1 (BT_FN_ULONGLONG_ULONGLONG, BT_ULONGLONG, BT_ULONGLONG)
++DEF_FUNCTION_TYPE_1 (BT_FN_UINT16_UINT16, BT_UINT16, BT_UINT16)
+ DEF_FUNCTION_TYPE_1 (BT_FN_UINT32_UINT32, BT_UINT32, BT_UINT32)
+ DEF_FUNCTION_TYPE_1 (BT_FN_UINT64_UINT64, BT_UINT64, BT_UINT64)
+ 
+diff --git a/gcc/builtins.c b/gcc/builtins.c
+index 1185b429d..1340b3573 100644
+--- a/gcc/builtins.c
++++ b/gcc/builtins.c
+@@ -6345,6 +6345,7 @@ expand_builtin (tree exp, rtx target, rtx subtarget, enum machine_mode mode,
+       expand_stack_restore (CALL_EXPR_ARG (exp, 0));
+       return const0_rtx;
+ 
++    case BUILT_IN_BSWAP16:
+     case BUILT_IN_BSWAP32:
+     case BUILT_IN_BSWAP64:
+       target = expand_builtin_bswap (exp, target, subtarget);
+@@ -8130,6 +8131,7 @@ fold_builtin_bswap (tree fndecl, tree arg)
+ 
+       switch (DECL_FUNCTION_CODE (fndecl))
+ 	{
++	  case BUILT_IN_BSWAP16:
+ 	  case BUILT_IN_BSWAP32:
+ 	  case BUILT_IN_BSWAP64:
+ 	    {
+@@ -10033,6 +10035,7 @@ fold_builtin_1 (tree fndecl, tree arg0, bool ignore)
+     CASE_FLT_FN (BUILT_IN_LLRINT):
+       return fold_fixed_mathfn (fndecl, arg0);
+ 
++    case BUILT_IN_BSWAP16:
+     case BUILT_IN_BSWAP32:
+     case BUILT_IN_BSWAP64:
+       return fold_builtin_bswap (fndecl, arg0);
+diff --git a/gcc/builtins.def b/gcc/builtins.def
+index 4c4e2755d..a16da2f8b 100644
+--- a/gcc/builtins.def
++++ b/gcc/builtins.def
+@@ -607,6 +607,7 @@ DEF_EXT_LIB_BUILTIN    (BUILT_IN_ALLOCA, "alloca", BT_FN_PTR_SIZE, ATTR_MALLOC_N
+ DEF_GCC_BUILTIN        (BUILT_IN_APPLY, "apply", BT_FN_PTR_PTR_FN_VOID_VAR_PTR_SIZE, ATTR_NULL)
+ DEF_GCC_BUILTIN        (BUILT_IN_APPLY_ARGS, "apply_args", BT_FN_PTR_VAR, ATTR_NULL)
+ DEF_GCC_BUILTIN        (BUILT_IN_ARGS_INFO, "args_info", BT_FN_INT_INT, ATTR_NULL)
++DEF_GCC_BUILTIN        (BUILT_IN_BSWAP16, "bswap16", BT_FN_UINT16_UINT16, ATTR_CONST_NOTHROW_LIST)
+ DEF_GCC_BUILTIN        (BUILT_IN_BSWAP32, "bswap32", BT_FN_UINT32_UINT32, ATTR_CONST_NOTHROW_LIST)
+ DEF_GCC_BUILTIN        (BUILT_IN_BSWAP64, "bswap64", BT_FN_UINT64_UINT64, ATTR_CONST_NOTHROW_LIST)
+ DEF_EXT_LIB_BUILTIN    (BUILT_IN_CLEAR_CACHE, "__clear_cache", BT_FN_VOID_PTR_PTR, ATTR_NOTHROW_LIST)
+diff --git a/gcc/calls.c b/gcc/calls.c
+index 5ae33eccc..599fed499 100644
+--- a/gcc/calls.c
++++ b/gcc/calls.c
+@@ -2386,7 +2386,7 @@ expand_call (tree exp, rtx target, int ignore)
+ 	 with stack pointer depressed.
+ 	 Also do the adjustments before a throwing call, otherwise
+ 	 exception handling can fail; PR 19225. */
+-      if (pending_stack_adjust >= 32
++      if (pending_stack_adjust >= 8
+ 	  || (pending_stack_adjust > 0
+ 	      && (flags & (ECF_MAY_BE_ALLOCA | ECF_SP_DEPRESSED)))
+ 	  || (pending_stack_adjust > 0
+diff --git a/gcc/libgcc2.c b/gcc/libgcc2.c
+index ddfa53b4b..8bd4d971f 100644
+--- a/gcc/libgcc2.c
++++ b/gcc/libgcc2.c
+@@ -493,6 +493,7 @@ __ashrdi3 (DWtype u, shift_count_type b)
+ #endif
+ 
+ #ifdef L_bswapsi2
++#if MIN_UNITS_PER_WORD > 1
+ SItype
+ __bswapsi2 (SItype u)
+ {
+@@ -502,7 +503,9 @@ __bswapsi2 (SItype u)
+ 	  | (((u) & 0x000000ff) << 24));
+ }
+ #endif
++#endif
+ #ifdef L_bswapdi2
++#if LONG_LONG_TYPE_SIZE > 32
+ DItype
+ __bswapdi2 (DItype u)
+ {
+@@ -516,6 +519,7 @@ __bswapdi2 (DItype u)
+ 	  | (((u) & 0x00000000000000ffull) << 56));
+ }
+ #endif
++#endif
+ #ifdef L_ffssi2
+ #undef int
+ int
+@@ -1288,7 +1292,7 @@ __fixdfdi (DFtype a)
+ UDWtype
+ __fixunssfDI (SFtype a)
+ {
+-#if LIBGCC2_HAS_DF_MODE
++#if LIBGCC2_HAS_DF_MODE || (FLT_MANT_DIG >= W_TYPE_SIZE)
+   /* Convert the SFtype to a DFtype, because that is surely not going
+      to lose any bits.  Some day someone else can write a faster version
+      that avoids converting to DFtype, and verify it really works right.  */
+@@ -1306,7 +1310,7 @@ __fixunssfDI (SFtype a)
+ 
+   /* Assemble result from the two parts.  */
+   return ((UDWtype) hi << W_TYPE_SIZE) | lo;
+-#elif FLT_MANT_DIG < W_TYPE_SIZE
++#else
+   if (a < 1)
+     return 0;
+   if (a < Wtype_MAXp1_F)
+@@ -1342,8 +1346,6 @@ __fixunssfDI (SFtype a)
+       return (DWtype)counter << shift;
+     }
+   return -1;
+-#else
+-# error
+ #endif
+ }
+ #endif
+diff --git a/gcc/longlong.h b/gcc/longlong.h
+index a2f4e56d6..2b2360d02 100644
+--- a/gcc/longlong.h
++++ b/gcc/longlong.h
+@@ -444,6 +444,11 @@ UDItype __umulsidi3 (USItype, USItype);
+ 	   : "cbit")
+ #endif /* __M32R__ */
+ 
++#if defined (__m6309__) || defined (__m6809__)
++#define count_leading_zeros(COUNT,X)	((COUNT) = __builtin_clz (X))
++#define count_trailing_zeros(COUNT,X)	((COUNT) = __builtin_ctz (X))
++#endif
++
+ #if defined (__mc68000__) && W_TYPE_SIZE == 32
+ #define add_ssaaaa(sh, sl, ah, al, bh, bl) \
+   __asm__ ("add%.l %5,%1\n\taddx%.l %3,%0"				\
+diff --git a/gcc/recog.c b/gcc/recog.c
+index 34ce6b743..9dcebb81d 100644
+--- a/gcc/recog.c
++++ b/gcc/recog.c
+@@ -2974,6 +2974,11 @@ peephole2_optimize (void)
+ 	      df_simulate_one_insn_backwards (bb, insn, live);
+ 	      COPY_REG_SET (peep2_insn_data[peep2_current].live_before, live);
+ 
++	/* This check was added in GCC 4.1.0 and above.  It works around problems
++	on mainstream platforms with stack unwinding (exceptions), but is not
++	needed for the 6809.  It is taken out for the 6809 builds in order to
++	optimize better. */
++#ifndef HAVE_m6809_sync
+ 	      if (RTX_FRAME_RELATED_P (insn))
+ 		{
+ 		  /* If an insn has RTX_FRAME_RELATED_P set, peephole
+@@ -2983,6 +2988,7 @@ peephole2_optimize (void)
+ 		  try = NULL;
+ 		}
+ 	      else
++#endif
+ 		/* Match the peephole.  */
+ 		try = peephole2_insns (PATTERN (insn), insn, &match_len);
+ 
+diff --git a/gcc/tree.c b/gcc/tree.c
+index 8b8a2e4d1..e78761336 100644
+--- a/gcc/tree.c
++++ b/gcc/tree.c
+@@ -7366,6 +7366,8 @@ build_common_tree_nodes_2 (int short_double)
+   integer_ptr_type_node = build_pointer_type (integer_type_node);
+ 
+   /* Fixed size integer types.  */
++  uint8_type_node = build_nonstandard_integer_type (8, true);
++  uint16_type_node = build_nonstandard_integer_type (16, true);
+   uint32_type_node = build_nonstandard_integer_type (32, true);
+   uint64_type_node = build_nonstandard_integer_type (64, true);
+ 
+diff --git a/gcc/tree.h b/gcc/tree.h
+index 886b0e76b..c792bd9c9 100644
+--- a/gcc/tree.h
++++ b/gcc/tree.h
+@@ -3499,6 +3499,8 @@ enum tree_index
+   TI_UINTDI_TYPE,
+   TI_UINTTI_TYPE,
+ 
++  TI_UINT8_TYPE,
++  TI_UINT16_TYPE,
+   TI_UINT32_TYPE,
+   TI_UINT64_TYPE,
+ 
+@@ -3646,6 +3648,8 @@ extern GTY(()) tree global_trees[TI_MAX];
+ #define unsigned_intDI_type_node	global_trees[TI_UINTDI_TYPE]
+ #define unsigned_intTI_type_node	global_trees[TI_UINTTI_TYPE]
+ 
++#define uint8_type_node			global_trees[TI_UINT8_TYPE]
++#define uint16_type_node		global_trees[TI_UINT16_TYPE]
+ #define uint32_type_node		global_trees[TI_UINT32_TYPE]
+ #define uint64_type_node		global_trees[TI_UINT64_TYPE]
+ 
+-- 
