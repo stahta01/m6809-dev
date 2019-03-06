@@ -1,0 +1,26 @@
+From: Tim S <tim.stahlhut@gmail.com>
+Date: Sun, 30 Dec 2018 09:46:42 -0500
+Subject: Fix texi docs syntax errors
+
+---
+ gcc/doc/gcc.texi     | 4 ++--
+
+diff --git a/gcc/doc/gcc.texi b/gcc/doc/gcc.texi
+index baf4173c7..79cc41d53 100644
+--- a/gcc/doc/gcc.texi
++++ b/gcc/doc/gcc.texi
+@@ -86,9 +86,9 @@ Published by:
+ @item GNU Press
+ @tab Website: www.gnupress.org
+ @item a division of the
+-@tab General: @tex press@@gnu.org @end tex
++@tab General: @email{press@@gnu.org}
+ @item Free Software Foundation
+-@tab Orders:  @tex sales@@gnu.org @end tex
++@tab Orders:  @email{sales@@gnu.org}
+ @item 51 Franklin Street, Fifth Floor
+ @tab Tel 617-542-5942
+ @item Boston, MA 02110-1301 USA
+--   
+2.19.1.windows.1
+
