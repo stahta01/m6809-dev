@@ -1,0 +1,214 @@
+# Maintainer: Tim S <stahta01@gmail.com>
+
+_basename=gcc
+_realname_prefix=avr-
+_realname=${_realname_prefix}${_basename}
+_filename=${_basename}
+_foldername=${_basename}
+_target=avr
+
+pkgbase=mingw-w64-${_realname}
+# If newlib is missing, enable _build_boot_gcc
+#_build_boot_gcc=yes
+if [[ "${_build_boot_gcc}" == "yes" ]]; then
+  pkgname="${MINGW_PACKAGE_PREFIX}-boot-${_realname}"
+  pkgdesc="The GNU bootstrap C compiler for the AVR microprocessor (mingw-w64)"
+else
+  pkgname="${MINGW_PACKAGE_PREFIX}-${_realname}"
+  pkgdesc="The GNU C++ compiler for the AVR microprocessor (mingw-w64)"
+fi
+pkgver=4.3.6
+pkgrel=1
+arch=('any')
+url="https://github.com/stahta01/gcc4.3"
+license=('GPL3')
+groups=("${MINGW_PACKAGE_PREFIX}-${_target}-toolchain")
+replaces=(${MINGW_PACKAGE_PREFIX}-boot-${_realname})
+provides=(${MINGW_PACKAGE_PREFIX}-boot-${_realname})
+conflicts=(${MINGW_PACKAGE_PREFIX}-boot-${_realname})
+depends=(${MINGW_PACKAGE_PREFIX}-mpc )
+_makedepends=(${MINGW_PACKAGE_PREFIX}-gettext
+  ${MINGW_PACKAGE_PREFIX}-${_target}-binutils
+  'bison' 'diffutils' 'gettext' 'gettext-devel'
+  'intltool' 'make' 'patch' 'perl' 'tar' 'texinfo')
+if [[ "${_build_boot_gcc}" == "yes" ]]; then
+  makedepends=(${_makedepends[@]})
+else
+  makedepends=(${_makedepends[@]} ${MINGW_PACKAGE_PREFIX}-${_target}-newlib${_machine_suffix}${_realname_suffix})
+fi
+if [[ ${pkgver} == "4.3.6" ]] ; then
+  _source_sha256sum='f3765cd4dcceb4d42d46f0d53471d7cedbad50f2112f0312c1dcc9c41eea9810'
+elif [[ ${pkgver} == "4.4.7" ]] ; then
+  _source_sha256sum='5ff75116b8f763fa0fb5621af80fc6fb3ea0f1b1a57520874982f03f26cd607f'
+elif [[ ${pkgver} == "4.5.4" ]] ; then
+  _source_sha256sum='eef3f0456db8c3d992cbb51d5d32558190bc14f3bc19383dd93acc27acc6befc'
+elif [[ ${pkgver} == "4.6.4" ]] ; then
+  _source_sha256sum='35af16afa0b67af9b8eb15cafb76d2bc5f568540552522f5dc2c88dd45d977e8'
+else
+  echo "Skipping gcc sha256sums check!"
+  _source_sha256sum='SKIP'
+fi
+noextract=(${_filename}-${pkgver}.tar.bz2)
+source=("https://ftp.gnu.org/gnu/gcc/gcc-${pkgver}/${_filename}-${pkgver}.tar.bz2"
+        001-gcc-4.3-fixed-compile-issue-with-gcc-5-in-gcc-toplev.patch
+        002-gcc-4.4.7-add-DWARF2_UNWIND_INFO-guard.patch
+        003-gcc-4.5-add-GNUC_STDC_INLINE.patch
+        005-gcc-4.3-core-prevent-naked-function-from-creating-stack-slots.patch
+        006-gcc-4.3-PR_54300_rtl-optimization.patch
+        006-gcc-4.5-PR_54300_rtl-optimization.patch
+        008-gcc-4.6-PR-bootstrap-51969.patch
+        011-gcc-4.3-suppress-makeinfo-warning.patch
+        013-gcc-4.3-Change-default-NATIVE_SYSTEM_HEADER_DIR.patch
+        015-gcc-4.3-add-force-to-makeinfo.patch
+        016-gcc-4.3-Fix-texi-docs-syntax-errors.patch
+        016-gcc-4.4-Fix-texi-docs-syntax-errors.patch
+        016-gcc-4.5-Fix-texi-docs-syntax-errors.patch
+        016-gcc-4.6-Fix-texi-docs-syntax-errors.patch
+        016-gcc-4.6.4-Fix-texi-docs-syntax-errors.patch)
+sha256sums=(${_source_sha256sum}
+            '48e8df8fb5c2266f34ba96d159cc2a2aad5cb285403ec59e93408afccc9a100e'
+            '5ba2dd1c4dec84162224ebccee8c7a6e6d9f18a2f6f281c42c05e7e7da89b7fd'
+            '8222c61a049e1a09af1f53fb3d6a6146d0b850d3a033dace0d9d93570e03e580'
+            '5faba14f433e405d601d6c352bd8d67fae02c46395acdbf13d7d92dc10acae93'
+            '5ce48e53b2cd2e877454e15e2678eae1b4c7de49241ed993bb511068154d024b'
+            '30b1ce83f5444f2c8314e40f8e346581b2f2cec007f3eb33cb894a2930dc4265'
+            '03c721159461908051c1718770c4f79dbaa2d97f9ed67deeab7349e280017662'
+            'dd174b790a13d43e527a3d5807cf415407bd0c67532495da139afd14a6265462'
+            '7392873812e110a7ab6a174ff471664fa3006612f0276a0c8c33957781e1bf6d'
+            'd02434150e94b970603607e751718a96cbcbc7c080ddbd9517069968f0660ad4'
+            '601fa8735a64292b687024291350173c61e34d2386e33288b0a9e5b52f2f93c7'
+            'd4de015bf1d5462f6c5985b6cd279b146113625f56e833d6dd0ac0e7670aa242'
+            'e4441cb51a48a528507e3a6232594d0c4ee8945bb301fae13331441011f355c3'
+            '3183d14c89aaafc1d5c4bc2d9c09812bc229e82cb91d9e1e7c3b9b5da25eb42a'
+            '0e7ca6ad4f0af44b2e611ac49b61a9b801414bef6e0b5d83da0023d079e174d1')
+prepare() {
+  tar -xjf ${_filename}-${pkgver}.tar.bz2 -C ${srcdir}  --checkpoint=100 \
+    --exclude=${_foldername}-${pkgver}/{INSTALL,libjava,libgo,libgfortran} \
+    --exclude=${_foldername}-${pkgver}/gcc/{ada,fortran,java,po}
+
+  cd ${_foldername}-${pkgver}
+
+  # Fixes for building with GCC version 5 or newer
+  if [[ ${pkgver:0:3} == "4.3" || ${pkgver:0:3} == "4.4" ]] ; then
+    patch --forward -p1 -i "$srcdir"/001-gcc-4.3-fixed-compile-issue-with-gcc-5-in-gcc-toplev.patch
+  fi
+  if [[ ${pkgver} == "4.4.7" || ${pkgver} == "4.5.4" ]] ; then
+    patch --forward -p1 -i "$srcdir"/002-gcc-4.4.7-add-DWARF2_UNWIND_INFO-guard.patch
+  fi
+  if [[ ${pkgver:0:3} == "4.6" || ${pkgver:0:3} == "4.5" ]] ; then
+    patch --forward -p1 -i "$srcdir"/003-gcc-4.5-add-GNUC_STDC_INLINE.patch
+  fi
+
+  # Backported Pull Requests or other changes from other branches
+  if [[ ${pkgver:0:3} == "4.3" ]] ; then
+    patch --forward -p1 -i "$srcdir"/005-gcc-4.3-core-prevent-naked-function-from-creating-stack-slots.patch
+  fi
+  if [[ ${pkgver:0:3} == "4.3" || ${pkgver:0:3} == "4.4" ]] ; then
+    patch --forward -p1 -i "$srcdir"/006-gcc-4.3-PR_54300_rtl-optimization.patch
+  else
+    patch --forward -p1 -i "$srcdir"/006-gcc-4.5-PR_54300_rtl-optimization.patch
+  fi
+  if [[ ${pkgver:0:3} == "4.6" ]] ; then
+    if [[ ${pkgver} != "4.6.3" && ${pkgver} != "4.6.4" ]] ; then
+      patch --forward -p1 -i "$srcdir"/008-gcc-4.6-PR-bootstrap-51969.patch
+    fi
+  fi
+
+  # Warning reduction changes
+  patch --forward -p1 -i "$srcdir"/011-gcc-4.3-suppress-makeinfo-warning.patch
+
+  patch --forward -p1 -i "$srcdir"/013-gcc-4.3-Change-default-NATIVE_SYSTEM_HEADER_DIR.patch
+
+  # Build code fix for documentation
+  patch --forward -p1 -i "$srcdir"/015-gcc-4.3-add-force-to-makeinfo.patch
+  # Sourcecode fix for documentation
+  if [[ ${pkgver:0:3} == "4.3" ]] ; then
+    patch --forward -p1 -i "$srcdir"/016-gcc-4.3-Fix-texi-docs-syntax-errors.patch
+  elif [[ ${pkgver:0:3} == "4.4" ]] ; then
+    patch --forward -p1 -i "$srcdir"/016-gcc-4.4-Fix-texi-docs-syntax-errors.patch
+  elif [[ ${pkgver:0:3} == "4.5" ]] ; then
+    patch --forward -p1 -i "$srcdir"/016-gcc-4.5-Fix-texi-docs-syntax-errors.patch
+  elif [[ ${pkgver:0:3} == "4.6" ]] ; then
+    if [[ ${pkgver} == "4.6.4" ]] ; then
+      patch --forward -p1 -i "$srcdir"/016-gcc-4.6.4-Fix-texi-docs-syntax-errors.patch
+    else
+      patch --forward -p1 -i "$srcdir"/016-gcc-4.6-Fix-texi-docs-syntax-errors.patch
+    fi
+  fi
+}
+
+build() {
+  if [[ -d "build-gcc-${CARCH}" ]]; then
+    rm -rf build-gcc-${CARCH}
+  fi
+  mkdir build-gcc-${CARCH}
+  cd build-gcc-${CARCH}
+
+  local -a _gcc_pass_cfg_options
+  if [[ "${_build_boot_gcc}" == "yes" ]]; then
+    _gcc_pass_cfg_options+=("--without-headers")
+    _gcc_pass_cfg_options+=("--enable-languages=c")
+  else
+    _gcc_pass_cfg_options+=("--with-headers=${MINGW_PREFIX}/${_target}/include")
+    _gcc_pass_cfg_options+=("--oldincludedir=${MINGW_PREFIX}/${_target}/include")
+    _gcc_pass_cfg_options+=("--enable-languages=c,c++")
+    _gcc_pass_cfg_options+=("--with-sysroot=${MINGW_PREFIX}/${_target}")
+  fi
+
+  CPPFLAGS=""
+  CXXFLAGS="-O2 -Wno-error=format-security"
+  CFLAGS="-O2 -Wno-error=format-security"
+  ../${_foldername}-$pkgver/configure \
+    "${_gcc_pass_cfg_options[@]}" \
+    --with-newlib \
+    --prefix=${MINGW_PREFIX} \
+    --libexecdir=${MINGW_PREFIX}/lib \
+    --infodir=${MINGW_PREFIX}/share/info \
+    --mandir=${MINGW_PREFIX}/share/man \
+    --build=${MINGW_CHOST} \
+    --host=${MINGW_CHOST} \
+    --with-pkgversion="${_realname}" \
+    --with-bugurl="${url}/issues" \
+    --target=${_target} \
+    --program-prefix="${_target}-" \
+    --disable-multilib \
+    --disable-werror \
+    --disable-nsl \
+    --disable-shared \
+    --disable-decimal-float \
+    --disable-long-long \
+    --disable-lto \
+    --disable-threads \
+    --disable-tls \
+    --disable-libada \
+    --disable-libffi \
+    --disable-libgomp \
+    --disable-libmudflap \
+    --disable-libquadmath \
+    --disable-libsanitizer \
+    --disable-libssp \
+    --disable-libstdcxx-pch \
+    --with-as=${MINGW_PREFIX}/bin/${_target}-as \
+    --with-ld=${MINGW_PREFIX}/bin/${_target}-ld \
+    --with-ar=${MINGW_PREFIX}/bin/${_target}-ar
+
+  make -j1 all-gcc
+}
+
+#check() {
+#  cd "${_realname}-$pkgver/build-gcc-${CARCH}"
+#  make -k check-gcc
+#}
+
+package() {
+  CPPFLAGS=""
+  CFLAGS="-O2"
+  cd "build-gcc-${CARCH}"
+  make -j1 DESTDIR="$pkgdir/" install-gcc
+
+  # Remove files that conflict with host gcc package
+  rm -fr "$pkgdir${MINGW_PREFIX}/share/man"
+  rm -fr "$pkgdir${MINGW_PREFIX}/share/info"
+}
+
+# vim:set ts=2 sw=2 et:
