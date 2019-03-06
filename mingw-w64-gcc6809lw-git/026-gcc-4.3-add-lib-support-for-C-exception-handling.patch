@@ -1,0 +1,71 @@
+From 2e1e6134af283f17c8760674826bd39bad1f73cf Mon Sep 17 00:00:00 2001
+From: dfffffff <dflamand@gmail.com>
+Date: Sat, 28 May 2016 00:11:43 -0400
+Subject: stdc++: add support for C++ exception handling
+
+This patch is based on the work of
+David Flamand https://gitlab.com/dfffffff/gcc6809
+---
+ libstdc++-v3/config/cpu/generic/cxxabi_tweaks.h |  4 ++++
+ libstdc++-v3/libsupc++/unwind-cxx.h             | 10 ++++++++--
+ 2 files changed, 12 insertions(+), 2 deletions(-)
+
+diff --git a/libstdc++-v3/config/cpu/generic/cxxabi_tweaks.h b/libstdc++-v3/config/cpu/generic/cxxabi_tweaks.h
+index 2859e83c9..28338de10 100644
+--- a/libstdc++-v3/config/cpu/generic/cxxabi_tweaks.h
++++ b/libstdc++-v3/config/cpu/generic/cxxabi_tweaks.h
+@@ -47,7 +47,11 @@ namespace __cxxabiv1
+ #define _GLIBCXX_GUARD_BIT __guard_test_bit (0, 1)
+ #define _GLIBCXX_GUARD_PENDING_BIT __guard_test_bit (1, 1)
+ #define _GLIBCXX_GUARD_WAITING_BIT __guard_test_bit (2, 1)
++#ifndef __UINT64_TYPE__
++  typedef char __guard[8];
++#else
+   __extension__ typedef int __guard __attribute__((mode (__DI__)));
++#endif
+ 
+   // __cxa_vec_ctor has void return type.
+   typedef void __cxa_vec_ctor_return_type;
+diff --git a/libstdc++-v3/libsupc++/unwind-cxx.h b/libstdc++-v3/libsupc++/unwind-cxx.h
+index c56365564..5f91af055 100644
+--- a/libstdc++-v3/libsupc++/unwind-cxx.h
++++ b/libstdc++-v3/libsupc++/unwind-cxx.h
+@@ -173,7 +173,7 @@ __get_exception_header_from_ue (_Unwind_Exception *exc)
+   return reinterpret_cast<__cxa_exception *>(exc + 1) - 1;
+ }
+ 
+-#ifdef __ARM_EABI_UNWINDER__
++#if defined(__ARM_EABI_UNWINDER__) || !defined(__UINT64_TYPE__)
+ static inline bool
+ __is_gxx_exception_class(_Unwind_Exception_Class c)
+ {
+@@ -200,13 +200,17 @@ __GXX_INIT_EXCEPTION_CLASS(_Unwind_Exception_Class c)
+   c[6] = '+';
+   c[7] = '\0';
+ }
++#endif // defined(__ARM_EABI_UNWINDER__) || !defined(__UINT64_TYPE__)
+ 
++#ifdef __ARM_EABI_UNWINDER__
+ static inline void*
+ __gxx_caught_object(_Unwind_Exception* eo)
+ {
+   return (void*)eo->barrier_cache.bitpattern[0];
+ }
+-#else // !__ARM_EABI_UNWINDER__
++#endif // __ARM_EABI_UNWINDER__
++
++#if !(defined(__ARM_EABI_UNWINDER__) || !defined(__UINT64_TYPE__))
+ // This is the exception class we report -- "GNUCC++\0".
+ const _Unwind_Exception_Class __gxx_exception_class
+ = ((((((((_Unwind_Exception_Class) 'G' 
+@@ -225,7 +229,9 @@ __is_gxx_exception_class(_Unwind_Exception_Class c)
+ }
+ 
+ #define __GXX_INIT_EXCEPTION_CLASS(c) c = __gxx_exception_class
++#endif // !(defined(__ARM_EABI_UNWINDER__) || !defined(__UINT64_TYPE__))
+ 
++#ifndef __ARM_EABI_UNWINDER__
+ // GNU C++ personality routine, Version 0.
+ extern "C" _Unwind_Reason_Code __gxx_personality_v0
+      (int, _Unwind_Action, _Unwind_Exception_Class,
+-- 
