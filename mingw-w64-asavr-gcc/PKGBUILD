@@ -31,6 +31,7 @@ conflicts=(
 provides=(${MINGW_PACKAGE_PREFIX}-${_realname_prefix}${_basename})
 depends=(${MINGW_PACKAGE_PREFIX}-mpc)
 makedepends=(${MINGW_PACKAGE_PREFIX}-gettext
+  ${MINGW_PACKAGE_PREFIX}-asavr
   'bison' 'diffutils' 'gettext' 'gettext-devel' 
   'intltool' 'make' 'patch' 'perl' 'tar' 'texinfo')
 if [[ "${_build_boot_gcc}" == "yes" ]]; then
