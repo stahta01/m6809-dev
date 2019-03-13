@@ -60,6 +60,7 @@ source=("https://ftp.gnu.org/gnu/gcc/gcc-${pkgver}/${_filename}-${pkgver}.tar.bz
         006-gcc-4.5-PR_54300_rtl-optimization.patch
         008-gcc-4.6-PR-bootstrap-51969.patch
         011-gcc-4.3-suppress-makeinfo-warning.patch
+        013-gcc-4.3-Change-default-NATIVE_SYSTEM_HEADER_DIR.patch
         015-gcc-4.3-add-force-to-makeinfo.patch
         016-gcc-4.3-Fix-texi-docs-syntax-errors.patch
         016-gcc-4.4-Fix-texi-docs-syntax-errors.patch
@@ -114,6 +115,8 @@ prepare() {
 
   # Warning reduction changes
   patch --forward -p1 -i "$srcdir"/011-gcc-4.3-suppress-makeinfo-warning.patch
+
+  patch --forward -p1 -i "$srcdir"/013-gcc-4.3-Change-default-NATIVE_SYSTEM_HEADER_DIR.patch
 
   # Build code fix for documentation
   patch --forward -p1 -i "$srcdir"/015-gcc-4.3-add-force-to-makeinfo.patch
