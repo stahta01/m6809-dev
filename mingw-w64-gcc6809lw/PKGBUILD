@@ -174,14 +174,14 @@ prepare() {
   fi
 
   # GCC6809 build code changes
+  if [[ ${pkgver:0:3} == "4.3" || ${pkgver:0:3} == "4.4" ]] ; then
+    patch --forward -p1 -i "$srcdir"/031-gcc-4.3-fix-error-with-pod2man-version-2.4.2.patch
+  fi
+
   if [[ ${pkgver:0:3} == "4.3" ]] ; then
     patch --forward -p1 -i "$srcdir"/032-gcc-4.3-add-m6809-triplet.patch
   elif [[ ${pkgver:0:3} == "4.6" ]] ; then
     patch --forward -p1 -i "$srcdir"/032-gcc-4.6-add-m6809-triplet.patch
-  fi
-
-  if [[ ${pkgver:0:3} == "4.3" || ${pkgver:0:3} == "4.4" ]] ; then
-    patch --forward -p1 -i "$srcdir"/031-gcc-4.3-fix-error-with-pod2man-version-2.4.2.patch
   fi
 
   if [[ ${pkgver:0:3} == "4.5" || ${pkgver:0:3} == "4.6" ]] ; then
