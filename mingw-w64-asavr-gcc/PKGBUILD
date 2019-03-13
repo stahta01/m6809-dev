@@ -1,7 +1,8 @@
 # Maintainer: Tim S <stahta01@gmail.com>
 
 _basename=gcc
-_realname_prefix=asavr-boot-
+_cpu=avr
+_realname_prefix=as${_cpu}-
 _realname=${_realname_prefix}${_basename}
 _filename=${_basename}
 _foldername=${_basename}
@@ -19,7 +20,6 @@ else
 fi
 pkgver=4.3.6
 pkgrel=1
-pkgdesc="The GNU bootstrap C compiler for the AVR microprocessors (mingw-w64)"
 arch=('any')
 url="https://github.com/stahta01/gcc4.3"
 license=('GPL3')
@@ -36,7 +36,7 @@ makedepends=(${MINGW_PACKAGE_PREFIX}-gettext
 if [[ "${_build_boot_gcc}" == "yes" ]]; then
   makedepends=(${_makedepends[@]})
 else
-  makedepends=(${_makedepends[@]} ${MINGW_PACKAGE_PREFIX}-${_target}-newlib${_machine_suffix}${_realname_suffix})
+  makedepends=(${_makedepends[@]} ${MINGW_PACKAGE_PREFIX}-${_target}-${_realname_prefix}newlib)
 fi
 if [[ ${pkgver} == "4.3.6" ]] ; then
   _source_sha256sum='f3765cd4dcceb4d42d46f0d53471d7cedbad50f2112f0312c1dcc9c41eea9810'
@@ -63,9 +63,6 @@ source=("https://ftp.gnu.org/gnu/gcc/gcc-${pkgver}/${_filename}-${pkgver}.tar.bz
         013-gcc-4.3-Change-default-NATIVE_SYSTEM_HEADER_DIR.patch
         015-gcc-4.3-add-force-to-makeinfo.patch
         016-gcc-4.3-Fix-texi-docs-syntax-errors.patch
-        016-gcc-4.4-Fix-texi-docs-syntax-errors.patch
-        016-gcc-4.5-Fix-texi-docs-syntax-errors.patch
-        016-gcc-4.6-Fix-texi-docs-syntax-errors.patch
         016-gcc-4.6.4-Fix-texi-docs-syntax-errors.patch)
 sha256sums=(${_source_sha256sum}
             '48e8df8fb5c2266f34ba96d159cc2a2aad5cb285403ec59e93408afccc9a100e'
@@ -76,11 +73,9 @@ sha256sums=(${_source_sha256sum}
             '30b1ce83f5444f2c8314e40f8e346581b2f2cec007f3eb33cb894a2930dc4265'
             '03c721159461908051c1718770c4f79dbaa2d97f9ed67deeab7349e280017662'
             'dd174b790a13d43e527a3d5807cf415407bd0c67532495da139afd14a6265462'
+            'de101a8d3f7cbed56903b14c0270139ff5976f40a1a0199fda1733c070ff24da'
             'd02434150e94b970603607e751718a96cbcbc7c080ddbd9517069968f0660ad4'
             '601fa8735a64292b687024291350173c61e34d2386e33288b0a9e5b52f2f93c7'
-            'd4de015bf1d5462f6c5985b6cd279b146113625f56e833d6dd0ac0e7670aa242'
-            'e4441cb51a48a528507e3a6232594d0c4ee8945bb301fae13331441011f355c3'
-            '3183d14c89aaafc1d5c4bc2d9c09812bc229e82cb91d9e1e7c3b9b5da25eb42a'
             '0e7ca6ad4f0af44b2e611ac49b61a9b801414bef6e0b5d83da0023d079e174d1')
 prepare() {
   tar -xjf ${_filename}-${pkgver}.tar.bz2 -C ${srcdir}  --checkpoint=100 \
