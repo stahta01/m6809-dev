@@ -18,7 +18,7 @@ url="https://sourceware.org/newlib/"
 license=('Various')
 groups=("${MINGW_PACKAGE_PREFIX}-${_target}-toolchain")
 depends=()
-makedepends=("${MINGW_PACKAGE_PREFIX}-${_realname_prefix}boot-gcc" "${MINGW_PACKAGE_PREFIX}-as${_cpu}")
+makedepends=("${MINGW_PACKAGE_PREFIX}-boot-${_realname_prefix}gcc" "${MINGW_PACKAGE_PREFIX}-as${_cpu}")
 options=('staticlibs' '!strip' '!emptydirs')
 if [[ ${pkgver} == "1.16.0" ]] ; then
   _source_sha256sum='db426394965c48c1d29023e1cc6d965ea6b9a9035d8a849be2750ca4659a3d07'
