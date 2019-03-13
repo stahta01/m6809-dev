@@ -1,0 +1,37 @@
+From 35e5dc9fa7f94c0cab5897abfd677034b584539c Mon Sep 17 00:00:00 2001
+From: jakub <jakub@138bc75d-0d04-0410-961f-82ee72b054a4>
+Date: Tue, 14 Feb 2012 23:31:42 +0000
+Subject: PR bootstrap/51969 	Backported from mainline 
+
+ 2011-11-08  Michael Matz  <matz@suse.de>
+
+	* gengtype.c (write_field_root): Avoid out-of-scope access of newv.
+
+
+git-svn-id: svn+ssh://gcc.gnu.org/svn/gcc/branches/gcc-4_6-branch@184239 138bc75d-0d04-0410-961f-82ee72b054a4
+---
+ gcc/gengtype.c | 3 +--
+
+diff --git a/gcc/gengtype.c b/gcc/gengtype.c
+index abf17f8e7f2..6c0ca4a0bf1 100644
+--- a/gcc/gengtype.c
++++ b/gcc/gengtype.c
+@@ -3594,14 +3594,13 @@ write_field_root (outf_p f, pair_p v, type_p type, const char *name,
+ 		  int has_length, struct fileloc *line, const char *if_marked,
+ 		  bool emit_pch, type_p field_type, const char *field_name)
+ {
++  struct pair newv;
+   /* If the field reference is relative to V, rather than to some
+      subcomponent of V, we can mark any subarrays with a single stride.
+      We're effectively treating the field as a global variable in its
+      own right.  */
+   if (v && type == v->type)
+     {
+-      struct pair newv;
+-
+       newv = *v;
+       newv.type = field_type;
+       newv.name = ACONCAT ((v->name, ".", field_name, NULL));
+-- 
+2.19.1.windows.1
+
