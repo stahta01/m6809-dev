@@ -209,19 +209,26 @@ build() {
     _gcc_pass_cfg_options+=("--enable-languages=c,c++")
     _gcc_pass_cfg_options+=("--with-sysroot=${MINGW_PREFIX}/${_target}")
   fi
+  # Options required for either msys2-mingw host and/or build
+  _gcc_pass_cfg_options+=("--build=${MINGW_CHOST}")
+  _gcc_pass_cfg_options+=("--host=${MINGW_CHOST}")
+  _gcc_pass_cfg_options+=("--with-native-system-header-dir=/include")
+  # Options required for newlib libc usage
+  _gcc_pass_cfg_options+=("--with-newlib")
+  # Options needed for Assembler/Linker 
+  _gcc_pass_cfg_options+=("--with-as=${MINGW_PREFIX}/bin/${_target}-as")
+  _gcc_pass_cfg_options+=("--with-ld=${MINGW_PREFIX}/bin/${_target}-ld")
+  _gcc_pass_cfg_options+=("--with-ar=${MINGW_PREFIX}/bin/${_target}-ar")
 
   CPPFLAGS=""
   CXXFLAGS="-O2 -Wno-error=format-security"
   CFLAGS="-O2 -Wno-error=format-security"
   ../${_foldername}-$pkgver/configure \
     "${_gcc_pass_cfg_options[@]}" \
-    --with-newlib \
     --prefix=${MINGW_PREFIX} \
     --libexecdir=${MINGW_PREFIX}/lib \
     --infodir=${MINGW_PREFIX}/share/info \
     --mandir=${MINGW_PREFIX}/share/man \
-    --build=${MINGW_CHOST} \
-    --host=${MINGW_CHOST} \
     --with-pkgversion="${_realname}${_patch_version}" \
     --with-bugurl="${url}/issues" \
     --target=${_target} \
@@ -241,10 +248,7 @@ build() {
     --disable-libquadmath \
     --disable-libsanitizer \
     --disable-libssp \
-    --disable-libstdcxx-pch \
-    --with-as=${MINGW_PREFIX}/bin/${_target}-as \
-    --with-ld=${MINGW_PREFIX}/bin/${_target}-ld \
-    --with-ar=${MINGW_PREFIX}/bin/${_target}-ar
+    --disable-libstdcxx-pch
 
   make -j1 all-gcc
 }
