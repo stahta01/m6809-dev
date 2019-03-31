@@ -25,7 +25,7 @@ if [[ "${_build_boot_gcc}" == "yes" ]]; then
 else
   pkgname="${MINGW_PACKAGE_PREFIX}-${_realname}"
 fi
-pkgver=4.3.6.d20110627.p14.g68b6c514eeae
+pkgver=4.3.6.d20110627.c14.g68b6c514eea
 pkgrel=1
 if [[ "${_build_boot_gcc}" == "yes" ]]; then
   pkgdesc="The GNU bootstrap C compiler for the ${_machine} microprocessor (mingw-w64)"
@@ -109,6 +109,7 @@ sha256sums=('SKIP'
             'c6907394e0ee1581579e43b3b7e441786f11783a2717dccb24873d18253a4d0c'
             '4e9072755a8e0b5066f13ec23c14aec144be5b3a30f1cd6fbe471e06ba0b1f0a'
             '9758d1da56ff8bb8f244721cc5cd2503e1009a0e32c30044c07ac18d6215fcd2')
+_git_base_commit=
 prepare() {
   cd ${_foldername}
 
@@ -117,6 +118,8 @@ prepare() {
 
   _datestamp=$(head -n 1 gcc/DATESTAMP | tr '\n' '.' | sed 's/.$/\n/')
   echo ${_datestamp}
+
+  _git_base_commit=$(git rev-parse HEAD)
 
   GIT_AM="git am --committer-date-is-author-date"
 
@@ -217,7 +220,7 @@ prepare() {
 pkgver() {
   cd ${_foldername}
 
-  printf "%s.d%s.p%s.g%s" ${_realpkgver}  ${_datestamp} $(git rev-list --count ${_gitcommit}..HEAD) $(git rev-parse --short ${_gitcommit})
+  printf "%s.d%s.c%s.g%s" ${_realpkgver}  ${_datestamp} $(git rev-list --count ${_git_base_commit}..HEAD) $(git rev-parse --short ${_git_base_commit})
 }
 
 build() {
