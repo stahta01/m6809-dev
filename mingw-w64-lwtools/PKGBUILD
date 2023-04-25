@@ -33,6 +33,7 @@ prepare() {
 build() {
   cd "${_realname}-$pkgver"
   make clean
+  LDFLAGS+=" -Wl,--allow-multiple-definition" \
   make
 }
 
