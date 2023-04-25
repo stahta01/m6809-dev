@@ -1,0 +1,93 @@
+# Maintainer: Tim S <stahta01@gmail.com>
+
+_filename=av
+_foldername=asxv5pxx
+_realname=as6809
+_machine=m6809
+_target=${_machine}-unknown
+
+
+pkgbase=mingw-w64-${_realname}
+pkgname=(
+  "${MINGW_PACKAGE_PREFIX}-${_realname}"
+  "${MINGW_PACKAGE_PREFIX}-asxxxx"
+)
+pkgver=5p10
+pkgrel=1
+pkgdesc="Cross Assembler for the Motorola 6809 and Hitachi 6309 microprocessors (mingw-w64)"
+arch=('any')
+url="http://shop-pdp.net"
+license=('GPL3')
+groups=("${MINGW_PACKAGE_PREFIX}-${_target}-toolchain")
+makedepends=('make')
+conflicts=("${MINGW_PACKAGE_PREFIX}-lwtools")
+source=(
+  "http://shop-pdp.net/_ftp/asxxxx/${_filename}${pkgver}.zip"
+  001-as-5p10-Import-of-ASxxxx-update-u01510.patch
+  002-as-5p10-Add-files-from-gcc6809-as-5.1.1-folder.patch
+  003-as-5p10-Add-binutils-zlibarch.h-from-gcc.patch
+  004-as-5p10-Set-M6809STRICT-0.patch
+  005-as-5p10-Add-binutils-scripts-from-gcc.patch
+)
+sha256sums=('5e7b3118f3aec34c02787693138bb5ed4bf94c6337425f769d2ee2938b8b3c45'
+            '5561c19bfddafbd7ea9a1f6c6bc70b653452a5115839e1941c80d0e4e3674c95'
+            'a1714b6ef51089a7dc5939f59a16252c0dcd3cbba4eed68051591e91d15fd4c7'
+            '9fddfd0f92970995ab9ca229bd280df83098a762189fec33d5a5c98ca1cc7c58'
+            '3943d411b3675badb261da598b1d800e5e91d7816f20efcc7d91926aaf24908b'
+            '969c6dc7edad86827a57612f2dabe75700f55525ff7a86f6d5de4ff5c506f37b')
+prepare() {
+  patch -p1 -i ${srcdir}/001-as-5p10-Import-of-ASxxxx-update-u01510.patch
+  patch -p1 -i ${srcdir}/002-as-5p10-Add-files-from-gcc6809-as-5.1.1-folder.patch
+  patch -p1 -i ${srcdir}/003-as-5p10-Add-binutils-zlibarch.h-from-gcc.patch
+  patch -p1 -i ${srcdir}/004-as-5p10-Set-M6809STRICT-0.patch
+  patch -p1 -i ${srcdir}/005-as-5p10-Add-binutils-scripts-from-gcc.patch
+}
+
+build() {
+  cd ${_foldername}
+
+  # Temp work around till I find a better place for fix
+  cp -f ../binutils/zlibarch.h asxxmisc/zlibarch.h
+
+  make -C asxmak/cygwin/build clean
+  make -C asxmak/cygwin/build as6809
+  make -C asxmak/cygwin/build aslink aslib
+}
+
+_package_as6809() {
+  optdepends=(${MINGW_PACKAGE_PREFIX}-asxxxx)
+
+  cd ${_foldername}
+
+  mkdir -p "$pkgdir${MINGW_PREFIX}/${_target}/bin"
+  cp -f ${srcdir}/binutils/ar         "$pkgdir${MINGW_PREFIX}/${_target}/bin/ar"
+  cp -f ${srcdir}/binutils/as         "$pkgdir${MINGW_PREFIX}/${_target}/bin/as"
+  cp -f ${srcdir}/binutils/ld         "$pkgdir${MINGW_PREFIX}/${_target}/bin/ld"
+  
+  sed -i "s|@AS_PREFIX@|${MINGW_PREFIX}|" "$pkgdir${MINGW_PREFIX}/${_target}/bin/ar"
+  sed -i "s|@AS_PREFIX@|${MINGW_PREFIX}|" "$pkgdir${MINGW_PREFIX}/${_target}/bin/as"
+  sed -i "s|@AS_PREFIX@|${MINGW_PREFIX}|" "$pkgdir${MINGW_PREFIX}/${_target}/bin/ld"
+
+  mkdir -p "$pkgdir${MINGW_PREFIX}/bin"
+  mv asxmak/cygwin/exe/as6809.exe     "$pkgdir${MINGW_PREFIX}/bin/"
+  cp -f ${srcdir}/binutils/ar         "$pkgdir${MINGW_PREFIX}/bin/${_target}-ar"
+  cp -f ${srcdir}/binutils/as         "$pkgdir${MINGW_PREFIX}/bin/${_target}-as"
+  cp -f ${srcdir}/binutils/ld         "$pkgdir${MINGW_PREFIX}/bin/${_target}-ld"
+
+  sed -i "s|@AS_PREFIX@|${MINGW_PREFIX}|" "$pkgdir${MINGW_PREFIX}/bin/${_target}-ar"
+  sed -i "s|@AS_PREFIX@|${MINGW_PREFIX}|" "$pkgdir${MINGW_PREFIX}/bin/${_target}-as"
+  sed -i "s|@AS_PREFIX@|${MINGW_PREFIX}|" "$pkgdir${MINGW_PREFIX}/bin/${_target}-ld"
+}
+
+_package_asxxxx() {
+  cd ${_foldername}
+
+  mkdir -p "$pkgdir${MINGW_PREFIX}/bin"
+  mv asxmak/cygwin/exe/aslib.exe "$pkgdir${MINGW_PREFIX}/bin/"
+  mv asxmak/cygwin/exe/aslink.exe "$pkgdir${MINGW_PREFIX}/bin/"
+}
+
+eval "package_${MINGW_PACKAGE_PREFIX}-${_realname}() { _package_${_realname}; }"
+eval "package_${MINGW_PACKAGE_PREFIX}-asxxxx() { _package_asxxxx; }"
+
+# vim:set ts=2 sw=2 et:
