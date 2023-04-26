@@ -4,3 +4,4 @@ check to make sure all URLs and bug reports points to correct and valid website
 Add README.fork with directions of what needs change so the app no longer points to me
 Fix MSys2 MinGW 64 bit building of newlib
 Disable pedantic warnings
+Fix LWTools check/test bug
