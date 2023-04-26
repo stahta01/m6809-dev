@@ -226,7 +226,7 @@ prepare() {
 }
 
 build() {
-  if [[ -d 'build-gcc-${CARCH}' ]]; then
+  if [[ -d "build-gcc-${CARCH}" ]]; then
     rm -rf build-gcc-${CARCH}
   fi
   mkdir build-gcc-${CARCH}
