@@ -22,7 +22,7 @@ else
   pkgdesc="The GNU C++ compiler for the ${_machine} microprocessor (mingw-w64)"
 fi
 pkgver=4.3.6
-pkgrel=1
+pkgrel=2
 arch=('any')
 url="https://github.com/stahta01/gcc4.3"
 license=('GPL3')
@@ -34,9 +34,10 @@ _makedepends=(${MINGW_PACKAGE_PREFIX}-gettext
 if [[ "${_build_boot_gcc}" == "yes" ]]; then
   makedepends=(${_makedepends[@]})
 else
-  makedepends=(${_makedepends[@]} ${MINGW_PACKAGE_PREFIX}-${_target}-newlib${_machine_suffix}${_realname_suffix})
+  #makedepends=(${_makedepends[@]} ${MINGW_PACKAGE_PREFIX}-${_target}-newlib${_machine_suffix}${_realname_suffix})
+  makedepends=(${_makedepends[@]} ${MINGW_PACKAGE_PREFIX}-${_target}-newlib${_machine_suffix})
 fi
-optdepends=("${MINGW_PACKAGE_PREFIX}-${_target}-newlib${_machine_suffix}${_realname_suffix}: Standard C library optimized for embedded systems")
+optdepends=("${MINGW_PACKAGE_PREFIX}-${_target}-newlib${_machine_suffix}: Standard C library optimized for embedded systems")
 replaces=(${MINGW_PACKAGE_PREFIX}-boot-${_realname})
 provides=(${MINGW_PACKAGE_PREFIX}-boot-${_realname})
 conflicts=(${MINGW_PACKAGE_PREFIX}-boot-${_realname})
