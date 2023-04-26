@@ -1,0 +1,64 @@
+# Maintainer: Tim S <stahta01@gmail.com>
+# Based on work from https://github.com/hpmachining/os9-dev
+
+_realname=cmoc
+_machine=m6809
+_target=${_machine}-unknown
+
+pkgbase=mingw-w64-${_realname}
+pkgname="${MINGW_PACKAGE_PREFIX}-${_realname}"
+pkgver=0.1.81
+pkgrel=1
+pkgdesc="6809-generating cross-compiler for a subset of the C language (mingw-w64)"
+arch=('any')
+url="http://perso.b2b2c.ca/~sarrazip/dev/cmoc.html"
+license=('GPL3')
+groups=("${MINGW_PACKAGE_PREFIX}-${_target}-toolchain")
+depends=('perl' "${MINGW_PACKAGE_PREFIX}-lwtools")
+makedepends=('flex' "${MINGW_PACKAGE_PREFIX}-discount")
+#        https://perso.b2b2c.ca/~sarrazip/dev/cmoc-0.1.80.tar.gz
+source=("https://perso.b2b2c.ca/~sarrazip/dev/$_realname-$pkgver.tar.gz"
+        '001-Build-fixes-for-MinGW.patch'
+        '002-Remove-single-quote-around-define.patch'
+        '004-Change-includes-from-system-to-normal-include.patch'
+        '003-Remove-single-quotes-from-filenames.patch')
+sha256sums=('95d46ed006865b378960ddcf8e0df56c722287d4f4de969a99af167e6552b48b'
+            'f08f3adc7f0909de636cfccff0946cd261f8345d767aaefb983d8e2a2453f527'
+            '38f06e747f70879a2abf9341938630907f53594de5289f9e51a6125865e391a4'
+            '5abf64cd5379dc3baafc9469e5a9a2dacf4e0127ff49d4d0d8378da3280cb798'
+            'e77e878460ad1f4dbf119c82bcbe56cd4e2fd600313f145a441d7b0bbdf9b580')
+
+prepare() {
+  cd "$_realname-$pkgver"
+  patch -p1 -i "$srcdir"/001-Build-fixes-for-MinGW.patch
+  patch -p1 -i "$srcdir"/002-Remove-single-quote-around-define.patch
+  patch -p1 -i "$srcdir"/003-Remove-single-quotes-from-filenames.patch
+  patch -p1 -i "$srcdir"/004-Change-includes-from-system-to-normal-include.patch
+}
+
+build() {
+  # Set good default FLAGS
+  export LDFLAGS="-pipe"
+  export CPPFLAGS=""
+  export CFLAGS="-pipe"
+  export CXXFLAGS="-pipe"
+
+  cd "$_realname-$pkgver"
+  ./configure --prefix=${MINGW_PREFIX}
+  make -j1 && make html
+}
+
+check() {
+  cd "$_realname-$pkgver"
+  make  -k check -j1
+}
+
+package() {
+  cd "$_realname-$pkgver"
+  make DESTDIR="$pkgdir/" install
+
+  # Install html documentation
+  install -m644 doc/cmoc-{implementation,manual,vectrex}.html "$pkgdir${MINGW_PREFIX}/share/doc/$_realname"
+}
+
+# vim:set ts=2 sw=2 et:

@@ -1,0 +1,25 @@
+From 77d9f0e0e12fe3a5d39c65cda99c46874c523e83 Mon Sep 17 00:00:00 2001
+From: Tim Stahlhut <stahta01@gmail.com>
+Date: Thu, 27 Apr 2023 04:31:21 -0400
+Subject: Remove single quote around define
+
+---
+ src/main.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/main.cpp b/src/main.cpp
+index dc3ab91..245f38a 100644
+--- a/src/main.cpp
++++ b/src/main.cpp
+@@ -1069,7 +1069,7 @@ Parameters::compileCFile(const string &inputFilename,
+     cppCommand << " -U__GNUC__ -nostdinc -undef";
+ 
+     for (list<string>::const_iterator it = defines.begin(); it != defines.end(); ++it)
+-        cppCommand << " -D'" << *it << "'";
++        cppCommand << " -D" << *it << "";
+ 
+     cppCommand << " " << inputFilename;  // must be last argument, for portability
+ 
+-- 
+2.40.0.windows.1
+

@@ -1,0 +1,26 @@
+From 0b6c5079c7bfb6fc7e01c576aa790f6b9fd6eda7 Mon Sep 17 00:00:00 2001
+From: Tim Stahlhut <stahta01@gmail.com>
+Date: Wed, 26 Apr 2023 18:58:04 -0400
+Subject: Build fixes for MinGW
+
+---
+ src/main.cpp | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/src/main.cpp b/src/main.cpp
+index dc3ab91..daf9db2 100644
+--- a/src/main.cpp
++++ b/src/main.cpp
+@@ -31,7 +31,9 @@
+ #include <stdio.h>
+ #include <errno.h>
+ #include <sys/types.h>
++#if !defined(__MINGW32__)
+ #include <sys/wait.h>
++#endif
+ #include <sys/stat.h>
+ #include <string.h>
+ 
+-- 
+2.40.0.windows.1
+

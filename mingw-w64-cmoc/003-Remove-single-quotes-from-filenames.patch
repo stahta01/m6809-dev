@@ -1,0 +1,41 @@
+From 8fe644f903f3c89e476121f03c4aab9175ea834d Mon Sep 17 00:00:00 2001
+From: Tim Stahlhut <stahta01@gmail.com>
+Date: Thu, 27 Apr 2023 03:14:22 -0400
+Subject: Remove single quotes from filenames
+
+---
+ src/main.cpp | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/src/main.cpp b/src/main.cpp
+index cb45695..04652b8 100644
+--- a/src/main.cpp
++++ b/src/main.cpp
+@@ -424,9 +424,9 @@ invokeAssembler(const string &inputFilename,
+     string lwasmCmdLine = params.lwasmPath
+                           + " -fobj --pragma=forwardrefmax"
+                           + " -D" + targetPreprocId
+-                          + " --output='" + objectFilename + "'"
++                          + " --output=" + objectFilename + ""
+                           + (params.intermediateFilesKept ? " --list='" + lstFilename + "'" : "")
+-                          + " '" + inputFilename + "'";
++                          + " " + inputFilename + "";
+     if (verbose)
+         cout << "Assembler command: " << lwasmCmdLine << endl;
+ 
+@@ -733,9 +733,9 @@ invokeLinker(const vector<string> &objectFilenames,
+ 
+     string lwlinkCmdLine = params.lwlinkPath
+                            + " --format=" + lwlinkFormat
+-                           + " --output='" + outputFilename
+-                           + "' --script='" + linkScriptFilename
+-                           + "' --map='" + mapFilename + "'";
++                           + " --output=" + outputFilename
++                           + " --script=" + linkScriptFilename
++                           + " --map=" + mapFilename + "";
+     for (vector<string>::const_iterator it = libDirs.begin(); it != libDirs.end(); ++it)
+         lwlinkCmdLine += " -L'" + *it + "'";
+ 
+-- 
+2.40.0.windows.1
+
