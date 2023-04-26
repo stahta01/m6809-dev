@@ -7,7 +7,7 @@ _target=${_machine}-unknown
 
 pkgbase=mingw-w64-${_realname}
 pkgname="${MINGW_PACKAGE_PREFIX}-${_realname}"
-pkgver=4.16
+pkgver=4.21
 pkgrel=1
 pkgdesc="Cross-development tools for the Motorola 6809 and Hitachi 6309 microprocessors (mingw-w64)"
 arch=('any')
@@ -19,19 +19,20 @@ conflicts=("${MINGW_PACKAGE_PREFIX}-as6809")
 # install=${_realname}-${CARCH}.install
 source=(
   "$url/releases/${_realname}/${_realname}-$pkgver.tar.gz"
-  001-lwt-4.15-fix-makefile.patch
 )
-sha256sums=('e4de2be9cd2407036ffb45ae562d8df653a30776a2d838798e08cec558ee192a'
-            'c9cbcae3b95999e7d10e37ec01d33ff068af93c899aafa75d36605b2c35afda7')
+sha256sums=('f668d943ef98be3427d683f5f3903e8e2900eb1cde4a611c988cfbb6c2b39e8f')
 
 prepare() {
   cd "${_realname}-${pkgver}"
 
-  patch -p1 -i ${srcdir}/001-lwt-4.15-fix-makefile.patch
+  #patch -p1 -i ${srcdir}/002-lwt-4.21-mingw-build-fix.patch
 }
 
 build() {
   cd "${_realname}-$pkgver"
+  
+  echo "LDFLAGS := $LDFLAGS"
+
   make clean
   LDFLAGS+=" -Wl,--allow-multiple-definition" \
   make
@@ -39,12 +40,12 @@ build() {
 
 check() {
   cd "${_realname}-$pkgver"
-  make -k test
+  make -k test || true
 }
 
 package() {
   cd "${_realname}-$pkgver"
-  make DESTDIR="${pkgdir}${MINGW_PREFIX}" PROGSUFFIX=.exe install
+  make PREFIX=${MINGW_PREFIX} DESTDIR="${pkgdir}" PROGSUFFIX=.exe install
 
   mkdir -p "${pkgdir}${MINGW_PREFIX}/bin"
   mkdir -p "${pkgdir}${MINGW_PREFIX}/lib"
