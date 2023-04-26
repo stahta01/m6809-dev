@@ -8,7 +8,7 @@ _target=${_machine}-unknown
 pkgbase=mingw-w64-${_realname}
 pkgname="${MINGW_PACKAGE_PREFIX}-${_realname}"
 pkgver=2.2
-pkgrel=1
+pkgrel=2
 _revision='27485e1ea881574331a76d121a045dc00acbf350'
 pkgdesc="Utilities for Tandy Color Computer and Dragon microcomputers cross-development (mingw-w64)"
 arch=('any')
@@ -27,8 +27,10 @@ sha256sums=('SKIP'
 prepare() {
   cd "${_realname}"
 
-  patch -p1 -i ${srcdir}/001-ts-2.2-fix-makefile.patch
-  patch -p1 -i ${srcdir}/002-ts-2.2-add-mingw_time-h.patch
+  [[ -f "include/mingw_time.h" ]] && rm include/mingw_time.h
+
+  patch --forward -p1 -i ${srcdir}/001-ts-2.2-fix-makefile.patch
+  patch --forward -p1 -i ${srcdir}/002-ts-2.2-add-mingw_time-h.patch
 }
 
 build() {
