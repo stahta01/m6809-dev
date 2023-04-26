@@ -36,11 +36,33 @@ sha256sums=('5e7b3118f3aec34c02787693138bb5ed4bf94c6337425f769d2ee2938b8b3c45'
             '3943d411b3675badb261da598b1d800e5e91d7816f20efcc7d91926aaf24908b'
             '969c6dc7edad86827a57612f2dabe75700f55525ff7a86f6d5de4ff5c506f37b')
 prepare() {
-  patch -p1 -i ${srcdir}/001-as-5p10-Import-of-ASxxxx-update-u01510.patch
-  patch -p1 -i ${srcdir}/002-as-5p10-Add-files-from-gcc6809-as-5.1.1-folder.patch
-  patch -p1 -i ${srcdir}/003-as-5p10-Add-binutils-zlibarch.h-from-gcc.patch
-  patch -p1 -i ${srcdir}/004-as-5p10-Set-M6809STRICT-0.patch
-  patch -p1 -i ${srcdir}/005-as-5p10-Add-binutils-scripts-from-gcc.patch
+  [[ -f "asxv5pxx/u01510.txt" ]] && rm asxv5pxx/u01510.txt
+#
+  [[ -f "asxv5pxx/as6309/m09adr.c" ]] && rm asxv5pxx/as6309/m09adr.c
+  [[ -f "asxv5pxx/as6309/m09mch.c" ]] && rm asxv5pxx/as6309/m09mch.c
+  [[ -f "asxv5pxx/as6309/m09pst.c" ]] && rm asxv5pxx/as6309/m09pst.c
+  [[ -f "asxv5pxx/as6309/m6809.h" ]] && rm asxv5pxx/as6309/m6809.h
+  [[ -f "asxv5pxx/as6309/t6309.asm" ]] && rm asxv5pxx/as6309/t6309.asm
+  [[ -f "asxv5pxx/asxmak/darwin/build/makefile" ]] && rm asxv5pxx/asxmak/darwin/build/makefile
+  [[ -f "asxv5pxx/config.h" ]] && rm asxv5pxx/config.h
+  [[ -f "asxv5pxx/home.htm" ]] && rm asxv5pxx/home.htm
+  [[ -f "asxv5pxx/libsrc/ardata.c" ]] && rm asxv5pxx/libsrc/ardata.c
+  [[ -f "asxv5pxx/libsrc/armain.c" ]] && rm asxv5pxx/libsrc/armain.c
+  [[ -f "asxv5pxx/libsrc/aslib.h" ]] && rm asxv5pxx/libsrc/aslib.h
+  [[ -f "asxv5pxx/libsrc/common.c" ]] && rm asxv5pxx/libsrc/common.c
+  [[ -f "asxv5pxx/libsrc/nmmain.c" ]] && rm asxv5pxx/libsrc/nmmain.c
+
+  [[ -f "binutils/zlibarch.h" ]] && rm binutils/zlibarch.h
+
+  [[ -f "binutils/ar" ]] && rm binutils/ar
+  [[ -f "binutils/as" ]] && rm binutils/as
+  [[ -f "binutils/ld" ]] && rm binutils/ld
+#
+  patch --forward -p1 -i ${srcdir}/001-as-5p10-Import-of-ASxxxx-update-u01510.patch
+  patch --forward -p1 -i ${srcdir}/002-as-5p10-Add-files-from-gcc6809-as-5.1.1-folder.patch
+  patch --forward -p1 -i ${srcdir}/003-as-5p10-Add-binutils-zlibarch.h-from-gcc.patch
+  patch --forward -p1 -i ${srcdir}/004-as-5p10-Set-M6809STRICT-0.patch
+  patch --forward -p1 -i ${srcdir}/005-as-5p10-Add-binutils-scripts-from-gcc.patch
 }
 
 build() {
