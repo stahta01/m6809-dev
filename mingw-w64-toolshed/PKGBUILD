@@ -41,8 +41,8 @@ build() {
 
 check() {
   cd "${_realname}"
-  tests/hybrid-dsk.sh
-  tests/multihdb-dsk.sh
+  ./tests/hybrid-dsk.sh
+  ./tests/multihdb-dsk.sh
 }
 
 package() {
