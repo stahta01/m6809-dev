@@ -1,29 +1,30 @@
-From 8fe644f903f3c89e476121f03c4aab9175ea834d Mon Sep 17 00:00:00 2001
+From c98d654b8256a4a9da004a307291622f63906804 Mon Sep 17 00:00:00 2001
 From: Tim Stahlhut <stahta01@gmail.com>
 Date: Thu, 27 Apr 2023 03:14:22 -0400
 Subject: Remove single quotes from filenames
 
 ---
- src/main.cpp | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ src/main.cpp | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
 
 diff --git a/src/main.cpp b/src/main.cpp
-index cb45695..04652b8 100644
+index 94eadfd..2ae1711 100644
 --- a/src/main.cpp
 +++ b/src/main.cpp
-@@ -424,9 +424,9 @@ invokeAssembler(const string &inputFilename,
+@@ -423,9 +423,9 @@ invokeAssembler(const string &inputFilename,
      string lwasmCmdLine = params.lwasmPath
                            + " -fobj --pragma=forwardrefmax"
                            + " -D" + targetPreprocId
 -                          + " --output='" + objectFilename + "'"
-+                          + " --output=" + objectFilename + ""
-                           + (params.intermediateFilesKept ? " --list='" + lstFilename + "'" : "")
+-                          + (params.intermediateFilesKept ? " --list='" + lstFilename + "'" : "")
 -                          + " '" + inputFilename + "'";
++                          + " --output=" + objectFilename + ""
++                          + (params.intermediateFilesKept ? " --list=" + lstFilename + "" : "")
 +                          + " " + inputFilename + "";
      if (verbose)
          cout << "Assembler command: " << lwasmCmdLine << endl;
  
-@@ -733,9 +733,9 @@ invokeLinker(const vector<string> &objectFilenames,
+@@ -732,11 +732,11 @@ invokeLinker(const vector<string> &objectFilenames,
  
      string lwlinkCmdLine = params.lwlinkPath
                             + " --format=" + lwlinkFormat
@@ -34,8 +35,32 @@ index cb45695..04652b8 100644
 +                           + " --script=" + linkScriptFilename
 +                           + " --map=" + mapFilename + "";
      for (vector<string>::const_iterator it = libDirs.begin(); it != libDirs.end(); ++it)
-         lwlinkCmdLine += " -L'" + *it + "'";
+-        lwlinkCmdLine += " -L'" + *it + "'";
++        lwlinkCmdLine += " -L" + *it + "";
  
+     lwlinkCmdLine += " -L" + params.cmocfloatlibdir;
+     lwlinkCmdLine += " -lcmoc-crt-" + string(targetKW);
+@@ -756,11 +756,11 @@ invokeLinker(const vector<string> &objectFilenames,
+ 
+     for (vector<string>::const_iterator it = objectFilenames.begin();
+                                        it != objectFilenames.end(); ++it)
+-        lwlinkCmdLine += " '" + useIntDir(*it) + ".o'";
++        lwlinkCmdLine += " " + useIntDir(*it) + ".o";
+ 
+     for (vector<string>::const_iterator it = libraryFilenames.begin();
+                                        it != libraryFilenames.end(); ++it)
+-        lwlinkCmdLine += " '" + *it + "'";
++        lwlinkCmdLine += " " + *it + "";
+ 
+     if (verbose)
+         cout << "Linker command: " << lwlinkCmdLine << endl;
+@@ -1061,7 +1061,7 @@ Parameters::compileCFile(const string &inputFilename,
+     stringstream cppCommand;
+     cppCommand << "cpp -xc++ -U__cplusplus";  // -xc++ makes sure cpp accepts C++-style comments
+     for (list<string>::const_iterator it = includeDirList.begin(); it != includeDirList.end(); ++it)
+-        cppCommand << " -I'" << *it << "'";
++        cppCommand << " -I" << *it << "";
+     cppCommand << " -D_CMOC_VERSION_=" << getVersionInteger();
+     cppCommand << " -D" << targetPreprocId << "=1";
+     if (!relocatabilitySupported)
 -- 
-2.40.0.windows.1
-
