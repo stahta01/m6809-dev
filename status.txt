@@ -1,1 +1,10 @@
-newlib6809lw fails to build.
+  package                           status
+as6809              builds for MINGW32, MINGW64, and UCRT64
+cmoc                builds for MINGW32, MINGW64, and UCRT64
+cmoc-os9            builds for MINGW32, MINGW64, and UCRT64
+gcc6809as           boot package builds for MINGW32 and MINGW64
+gcc6809lw           boot package builds for MINGW32 and MINGW64
+lwtools             builds for MINGW32, MINGW64, and UCRT64
+newlib6809as        builds for MINGW32
+newlib6809lw        fails to build
+toolshed            builds for MINGW32 and MINGW64
