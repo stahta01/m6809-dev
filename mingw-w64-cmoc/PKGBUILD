@@ -21,12 +21,10 @@ makedepends=('flex' "${MINGW_PACKAGE_PREFIX}-discount")
 source=("https://perso.b2b2c.ca/~sarrazip/dev/$_realname-$pkgver.tar.gz"
         '001-Build-fixes-for-MinGW.patch'
         '002-Remove-single-quote-around-define.patch'
-        '004-Change-includes-from-system-to-normal-include.patch'
         '003-Remove-single-quotes-from-filenames.patch')
 sha256sums=('95d46ed006865b378960ddcf8e0df56c722287d4f4de969a99af167e6552b48b'
             'f08f3adc7f0909de636cfccff0946cd261f8345d767aaefb983d8e2a2453f527'
             '38f06e747f70879a2abf9341938630907f53594de5289f9e51a6125865e391a4'
-            '5abf64cd5379dc3baafc9469e5a9a2dacf4e0127ff49d4d0d8378da3280cb798'
             '36254011e245f861382404c2bf4ef50a39d9be7d1b4e28c5e622b78194edc019')
 
 prepare() {
@@ -34,7 +32,6 @@ prepare() {
   patch -p1 -i "$srcdir"/001-Build-fixes-for-MinGW.patch
   patch -p1 -i "$srcdir"/002-Remove-single-quote-around-define.patch
   patch -p1 -i "$srcdir"/003-Remove-single-quotes-from-filenames.patch
-  #patch -p1 -i "$srcdir"/004-Change-includes-from-system-to-normal-include.patch
 }
 
 build() {
