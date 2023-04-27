@@ -1,4 +1,3 @@
-Add credits to patch files
 Add CREDITS.6809 to repos and project folders
 check to make sure all URLs and bug reports points to correct and valid website
 Fix LWTools check/test bug
