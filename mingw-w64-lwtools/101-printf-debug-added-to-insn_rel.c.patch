@@ -1,0 +1,24 @@
+From 7dd38027fba1f484377a6efdfe485025ce120740 Mon Sep 17 00:00:00 2001
+From: Tim Stahlhut <stahta01@gmail.com>
+Date: Fri, 28 Apr 2023 12:11:12 -0400
+Subject: printf debug added to insn_rel.c
+
+---
+ lwasm/insn_rel.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/lwasm/insn_rel.c b/lwasm/insn_rel.c
+index d945e2d..3e64cc2 100644
+--- a/lwasm/insn_rel.c
++++ b/lwasm/insn_rel.c
+@@ -293,6 +293,7 @@ EMITFUNC(insn_emit_relgen)
+ 		offs = lw_expr_intval(e);
+ 		if (l -> lint == 8 && (offs < -128 || offs > 127))
+ 		{
++			fprintf(stderr, "%s\n", "debugging in insn_rel.c");
+ 			lwasm_register_error(as, l, E_BYTE_OVERFLOW);
+ 			return;
+ 		}
+-- 
+2.40.0.windows.1
+
