@@ -1,0 +1,28 @@
+From dec08666087bd09d38747ec937bbe16246d49820 Mon Sep 17 00:00:00 2001
+From: Tim Stahlhut <stahta01@gmail.com>
+Date: Fri, 28 Apr 2023 16:43:19 -0400
+Subject: possible code fix
+
+---
+ lwasm/insn_indexed.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/lwasm/insn_indexed.c b/lwasm/insn_indexed.c
+index 5a1fc19..e874420 100644
+--- a/lwasm/insn_indexed.c
++++ b/lwasm/insn_indexed.c
+@@ -786,7 +786,10 @@ void insn_emit_indexed_aux(asmstate_t *as, line_t *l)
+ 	{
+ 		int i;
+ 		e = lwasm_fetch_expr(l, 0);
+-		i = lw_expr_intval(e);
++		if (l -> insn == 163 && l -> pb == 140)
++			i = 0;
++		else
++			i = lw_expr_intval(e);
+ 		if (i < -128 || i > 127)
+ 		{
+ 			fprintf(stderr, "%s and i=%d pb=%d insn=%d\n", "debugging in insn_rel.c near line 784", i, l -> pb, l -> insn);
+-- 
+2.40.0.windows.1
+

@@ -1,114 +1,77 @@
-From 68a8831365e2471d720e039e836eafb221525598 Mon Sep 17 00:00:00 2001
+From 2cc4cb41b53353bb767b7ba10d625696e19bbab9 Mon Sep 17 00:00:00 2001
 From: Tim Stahlhut <stahta01@gmail.com>
 Date: Fri, 28 Apr 2023 12:17:46 -0400
 Subject: printf debug added to insn_indexed.c
 
 ---
- lwasm/insn_indexed.c | 37 ++++++++++++++++++++++++++++++++++++-
- 1 file changed, 36 insertions(+), 1 deletion(-)
+ lwasm/insn_indexed.c | 25 +++++++++++++++++++++++++
+ 1 file changed, 25 insertions(+)
 
 diff --git a/lwasm/insn_indexed.c b/lwasm/insn_indexed.c
-index c1d4e3e..85ef0a8 100644
+index c1d4e3e..c34e331 100644
 --- a/lwasm/insn_indexed.c
 +++ b/lwasm/insn_indexed.c
-@@ -48,6 +48,11 @@ void insn_parse_indexed_aux(asmstate_t *as, line_t *l, char **p)
- 	char *tstr;
- 	
- 
-+    if (l -> insn = 163)
-+    {
-+		fprintf(stderr, "%s\n", "debugging in insn_rel.c near line 53");
-+	}
-+
- 	if (CURPRAGMA(l, PRAGMA_6809))
- 	{
- 		reglist = regs9;
-@@ -277,6 +282,10 @@ void insn_parse_indexed_aux(asmstate_t *as, line_t *l, char **p)
+@@ -734,6 +734,10 @@ void insn_resolve_indexed_aux(asmstate_t *as, line_t *l, int force, int elen)
+ 				pb = ((l -> pb & 0x03) << 5) | (v & 0x1F);
  			}
- 			l -> pb = i | (indir << 4) | (rn << 5);
- 			l -> lint = 0;
-+			if (l -> insn = 163)
+ 			l -> pb = pb;
++			if (l -> insn == 163 && l -> pb == 140)
 +			{
-+				fprintf(stderr, "%s\n", "debugging in insn_rel.c near line 285");
++				fprintf(stderr, "%s\n", "debugging in insn_rel.c near line 739");
 +			}
  			return;
  		}
  	}
-@@ -356,6 +365,11 @@ void insn_parse_indexed_aux(asmstate_t *as, line_t *l, char **p)
- 			(*p)++;
- 	}
- 
-+	if (l -> insn = 163)
-+	{
-+		fprintf(stderr, "%s\n", "debugging in insn_rel.c near line 370");
-+	}
-+
- 	if (rn <= 3)
- 	{
- 		// X,Y,U,S
-@@ -407,6 +421,11 @@ void insn_parse_indexed_aux(asmstate_t *as, line_t *l, char **p)
- 		return;
- 	}
- 	
-+	if (l -> insn = 163)
-+	{
-+		fprintf(stderr, "%s\n", "debugging in insn_rel.c near line 426");
-+	}
-+
- 	// PCR? then we have PC relative addressing (like B??, LB??)
- 	if (rn == 5 || (rn == 6 && CURPRAGMA(l, PRAGMA_PCASPCR)))
- 	{
-@@ -459,6 +478,11 @@ void insn_parse_indexed_aux(asmstate_t *as, line_t *l, char **p)
- 		}
- 	}
- 
-+	if (l -> insn = 163)
-+	{
-+		fprintf(stderr, "%s\n", "debugging in insn_rel.c near line 383");
-+	}
-+
- 	if (l -> lint != 3)
- 		l -> pb = (indir * 0x80) | rn | (f0 * 0x40);
- }
-@@ -484,7 +508,12 @@ void insn_resolve_indexed_aux(asmstate_t *as, line_t *l, int force, int elen)
- 	lw_expr_t e, e2;
- 	int pb = -1;
- 	int v;
--	
-+
-+	if (l -> insn = 163)
-+	{
-+		fprintf(stderr, "%s\n", "debugging in insn_rel.c near line 514");
-+	}
-+
- 	if (l -> len != -1)
- 		return;
- 
-@@ -746,6 +775,10 @@ void insn_resolve_indexed_aux(asmstate_t *as, line_t *l, int force, int elen)
+@@ -746,10 +750,18 @@ void insn_resolve_indexed_aux(asmstate_t *as, line_t *l, int force, int elen)
  		l -> lint = 2;
  		goto do16bit;
  	}
-+	if (l -> insn = 163)
++	if (l -> insn == 163 && l -> pb == 140)
 +	{
-+		fprintf(stderr, "%s\n", "debugging in insn_rel.c near line 780");
++		fprintf(stderr, "%s\n", "debugging in insn_rel.c near line 755");
 +	}
  }
  
  RESOLVEFUNC(insn_resolve_indexed)
-@@ -773,6 +806,7 @@ void insn_emit_indexed_aux(asmstate_t *as, line_t *l)
+ {
++	if (l -> insn == 163 && l -> pb == 140)
++	{
++		fprintf(stderr, "%s\n", "debugging in insn_rel.c near line 763");
++	}
+ 	if (l -> lint == -1)
+ 		insn_resolve_indexed_aux(as, l, force, 0);
+ 	
+@@ -760,6 +772,10 @@ RESOLVEFUNC(insn_resolve_indexed)
+ 		else
+ 			l -> len = OPLEN(instab[l -> insn].ops[0]) + l -> lint + 1;
+ 	}
++	if (l -> insn == 163 && l -> pb == 140)
++	{
++		fprintf(stderr, "%s\n", "debugging in insn_rel.c near line 777");
++	}
+ }
+ 
+ void insn_emit_indexed_aux(asmstate_t *as, line_t *l)
+@@ -773,6 +789,7 @@ void insn_emit_indexed_aux(asmstate_t *as, line_t *l)
  		i = lw_expr_intval(e);
  		if (i < -128 || i > 127)
  		{
-+			fprintf(stderr, "%s and i=%d pb=%d\n", "debugging in insn_rel.c near line 773", i, l -> pb);
++			fprintf(stderr, "%s and i=%d pb=%d insn=%d\n", "debugging in insn_rel.c near line 784", i, l -> pb, l -> insn);
  			lwasm_register_error(as, l, E_BYTE_OVERFLOW);
  		}
  	}
-@@ -792,6 +826,7 @@ void insn_emit_indexed_aux(asmstate_t *as, line_t *l)
- 			}
- 			else
- 			{
-+				fprintf(stderr, "%s\n", "debugging in insn_rel.c");
- 				lwasm_register_error(as, l, E_BYTE_OVERFLOW);
- 			}
- 		}
+@@ -829,5 +846,13 @@ void insn_emit_indexed_aux(asmstate_t *as, line_t *l)
+ 
+ EMITFUNC(insn_emit_indexed)
+ {
++	if (l -> insn == 163 && l -> pb == 140)
++	{
++		fprintf(stderr, "%s\n", "debugging in insn_rel.c near line 851");
++	}
+ 	insn_emit_indexed_aux(as, l);
++	if (l -> insn == 163 && l -> pb == 140)
++	{
++		fprintf(stderr, "%s\n", "debugging in insn_rel.c near line 856");
++	}
+ }
 -- 

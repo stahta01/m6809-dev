@@ -1,0 +1,25 @@
+From c827ff3809e3cf91702335438e8dd44eb454d427 Mon Sep 17 00:00:00 2001
+From: Tim Stahlhut <stahta01@gmail.com>
+Date: Fri, 28 Apr 2023 13:56:18 -0400
+Subject: Set debug in Makefile
+
+---
+ Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Makefile b/Makefile
+index 261bd70..a459be9 100644
+--- a/Makefile
++++ b/Makefile
+@@ -48,7 +48,7 @@ LDFLAGS += -Llwlib -llw
+ # snprintf() and friends. I'm using snprintf() precisely to prevent
+ # overflows and I don't care if the string is truncated, so why should
+ # I need to test the return value? Bleeping stupid.
+-CFLAGS ?= -O3 -Wall -Wno-char-subscripts -Wno-format-truncation
++CFLAGS ?= -g -Wall -Wno-char-subscripts -Wno-format-truncation
+ 
+ MAIN_TARGETS := lwasm/lwasm$(PROGSUFFIX) \
+ 	lwlink/lwlink$(PROGSUFFIX) \
+-- 
+2.40.0.windows.1
+
