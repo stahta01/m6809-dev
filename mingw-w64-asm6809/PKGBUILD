@@ -1,0 +1,50 @@
+# Maintainer: Tim S <stahta01@gmail.com>
+
+_realname=asm6809
+
+pkgbase=mingw-w64-${_realname}
+pkgname="${MINGW_PACKAGE_PREFIX}-${_realname}"
+pkgver=2.12
+pkgrel=1
+pkgdesc="Cross Assembler for the Motorola 6809 and Hitachi 6309 microprocessors (mingw-w64)"
+arch=('any')
+url="https://www.6809.org.uk/asm6809/"
+license=('GPL3')
+groups=("${MINGW_PACKAGE_PREFIX}-${_target}-toolchain")
+source=("https://www.6809.org.uk/asm6809/dl/${_realname}-${pkgver}.tar.gz"
+        '102-Edit-symbol-output-in-program.c.patch')
+sha256sums=('32044f0087ac8fa94ff5f3e54279d91c3df2c21b5c2098b48bbc2754678b22a2'
+            'ce9cfd69272c0dad1e3177c48e268b086a2330353b1d1ddd3f9f71260fb599b2')
+prepare() {
+  cd ${_realname}-$pkgver
+
+  #patch --forward -p1 -i "$srcdir"/102-Edit-symbol-output-in-program.c.patch
+}
+
+build() {
+  if [[ -d "build-${_realname}-${MSYSTEM}" ]]; then
+    rm -rf build-${_realname}-${MSYSTEM}
+  fi
+  mkdir build-${_realname}-${MSYSTEM}
+  cd build-${_realname}-${MSYSTEM}
+
+  CPPFLAGS=""
+  CXXFLAGS="-O2 -Wno-error=format-security"
+  CFLAGS="-O2 -Wno-error=format-security"
+  ../${_realname}-$pkgver/configure \
+    --prefix=${MINGW_PREFIX} \
+    --build=${MINGW_CHOST} \
+    --host=${MINGW_CHOST}
+
+  make -j1
+}
+
+package() {
+  cd build-${_realname}-${MSYSTEM}
+
+  CPPFLAGS=""
+  CFLAGS="-O2"
+  make -j1 DESTDIR="$pkgdir/" install
+}
+
+# vim:set ts=2 sw=2 et:
