@@ -3,10 +3,10 @@ Inspired by https://github.com/hpmachining/os9-dev.git
 
 # Active packages
 ## Assemblers
-#### LWTOOLS - Cross-development Assembler for Motorola 6809 and Hitachi 6309 Documentation Project Repository
-#### asm6809 - Portable cross assembler for Motorola 6809 and Hitachi 6309 Documentation
+#### LWTOOLS - Cross-development Assembler for Motorola 6809 and Hitachi 6309
+#### asm6809 - Portable cross assembler for Motorola 6809 and Hitachi 6309
 ## Compilers
-#### CMOC - Cross-compiler for a subset of the C language Documentation
+#### CMOC - Cross-compiler for a subset of the C language
 ## Misc.
 #### CMOC-OS9 - OS9 library for CMOC
 #### Toolshed - Cross-development disk images tools
