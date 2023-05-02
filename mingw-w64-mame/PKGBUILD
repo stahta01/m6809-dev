@@ -1,0 +1,120 @@
+# Maintainer: Tim S <stahta01@gmail.com>
+# archlinux Maintainer:  Antonio Rojas
+# archlinux Contributor: Sergej Pupykin
+# archlinux Contributor: robb_force
+# archlinux Contributor: JJDaNiMoTh
+# Based on https://archlinux.org/packages/community/x86_64/mame/
+
+_realname=mame
+
+pkgbase=mingw-w64-${_realname}
+pkgname="${MINGW_PACKAGE_PREFIX}-${_realname} ${MINGW_PACKAGE_PREFIX}-${_realname}-tools"
+pkgver=0.254
+pkgrel=1
+pkgdesc='Port of the popular Multiple Arcade Machine Emulator using SDL with OpenGL support (mingw-w64)'
+url='https://mamedev.org/'
+license=(GPL2)
+arch=(x86_64)
+makedepends=(
+  "${MINGW_PACKAGE_PREFIX}-nasm"
+  "${MINGW_PACKAGE_PREFIX}-python"
+  "${MINGW_PACKAGE_PREFIX}-asio"
+  "${MINGW_PACKAGE_PREFIX}-rapidjson"
+  "${MINGW_PACKAGE_PREFIX}-glm"
+  "${MINGW_PACKAGE_PREFIX}-SDL2_ttf"
+  "${MINGW_PACKAGE_PREFIX}-qt5-base"
+  "${MINGW_PACKAGE_PREFIX}-lua"
+  "${MINGW_PACKAGE_PREFIX}-libutf8proc"
+  "${MINGW_PACKAGE_PREFIX}-pugixml"
+  "${MINGW_PACKAGE_PREFIX}-portmidi"
+  "${MINGW_PACKAGE_PREFIX}-portaudio"
+  "${MINGW_PACKAGE_PREFIX}-flac"
+  #libpulse # ${MINGW_PACKAGE_PREFIX}-pulseaudio exists
+)
+source=(https://github.com/mamedev/mame/archive/mame${pkgver/./}.tar.gz)
+        #mame.sh mame.svg)
+noextract=(mame${pkgver/./}.tar.gz)
+sha256sums=('5a2a3b2d9e72cde957d7fd8fe5e954c272ae32697399120020d6f390d6bd2116')
+options=(!debug !lto) # debug build fails under ArchLinux
+
+prepare() {
+  cd mame-mame${pkgver/./}
+
+# Use system libraries
+  sed -e 's|\# USE_SYSTEM_LIB|USE_SYSTEM_LIB|g' -i makefile
+# Use C++ LUA
+  sed -e 's|ext_lib("lua")|ext_lib("lua++")|' -i scripts/src/main.lua -i scripts/src/3rdparty.lua
+}
+
+build() {
+  cd mame-mame${pkgver/./}
+  export CXXFLAGS+="  -Wp,-U_GLIBCXX_ASSERTIONS" # FS#73202
+  make \
+    VERBOSE=1 \
+    NOWERROR=1 \
+    OPTIMIZE=2 \
+    TOOLS=1 \
+    ARCHOPTS=-flifetime-dse=1
+}
+
+package_mame() {
+  depends=(
+    "${MINGW_PACKAGE_PREFIX}-flac"
+    "${MINGW_PACKAGE_PREFIX}-SDL2_ttf"
+    "${MINGW_PACKAGE_PREFIX}-qt5-base"
+    "${MINGW_PACKAGE_PREFIX}-lua"
+    "${MINGW_PACKAGE_PREFIX}-libutf8proc"
+    "${MINGW_PACKAGE_PREFIX}-pugixml"
+    "${MINGW_PACKAGE_PREFIX}-portmidi"
+    "${MINGW_PACKAGE_PREFIX}-portaudio"
+    #libpulse
+    "${MINGW_PACKAGE_PREFIX}-hicolor-icon-theme"
+) 
+
+  cd mame-mame${pkgver/./}
+
+  # Install the mame script
+  install -Dm755 "$srcdir"/$pkgname.sh "$pkgdir"${MINGW_PREFIX}/bin/$pkgname
+
+  # Install the binaries
+  install -Dm755 mame -t "$pkgdir"${MINGW_PREFIX}/lib/mame
+
+  # Install the extra bits
+  install -Dm644 src/osd/modules/opengl/shader/glsl*.*h -t "$pkgdir"${MINGW_PREFIX}/lib/$pkgname/shader/
+  cp -ar {artwork,bgfx,plugins,language,ctrlr,keymaps,hash} "$pkgdir"${MINGW_PREFIX}/lib/$pkgname/
+
+  # Include the license
+  install -Dm644 docs/LICENSE "$pkgdir"${MINGW_PREFIX}/share/licenses/$pkgname/LICENSE
+
+  # FS#28203
+  sed -i 's|KEYCODE_2_PAD|KEYCODE_2PAD|' "$pkgdir"${MINGW_PREFIX}/lib/mame/ctrlr/*.cfg
+  sed -i 's|KEYCODE_4_PAD|KEYCODE_4PAD|' "$pkgdir"${MINGW_PREFIX}/lib/mame/ctrlr/*.cfg
+  sed -i 's|KEYCODE_6_PAD|KEYCODE_6PAD|' "$pkgdir"${MINGW_PREFIX}/lib/mame/ctrlr/*.cfg
+  sed -i 's|KEYCODE_8_PAD|KEYCODE_8PAD|' "$pkgdir"${MINGW_PREFIX}/lib/mame/ctrlr/*.cfg
+
+  # documentation
+  install -dm0755 "$pkgdir"${MINGW_PREFIX}/share/doc
+  cp -a docs "$pkgdir"${MINGW_PREFIX}/share/doc/$pkgname
+  rm -r "$pkgdir"${MINGW_PREFIX}/share/doc/$pkgname/man
+  install -Dm644 docs/man/*.6* -t "$pkgdir"${MINGW_PREFIX}/share/man/man6/
+
+  # install desktop file and icon
+  install -Dm644 "$srcdir"/mame.desktop -t "$pkgdir"${MINGW_PREFIX}/share/applications
+  install -Dm644 "$srcdir"/mame.svg -t "$pkgdir"${MINGW_PREFIX}/share/icons/hicolor/scalable/apps
+}
+
+package_mame-tools() {
+  pkgdesc='Port of the popular Multiple Arcade Machine Emulator using SDL with OpenGL support (tools)'
+  depends=("${MINGW_PACKAGE_PREFIX}-sdl2"
+           "${MINGW_PACKAGE_PREFIX}-libutf8proc"
+           "${MINGW_PACKAGE_PREFIX}-flac")
+
+  cd mame-mame${pkgver/./}
+  for _i in castool chdman floptool imgtool jedutil ldresample ldverify nltool nlwav pngcmp regrep romcmp \
+            split srcclean testkeys unidasm; do
+    install -Dm755 $_i -t "$pkgdir"${MINGW_PREFIX}/bin
+  done
+  mv "$pkgdir"${MINGW_PREFIX}/bin/{,mame-}split # Fix conflicts
+
+  install -Dm644 docs/man/*.1* -t "$pkgdir"${MINGW_PREFIX}/share/man/man1/
+}
