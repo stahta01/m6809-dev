@@ -8,14 +8,15 @@ pkgname=(
 )
 pkgver=0.35.v+0.c0.gde72c35
 pkgrel=1
-pkgdesc=" (mingw-w64)"
+pkgdesc="DisASseMbler FrameWork (mingw-w64)"
 arch=('any')
 mingw_arch=('mingw32' 'mingw64' 'ucrt64' 'clang64' 'clang32' 'clangarm64')
 license=("GPL2")
 url="https://github.com/Arakula/dasmfw"
 makedepends=(
-  "git"
-  "make"
+  'git'
+  'make'
+  "${MINGW_PACKAGE_PREFIX}-cc"
 )
 checkdepends=()
 options=('!strip')
