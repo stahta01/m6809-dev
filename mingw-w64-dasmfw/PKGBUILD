@@ -1,0 +1,60 @@
+# Maintainer: Tim Stahlhut <stahta01@gmail.com>
+
+_realname=dasmfw
+_sourcedir=${_realname}-git
+pkgbase=mingw-w64-${_realname}
+pkgname=(
+  ${MINGW_PACKAGE_PREFIX}-${_realname}
+)
+pkgver=0.35.v+0.c0.gde72c35
+pkgrel=1
+pkgdesc=" (mingw-w64)"
+arch=('any')
+mingw_arch=('mingw32' 'mingw64' 'ucrt64' 'clang64' 'clang32' 'clangarm64')
+license=("GPL2")
+url="https://github.com/Arakula/dasmfw"
+makedepends=(
+  "git"
+  "make"
+)
+checkdepends=()
+options=('!strip')
+source=(${_sourcedir}::"git+https://github.com/Arakula/dasmfw.git#branch=master")
+sha256sums=('SKIP')
+
+# Declare global variables; begin with underscore to avoid name conflicts
+_git_base_commit=
+
+pkgver() {
+  cd ${srcdir}/${_sourcedir}
+  local _version=$(head -n 80 dasmfw.h | grep 'DASMFW_VERSION' | sed -e 's/.* //' | tr '\n' '.' | sed -e 's/\"//g' | sed 's/.$/\n/')
+  printf "%s.v+%s.c%s.g%s" "$_version" $(git rev-list --count $(git rev-list -1 ${_git_base_commit} dasmfw.h)..${_git_base_commit}) $(git rev-list --count ${_git_base_commit}..HEAD) $(git rev-parse --short ${_git_base_commit})
+}
+
+prepare() {
+  cd "${srcdir}/${_sourcedir}"
+
+  _git_base_commit=$(git rev-parse HEAD)
+  GIT_AM="git am --committer-date-is-author-date"
+
+  git config --local user.name  "nobody"
+  git config --local user.email "nobody@example.com"
+
+  #${GIT_AM} ${srcdir}/filename.patch
+}
+
+build() {
+  cd "${srcdir}/${_sourcedir}"
+
+  make clean
+  make # -j1 VERBOSE=1
+}
+
+package() {
+  cd "${srcdir}/${_sourcedir}"
+
+  mkdir -p "$pkgdir${MINGW_PREFIX}/bin/"
+  cp dasmfw.exe "$pkgdir${MINGW_PREFIX}/bin/"
+
+  install -Dm644 -t "$pkgdir${MINGW_PREFIX}/share/licenses/${_realname}" LICENSE
+}
