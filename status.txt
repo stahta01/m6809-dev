@@ -17,3 +17,4 @@ cmoc-os9
 toolshed
 asm6809
 dasmfw
+vasm
