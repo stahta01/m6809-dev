@@ -1,0 +1,46 @@
+# Maintainer: Tim S <stahta01@gmail.com>
+
+_realname=vasm
+_cpu=6809
+_syntax=oldstyle
+
+pkgbase=mingw-w64-${_realname}
+pkgname="${MINGW_PACKAGE_PREFIX}-${_realname}${_cpu}${_syntax}"
+pkgver=1_9d
+pkgrel=1
+pkgdesc="Assembler for the Motorola 6809 and Hitachi 6309 microprocessors (mingw-w64)"
+arch=('any')
+url="http://sun.hasenbraten.de/vasm/"
+license=('Unknown')
+groups=()
+options=('!strip')
+makedepends=('patch' 'make' "${MINGW_PACKAGE_PREFIX}-gcc")
+source=(
+  "http://phoenix.owl.de/tags/vasm1_9d.tar.gz"
+  '001-fix-for-6809-LBEQ-out-of-range-error.patch'
+)
+sha256sums=('0e5d4285bdca8d1db9eae4ea8061788bce603bf5c1f369f070c2218b4915c985'
+            '861d82df643d5565f6394102ec99c92b6c3f4ee9070f07a85ee907f41563d920')
+
+prepare() {
+  cd "${_realname}"
+
+  patch -p1 -i ${srcdir}/001-fix-for-6809-LBEQ-out-of-range-error.patch
+}
+
+build() {
+  cd "${_realname}"
+
+  make clean
+  make CPU=${_cpu} SYNTAX=${_syntax}
+}
+
+package() {
+  cd "${_realname}"
+
+  mkdir -p "$pkgdir${MINGW_PREFIX}/bin/"
+  cp vasm6809_oldstyle.exe "$pkgdir${MINGW_PREFIX}/bin/"
+  cp vobjdump.exe "$pkgdir${MINGW_PREFIX}/bin/"
+}
+
+# vim:set ts=2 sw=2 et:
