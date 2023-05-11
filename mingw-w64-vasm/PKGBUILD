@@ -2,25 +2,31 @@
 
 _realname=vasm
 _cpu=6809
-_syntax=oldstyle
+_syntax1=oldstyle
+_syntax2=std
 
 pkgbase=mingw-w64-${_realname}
-pkgname="${MINGW_PACKAGE_PREFIX}-${_realname}${_cpu}${_syntax}"
+pkgname=("${MINGW_PACKAGE_PREFIX}-${_realname}-vobjdump"
+         "${MINGW_PACKAGE_PREFIX}-${_realname}${_cpu}${_syntax1}"
+         "${MINGW_PACKAGE_PREFIX}-${_realname}${_cpu}${_syntax2}"
+         "${MINGW_PACKAGE_PREFIX}-${_realname}-license")
 pkgver=1_9d
 pkgrel=1
 pkgdesc="Assembler for the Motorola 6809 and Hitachi 6309 microprocessors (mingw-w64)"
 arch=('any')
 url="http://sun.hasenbraten.de/vasm/"
-license=('Unknown')
+license=('custom')
 groups=()
 options=('!strip')
 makedepends=('patch' 'make' "${MINGW_PACKAGE_PREFIX}-gcc")
 source=(
   "http://phoenix.owl.de/tags/vasm${pkgver}.tar.gz"
   '001-fix-for-6809-LBEQ-out-of-range-error.patch'
+  'LICENSE'
 )
 sha256sums=('0e5d4285bdca8d1db9eae4ea8061788bce603bf5c1f369f070c2218b4915c985'
-            '861d82df643d5565f6394102ec99c92b6c3f4ee9070f07a85ee907f41563d920')
+            '861d82df643d5565f6394102ec99c92b6c3f4ee9070f07a85ee907f41563d920'
+            '63b3e08e9a45ce5284263fb2a36cf6880c910b789ceda42781eb298ce8175dca')
 
 prepare() {
   cd "${_realname}"
@@ -31,17 +37,52 @@ prepare() {
 build() {
   cd "${_realname}"
 
-  rm -f obj/*.o
   make clean
-  make CPU=${_cpu} SYNTAX=${_syntax}
+  rm -f obj/*.o
+  make CPU=${_cpu} SYNTAX=${_syntax1}
+  rm -f obj/*.o
+  make CPU=${_cpu} SYNTAX=${_syntax2}
 }
 
-package() {
+package_vasm-license() {
+  mkdir -p "$pkgdir${MINGW_PREFIX}/share/licenses/${_realname}"
+  install -Dm644 ${srcdir}/LICENSE \
+    "$pkgdir${MINGW_PREFIX}/share/licenses/${_realname}/"
+}
+
+package_vasm-vobjdump() {
+  depends=("${MINGW_PACKAGE_PREFIX}-${_realname}-license")
+  cd "${_realname}"
+
+  mkdir -p "$pkgdir${MINGW_PREFIX}/bin/"
+  cp vobjdump.exe "$pkgdir${MINGW_PREFIX}/bin/"
+}
+
+package_vasm6809oldstyle() {
+  depends=("${MINGW_PACKAGE_PREFIX}-${_realname}-license")
+  optdepends=("${MINGW_PACKAGE_PREFIX}-${_realname}-vobjdump")
   cd "${_realname}"
 
   mkdir -p "$pkgdir${MINGW_PREFIX}/bin/"
   cp vasm6809_oldstyle.exe "$pkgdir${MINGW_PREFIX}/bin/"
-  cp vobjdump.exe "$pkgdir${MINGW_PREFIX}/bin/"
 }
 
-# vim:set ts=2 sw=2 et:
+package_vasm6809std() {
+  depends=("${MINGW_PACKAGE_PREFIX}-${_realname}-license")
+  optdepends=("${MINGW_PACKAGE_PREFIX}-${_realname}-vobjdump")
+  cd "${_realname}"
+
+  mkdir -p "$pkgdir${MINGW_PREFIX}/bin/"
+  cp vasm6809_std.exe "$pkgdir${MINGW_PREFIX}/bin/"
+}
+
+# template start; name=mingw-w64-splitpkg-wrappers; version=1.0;
+# vim: set ft=bash :
+
+# generate wrappers
+for _name in "${pkgname[@]}"; do
+  _short="package_${_name#${MINGW_PACKAGE_PREFIX}-}"
+  _func="$(declare -f "${_short}")"
+  eval "${_func/#${_short}/package_${_name}}"
+done
+# template end;
