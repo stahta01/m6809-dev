@@ -16,7 +16,7 @@ groups=()
 options=('!strip')
 makedepends=('patch' 'make' "${MINGW_PACKAGE_PREFIX}-gcc")
 source=(
-  "http://phoenix.owl.de/tags/vasm1_9d.tar.gz"
+  "http://phoenix.owl.de/tags/vasm${pkgver}.tar.gz"
   '001-fix-for-6809-LBEQ-out-of-range-error.patch'
 )
 sha256sums=('0e5d4285bdca8d1db9eae4ea8061788bce603bf5c1f369f070c2218b4915c985'
