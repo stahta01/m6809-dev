@@ -4,11 +4,13 @@ _realname=vasm
 _cpu=6809
 _syntax1=oldstyle
 _syntax2=std
+_syntax3=mot
 
 pkgbase=mingw-w64-${_realname}
 pkgname=("${MINGW_PACKAGE_PREFIX}-${_realname}-vobjdump"
          "${MINGW_PACKAGE_PREFIX}-${_realname}${_cpu}${_syntax1}"
          "${MINGW_PACKAGE_PREFIX}-${_realname}${_cpu}${_syntax2}"
+         "${MINGW_PACKAGE_PREFIX}-${_realname}${_cpu}${_syntax3}"
          "${MINGW_PACKAGE_PREFIX}-${_realname}-license")
 pkgver=1_9d
 pkgrel=1
@@ -42,6 +44,8 @@ build() {
   make CPU=${_cpu} SYNTAX=${_syntax1}
   rm -f obj/*.o
   make CPU=${_cpu} SYNTAX=${_syntax2}
+  rm -f obj/*.o
+  make CPU=${_cpu} SYNTAX=${_syntax3}
 }
 
 package_vasm-license() {
@@ -74,6 +78,15 @@ package_vasm6809std() {
 
   mkdir -p "$pkgdir${MINGW_PREFIX}/bin/"
   cp vasm6809_std.exe "$pkgdir${MINGW_PREFIX}/bin/"
+}
+
+package_vasm6809mot() {
+  depends=("${MINGW_PACKAGE_PREFIX}-${_realname}-license")
+  optdepends=("${MINGW_PACKAGE_PREFIX}-${_realname}-vobjdump")
+  cd "${_realname}"
+
+  mkdir -p "$pkgdir${MINGW_PREFIX}/bin/"
+  cp vasm6809_mot.exe "$pkgdir${MINGW_PREFIX}/bin/"
 }
 
 # template start; name=mingw-w64-splitpkg-wrappers; version=1.0;
