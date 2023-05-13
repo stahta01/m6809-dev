@@ -11,10 +11,10 @@ newlib6809lw        fails to build
 toolshed            builds for MINGW32 and MINGW64
 
 Primary packages listed in normal build order
+vasm
+asm6809
+toolshed
 lwtools
 cmoc
 cmoc-os9
-toolshed
-asm6809
 dasmfw
-vasm
