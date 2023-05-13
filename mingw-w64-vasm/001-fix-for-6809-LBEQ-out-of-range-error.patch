@@ -11,26 +11,15 @@ diff --git a/cpus/6809/cpu.c b/cpus/6809/cpu.c
 index bbcc813..1caa951 100644
 --- a/cpus/6809/cpu.c
 +++ b/cpus/6809/cpu.c
-@@ -936,7 +936,6 @@ static size_t process_instruction(instruction *ip,section *sec,
-                 ip->code -= 2;
-                 pc += ocsz_diff;       /* Bcc opcode may be smaller */
-                 pcd += 1 - ocsz_diff;  /* adjust for Bcc and 8-bit branch */
--              }
-               break;
-           }
-         }
-@@ -953,6 +952,11 @@ static size_t process_instruction(instruction *ip,section *sec,
+@@ -953,6 +952,10 @@ static size_t process_instruction(instruction *ip,section *sec,
                  cpu_error(9,(long)pcd);  /* decrement branch out of range */
                break;
              case AM_REL16:
 +              if (pcd<-0x8000 || pcd>0xffff) {
-+                  if (pcd<-0x8000) pcd+=0x10000;
-+                  if (pcd>0xffff) pcd-=0x10000;
-+                }
++                if (pcd<-0x8000) pcd+=0x10000;
++                if (pcd>0xffff) pcd-=0x10000;
 +              }
                if (pcd<-0x8000 || pcd>0xffff)
                  cpu_error(10,(long)pcd);  /* long branch out of range */
                break;
 -- 
-2.40.1.windows.1
-
