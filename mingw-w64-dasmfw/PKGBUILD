@@ -6,7 +6,7 @@ pkgbase=mingw-w64-${_realname}
 pkgname=(
   ${MINGW_PACKAGE_PREFIX}-${_realname}
 )
-pkgver=0.35.v+0.c0.gde72c35
+pkgver=0.35.v+0.c1.gde72c35
 pkgrel=1
 pkgdesc="DisASseMbler FrameWork (mingw-w64)"
 arch=('any')
@@ -21,8 +21,10 @@ makedepends=(
 )
 checkdepends=()
 options=('!strip')
-source=(${_sourcedir}::"git+https://github.com/Arakula/dasmfw.git#branch=master")
-sha256sums=('SKIP')
+source=(${_sourcedir}::"git+https://github.com/Arakula/dasmfw.git#branch=master"
+        '001-Clean-Fix.patch')
+sha256sums=('SKIP'
+            '4e232d6f7bf46cdfc49873ec89877d81a6784adf29048719afd4ab499688e824')
 
 # Declare global variables; begin with underscore to avoid name conflicts
 _git_base_commit=
@@ -42,7 +44,7 @@ prepare() {
   git config --local user.name  "nobody"
   git config --local user.email "nobody@example.com"
 
-  #${GIT_AM} ${srcdir}/filename.patch
+  ${GIT_AM} ${srcdir}/001-Clean-Fix.patch
 }
 
 build() {
