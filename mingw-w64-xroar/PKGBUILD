@@ -4,7 +4,7 @@ _realname=xroar
 pkgbase=mingw-w64-${_realname}
 pkgname=(${MINGW_PACKAGE_PREFIX}-${_realname})
 pkgver=1.3.1
-pkgrel=1
+pkgrel=2
 _sourcedir=${_realname}-${pkgver}
 pkgdesc="Color Computer 1/2/3 emulator (mingw-w64)"
 arch=('any')
@@ -13,11 +13,12 @@ license=("GPL3")
 url="https://www.6809.org.uk/xroar"
 depends=("${MINGW_PACKAGE_PREFIX}-gcc-libs" # no idea if this is required at run-time
          "${MINGW_PACKAGE_PREFIX}-SDL2"
+         "${MINGW_PACKAGE_PREFIX}-libsystre"
+         "${MINGW_PACKAGE_PREFIX}-zlib"
          "${MINGW_PACKAGE_PREFIX}-libsndfile")
 makedepends=(
   'make'
   "${MINGW_PACKAGE_PREFIX}-cc"
-  "${MINGW_PACKAGE_PREFIX}-libsystre" # this might be required at run-time
 )
 checkdepends=()
 options=('!strip')
