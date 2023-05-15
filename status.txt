@@ -9,12 +9,16 @@ lwtools             builds for MINGW32, MINGW64, and UCRT64
 newlib6809as        builds for MINGW32
 newlib6809lw        fails to build
 toolshed            builds for MINGW32 and MINGW64
+dasmfw              builds for MINGW32, MINGW64, and UCRT64
+vasm                builds for MINGW32, MINGW64, and UCRT64
+xroar               builds for MINGW32, MINGW64, and UCRT64
 
 Primary packages listed in normal build order
 vasm
 asm6809
+dasmfw
+xroar
 toolshed
 lwtools
 cmoc
 cmoc-os9
-dasmfw
