@@ -45,6 +45,7 @@ build() {
     --without-gtk2 --without-gtkgl \
     --enable-filereq-cli --without-alsa \
     --without-oss --without-pulse --without-joydev
+  make clean
   make -j1
 }
 
