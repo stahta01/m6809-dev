@@ -64,5 +64,5 @@ package() {
   install -Dm644 -t "$pkgdir${MINGW_PREFIX}/share/doc/${_realname}" README
   cd doc
   install -Dm644 -t "$pkgdir${MINGW_PREFIX}/share/doc/${_realname}" xroar.conf.example
-  install -Dm644 -t "$pkgdir${MINGW_PREFIX}/share/doc/${_realname}" xroar.pdf
+  #install -Dm644 -t "$pkgdir${MINGW_PREFIX}/share/doc/${_realname}" xroar.pdf
 }
