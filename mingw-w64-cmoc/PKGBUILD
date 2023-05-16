@@ -8,14 +8,16 @@ _target=${_machine}-unknown
 pkgbase=mingw-w64-${_realname}
 pkgname="${MINGW_PACKAGE_PREFIX}-${_realname}"
 pkgver=0.1.81
-pkgrel=3
+pkgrel=4
 pkgdesc="6809-generating cross-compiler for a subset of the C language (mingw-w64)"
 arch=('any')
 url="http://perso.b2b2c.ca/~sarrazip/dev/cmoc.html"
 license=('GPL3')
 groups=("${MINGW_PACKAGE_PREFIX}-${_target}-toolchain")
 options=('!strip')
-depends=('perl' "${MINGW_PACKAGE_PREFIX}-lwtools" "${MINGW_PACKAGE_PREFIX}-gcc-libs")
+depends=('perl' "${MINGW_PACKAGE_PREFIX}-lwtools"
+         "${MINGW_PACKAGE_PREFIX}-gcc" # provides cpp
+         "${MINGW_PACKAGE_PREFIX}-gcc-libs")
 makedepends=('flex' "${MINGW_PACKAGE_PREFIX}-discount")
 #        https://perso.b2b2c.ca/~sarrazip/dev/cmoc-0.1.80.tar.gz
 source=("https://perso.b2b2c.ca/~sarrazip/dev/$_realname-$pkgver.tar.gz"
