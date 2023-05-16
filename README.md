@@ -3,18 +3,18 @@ Inspired by https://github.com/hpmachining/os9-dev.git
 
 # Active packages [releases](https://github.com/stahta01/m6809-dev/releases/)
 ## Assemblers
-#### LWTOOLS - Cross-development Assembler for Motorola 6809 and Hitachi 6309
-#### asm6809 - Portable cross assembler for Motorola 6809 and Hitachi 6309
-#### vasm6809 - portable and retargetable assembler for Motorola 6809 and Hitachi 6309
+#### [LWTOOLS](http://lwtools.projects.l-w.ca) - Cross-development Assembler for Motorola 6809 and Hitachi 6309
+#### [asm6809](https://www.6809.org.uk/asm6809/) - Portable cross assembler for Motorola 6809 and Hitachi 6309
+#### [vasm6809](http://sun.hasenbraten.de/vasm/) - portable and retargetable assembler for Motorola 6809 and Hitachi 6309
 ## Compilers
-#### CMOC - Cross-compiler for a subset of the C language
+#### [CMOC](http://perso.b2b2c.ca/~sarrazip/dev/cmoc.html) - Cross-compiler for a subset of the C language
 ## Disassemblers
-#### dasmfw - DisASseMbler FrameWork
+#### [dasmfw](https://github.com/Arakula/dasmfw) - DisASseMbler FrameWork
 ## Emulators
 #### [xroar](https://www.6809.org.uk/xroar/) - Dragon and CoCo 1, 2, and 3
 ## Misc.
-#### CMOC-OS9 - OS9 library for CMOC
-#### Toolshed - Cross-development disk images tools
+#### [CMOC-OS9](https://github.com/tlindner/cmoc_os9) - OS9 library for CMOC
+#### [Toolshed](http://toolshed.sourceforge.net) - Cross-development disk images tools
 
 # In-active packages
 #### as6809 - Cross-development Assembler
