@@ -9,7 +9,7 @@ _target=${_machine}-unknown
 pkgbase=mingw-w64-${_realname}
 pkgname="${MINGW_PACKAGE_PREFIX}-${_realname}-git"
 pkgver=r85.9f9dfda
-pkgrel=2
+pkgrel=3
 pkgdesc="CMOC C Library support for OS-9/NitrOS-9 (mingw-w64)"
 arch=('any')
 url='https://github.com/tlindner/cmoc_os9'
@@ -31,7 +31,9 @@ pkgver() {
 
 build() {
   cd "$srcdir/${_realname}"
+  make -C lib clean
   make -C lib
+  make -C cgfx clean
   make -C cgfx
 }
 
