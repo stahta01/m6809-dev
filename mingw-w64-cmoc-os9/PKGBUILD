@@ -9,7 +9,7 @@ _target=${_machine}-unknown
 pkgbase=mingw-w64-${_realname}
 pkgname="${MINGW_PACKAGE_PREFIX}-${_realname}-git"
 pkgver=r85.9f9dfda
-pkgrel=3
+pkgrel=4
 pkgdesc="CMOC C Library support for OS-9/NitrOS-9 (mingw-w64)"
 arch=('any')
 url='https://github.com/tlindner/cmoc_os9'
@@ -52,10 +52,9 @@ package() {
 #    | fold -s -w80 >> LICENSE
   install -Dm644 -t "$pkgdir${MINGW_PREFIX}/share/licenses/${_realname}" LICENSE 
 
-  install -Dm644 -t "$pkgdir${MINGW_PREFIX}/share/cmoc/include/" include/*.h
-  install -Dm644 -t "$pkgdir${MINGW_PREFIX}/share/cmoc/include/cgfx" cgfx/include/*.h
-  install -Dm644 -t "$pkgdir${MINGW_PREFIX}/share/cmoc/include/sys" include/sys/*.h
+  install -Dm644 -t "$pkgdir${MINGW_PREFIX}/share/cmoc/include/os9" include/*.h
+  install -Dm644 -t "$pkgdir${MINGW_PREFIX}/share/cmoc/include/os9/cgfx" cgfx/include/*.h
+  install -Dm644 -t "$pkgdir${MINGW_PREFIX}/share/cmoc/include/os9/sys" include/sys/*.h
   install -Dm644 -t "$pkgdir${MINGW_PREFIX}/share/cmoc/lib" lib/libc.a
   install -Dm644 -t "$pkgdir${MINGW_PREFIX}/share/cmoc/lib" cgfx/libcgfx.a
-  rm -f "$pkgdir${MINGW_PREFIX}/share/cmoc/include/assert.h"
 }
