@@ -1,0 +1,61 @@
+# Maintainer: Tim S <stahta01@gmail.com>
+
+_realname=vbcc
+
+pkgbase=mingw-w64-${_realname}
+pkgname=("${MINGW_PACKAGE_PREFIX}-${_realname}")
+pkgver=0_9h
+pkgrel=1
+pkgdesc="C Compiler (mingw-w64)"
+arch=('any')
+url="http://sun.hasenbraten.de/vbcc/"
+license=('custom')
+groups=()
+options=('!strip')
+makedepends=('patch' 'make' "${MINGW_PACKAGE_PREFIX}-cc")
+source=(
+  "http://phoenix.owl.de/tags/vbcc${pkgver}.tar.gz"
+  '001-Add-hc12-dt.-c-h.patch'
+  '002-mingw-build-fix.patch'
+)
+sha256sums=('92964268d51fe823fdb3b6ff5706273b14ed13fdbab1e6a8cfa9277597f7a93a'
+            '0b5968461557ded6eedfe05ebb6f0d12b8efa8d311902beae661ee286f05b781'
+            '1b1f73475bb9eab31f75f8f83300816c0aeccfdf39adf002e417e764d172b0a5')
+
+prepare() {
+  cd "${_realname}"
+
+  rm -f machines/hc12/dt.c
+  rm -f machines/hc12/dt.h
+
+  patch --forward -p1 -i ${srcdir}/001-Add-hc12-dt.-c-h.patch
+  patch --forward -p1 -i ${srcdir}/002-mingw-build-fix.patch
+
+  rm -f machines/hc12/*.o
+  rm -f bin/*.exe
+  touch bin/dtgen.exe
+}
+
+build() {
+  cd "${_realname}"
+
+  make TARGET=hc12
+}
+
+package_vbcc() {
+  cd "${_realname}"
+
+  mkdir -p "$pkgdir${MINGW_PREFIX}/bin/"
+  cp ./bin/v*.exe "$pkgdir${MINGW_PREFIX}/bin/"
+}
+
+# template start; name=mingw-w64-splitpkg-wrappers; version=1.0;
+# vim: set ft=bash :
+
+# generate wrappers
+for _name in "${pkgname[@]}"; do
+  _short="package_${_name#${MINGW_PACKAGE_PREFIX}-}"
+  _func="$(declare -f "${_short}")"
+  eval "${_func/#${_short}/package_${_name}}"
+done
+# template end;
