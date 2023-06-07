@@ -4,17 +4,17 @@ Date: Tue, 6 Jun 2023 15:22:30 -0400
 Subject: Add hc12/dt.{c,h}
 
 ---
- machines/hc12/dt.c |  38 ++++++++++++++++
- machines/hc12/dt.h | 106 +++++++++++++++++++++++++++++++++++++++++++++
+ objects/hc12/dt.c |  38 ++++++++++++++++
+ objects/hc12/dt.h | 106 +++++++++++++++++++++++++++++++++++++++++++++
  2 files changed, 144 insertions(+)
- create mode 100644 machines/hc12/dt.c
- create mode 100644 machines/hc12/dt.h
+ create mode 100644 objects/hc12/dt.c
+ create mode 100644 objects/hc12/dt.h
 
-diff --git a/machines/hc12/dt.c b/machines/hc12/dt.c
+diff --git a/objects/hc12/dt.c b/objects/hc12/dt.c
 new file mode 100644
 index 0000000..db465dd
 --- /dev/null
-+++ b/machines/hc12/dt.c
++++ b/objects/hc12/dt.c
 @@ -0,0 +1,38 @@
 +
 +
@@ -54,11 +54,11 @@ index 0000000..db465dd
 +#include "dtswap32f.c"
 +dt13f dtcnv13t(dt13t
 +#include "dtswap32t.c"
-diff --git a/machines/hc12/dt.h b/machines/hc12/dt.h
+diff --git a/objects/hc12/dt.h b/objects/hc12/dt.h
 new file mode 100644
 index 0000000..4d8a371
 --- /dev/null
-+++ b/machines/hc12/dt.h
++++ b/objects/hc12/dt.h
 @@ -0,0 +1,106 @@
 +
 +
@@ -167,5 +167,3 @@ index 0000000..4d8a371
 +#define zldeqto(a,b) (dtcnv13f(a)==dtcnv13f(b))
 +#endif
 -- 
-2.41.0
-

@@ -1,11 +1,15 @@
 # Maintainer: Tim S <stahta01@gmail.com>
 
 _realname=vbcc
+_cpu=6809
 
 pkgbase=mingw-w64-${_realname}
-pkgname=("${MINGW_PACKAGE_PREFIX}-${_realname}")
+pkgname=("${MINGW_PACKAGE_PREFIX}-${_realname}${_cpu}")
+provides=("${MINGW_PACKAGE_PREFIX}-${_realname}")
+conflicts=("${MINGW_PACKAGE_PREFIX}-${_realname}")
 pkgver=0_9h
-pkgrel=1
+_patch=P2
+pkgrel=2
 pkgdesc="code-generator for 6809/6803/68hc12 (mingw-w64)"
 arch=('any')
 url="http://sun.hasenbraten.de/vbcc/"
@@ -14,19 +18,19 @@ groups=()
 options=('!strip')
 makedepends=('patch' 'make' "${MINGW_PACKAGE_PREFIX}-cc")
 source=(
-  "http://phoenix.owl.de/tags/vbcc${pkgver}.tar.gz"
+  "http://phoenix.owl.de/tags/vbcc${pkgver}${_patch}.tar.gz"
   '001-Add-hc12-dt.-c-h.patch'
   '002-mingw-build-fix.patch'
 )
-sha256sums=('92964268d51fe823fdb3b6ff5706273b14ed13fdbab1e6a8cfa9277597f7a93a'
-            '0b5968461557ded6eedfe05ebb6f0d12b8efa8d311902beae661ee286f05b781'
+sha256sums=('1f07497c76125eee1f40414779fb9c9aa547cc2a413b73d5b5adb31f9146bcbb'
+            '19c2e232b482672a816bdf95fc1e7d8b3095272fb6d1ebea4538b0d4546b324a'
             '1b1f73475bb9eab31f75f8f83300816c0aeccfdf39adf002e417e764d172b0a5')
 
 prepare() {
   cd "${_realname}"
 
-  rm -f machines/hc12/dt.c
-  rm -f machines/hc12/dt.h
+  rm -f objects/hc12/dt.c
+  rm -f objects/hc12/dt.h
 
   patch --forward -p1 -i ${srcdir}/001-Add-hc12-dt.-c-h.patch
   patch --forward -p1 -i ${srcdir}/002-mingw-build-fix.patch
