@@ -11,10 +11,12 @@ newlib6809lw        fails to build
 toolshed            builds for MINGW32 and MINGW64
 dasmfw              builds for MINGW32, MINGW64, and UCRT64
 vasm                builds for MINGW32, MINGW64, and UCRT64
+vbcc                builds for MINGW32, MINGW64, and UCRT64         Likely does not work because of missing files
 xroar               builds for MINGW32, MINGW64, and UCRT64
 
 Primary packages listed in normal build order
 vasm
+vbcc
 asm6809
 dasmfw
 xroar
