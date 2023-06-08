@@ -8,8 +8,10 @@ _syntax3=mot
 
 pkgbase=mingw-w64-${_realname}
 pkgname=("${MINGW_PACKAGE_PREFIX}-${_realname}${_cpu}")
+provides=("${MINGW_PACKAGE_PREFIX}-${_realname}")
+conflicts=("${MINGW_PACKAGE_PREFIX}-${_realname}")
 pkgver=1_9d
-pkgrel=1
+pkgrel=2
 pkgdesc="Assembler for the Motorola 6809 and Hitachi 6309 microprocessors (mingw-w64)"
 arch=('any')
 url="http://sun.hasenbraten.de/vasm/"
