@@ -7,8 +7,8 @@ _target=${_machine}-unknown
 
 pkgbase=mingw-w64-${_realname}
 pkgname="${MINGW_PACKAGE_PREFIX}-${_realname}"
-pkgver=0.1.81
-pkgrel=4
+pkgver=0.1.82
+pkgrel=1
 pkgdesc="6809-generating cross-compiler for a subset of the C language (mingw-w64)"
 arch=('any')
 url="http://perso.b2b2c.ca/~sarrazip/dev/cmoc.html"
@@ -19,21 +19,20 @@ depends=('perl' "${MINGW_PACKAGE_PREFIX}-lwtools"
          "${MINGW_PACKAGE_PREFIX}-gcc" # provides cpp
          "${MINGW_PACKAGE_PREFIX}-gcc-libs")
 makedepends=('flex' "${MINGW_PACKAGE_PREFIX}-discount")
-#        https://perso.b2b2c.ca/~sarrazip/dev/cmoc-0.1.80.tar.gz
-source=("https://perso.b2b2c.ca/~sarrazip/dev/$_realname-$pkgver.tar.gz"
+source=("http://perso.b2b2c.ca/~sarrazip/dev/$_realname-$pkgver.tar.gz"
         '001-Build-fixes-for-MinGW.patch'
-        '002-Remove-single-quote-around-define.patch'
-        '003-Remove-single-quotes-from-filenames.patch')
-sha256sums=('95d46ed006865b378960ddcf8e0df56c722287d4f4de969a99af167e6552b48b'
-            'f08f3adc7f0909de636cfccff0946cd261f8345d767aaefb983d8e2a2453f527'
-            '38f06e747f70879a2abf9341938630907f53594de5289f9e51a6125865e391a4'
-            '36254011e245f861382404c2bf4ef50a39d9be7d1b4e28c5e622b78194edc019')
+        '003-Remove-single-quotes-from-filenames.patch'
+        '004-Remove-single-quotes-in-Parameters.cpp.patch')
+sha256sums=('892ace681569e09b5aa0c1f4cfa3d2b86ea194c0360545799f0aaa091e06a61e'
+            '0f0808d0048dcb9b5d278ef054373fbd1975a8a798d7ed2f4319c5a2f5ec3c05'
+            '77ce38029e6eb9d86ab107e63bf8abf92277fe79abe5f8aa28bd7a6cccee8e71'
+            '6ce51513f63fba66d5cef34518b67de05aa59febcd15a343921dc9bf34b24f35')
 
 prepare() {
   cd "$_realname-$pkgver"
   patch -p1 -i "$srcdir"/001-Build-fixes-for-MinGW.patch
-  patch -p1 -i "$srcdir"/002-Remove-single-quote-around-define.patch
   patch -p1 -i "$srcdir"/003-Remove-single-quotes-from-filenames.patch
+  patch -p1 -i "$srcdir"/004-Remove-single-quotes-in-Parameters.cpp.patch
 }
 
 build() {
