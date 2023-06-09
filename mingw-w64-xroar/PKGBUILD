@@ -3,8 +3,8 @@
 _realname=xroar
 pkgbase=mingw-w64-${_realname}
 pkgname=(${MINGW_PACKAGE_PREFIX}-${_realname})
-pkgver=1.3.1
-pkgrel=2
+pkgver=1.4.1
+pkgrel=1
 _sourcedir=${_realname}-${pkgver}
 pkgdesc="Color Computer 1/2/3 emulator (mingw-w64)"
 arch=('any')
@@ -24,7 +24,7 @@ checkdepends=()
 options=('!strip')
 source=("https://www.6809.org.uk/xroar/dl/xroar-${pkgver}.tar.gz"
         '001-Mingw-build-fix.patch')
-sha256sums=('d3096f10fa1e0a4bb4bc77d3aca73283eff8c74dcd4e9955228b341577f628e7'
+sha256sums=('3cbc2cb1788c0f2a353753eb4cc3cb1ef552c268c1cfd90cad93864a6aeeb939'
             '0497698cdbde32a560f1786b4f991ebe09c508ec5e45a18d0cb225eacc520d26')
 
 prepare() {
@@ -36,7 +36,8 @@ prepare() {
 build() {
   cd "${srcdir}/${_sourcedir}"
 
-  sed --in-place 's|MINGW_LIBS="-lmingw32 -lwinmm -mwindows -lws2_32"|MINGW_LIBS="-lmingw32 -lwinmm -mwindows -lws2_32 -lregex"|' configure
+  # Add missing mingw library of regex
+  sed --in-place 's|MINGW_LIBS="-lmingw32 -lwinmm -mwindows -lws2_32 -lcomctl32"|MINGW_LIBS="-lmingw32 -lwinmm -mwindows -lws2_32 -lcomctl32 -lregex"|' configure
 
   ac_cv_func_malloc_0_nonnull=yes ac_cv_func_realloc_0_nonnull=yes \
   ./configure --enable-coco3 -verbose \
