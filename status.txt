@@ -12,9 +12,11 @@ toolshed            builds for MINGW32 and MINGW64
 dasmfw              builds for MINGW32, MINGW64, and UCRT64
 vasm                builds for MINGW32, MINGW64, and UCRT64
 vbcc                builds for MINGW32, MINGW64, and UCRT64         Likely does not work because of missing files
+vlink               builds for MINGW32, MINGW64, and UCRT64
 xroar               builds for MINGW32, MINGW64, and UCRT64
 
 Primary packages listed in normal build order
+vlink
 vasm
 vbcc
 asm6809
