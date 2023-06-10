@@ -1,18 +1,21 @@
 # Maintainer: Tim S <stahta01@gmail.com>
 
 _realname=vasm
-_cpu=6809
+_cpu1=6809
+_cpu2=6502
 _syntax1=oldstyle
 _syntax2=std
 _syntax3=mot
 
 pkgbase=mingw-w64-${_realname}
-pkgname=("${MINGW_PACKAGE_PREFIX}-${_realname}${_cpu}")
-provides=("${MINGW_PACKAGE_PREFIX}-${_realname}")
-conflicts=("${MINGW_PACKAGE_PREFIX}-${_realname}")
+pkgname=(
+  "${MINGW_PACKAGE_PREFIX}-${_realname}"
+  "${MINGW_PACKAGE_PREFIX}-${_realname}${_cpu1}"
+  "${MINGW_PACKAGE_PREFIX}-${_realname}${_cpu2}"
+)
 pkgver=1_9d
-pkgrel=2
-pkgdesc="Assembler for the Motorola 6809 and Hitachi 6309 microprocessors (mingw-w64)"
+pkgrel=3
+pkgdesc="Assembler for microprocessors (mingw-w64)"
 arch=('any')
 url="http://sun.hasenbraten.de/vasm/"
 license=('custom')
@@ -39,25 +42,52 @@ build() {
 
   make clean
   rm -f obj/*.o
-  make CPU=${_cpu} SYNTAX=${_syntax1}
+  make CPU=${_cpu1} SYNTAX=${_syntax1}
   rm -f obj/*.o
-  make CPU=${_cpu} SYNTAX=${_syntax2}
+  make CPU=${_cpu1} SYNTAX=${_syntax2}
   rm -f obj/*.o
-  make CPU=${_cpu} SYNTAX=${_syntax3}
+  make CPU=${_cpu1} SYNTAX=${_syntax3}
+  rm -f obj/*.o
+  make CPU=${_cpu2} SYNTAX=${_syntax1}
+  rm -f obj/*.o
+  make CPU=${_cpu2} SYNTAX=${_syntax2}
+  rm -f obj/*.o
+  make CPU=${_cpu2} SYNTAX=${_syntax3}
 }
 
-package_vasm6809() {
+package_vasm() {
   cd "${_realname}"
 
   mkdir -p "$pkgdir${MINGW_PREFIX}/bin/"
   cp vobjdump.exe "$pkgdir${MINGW_PREFIX}/bin/"
-  cp vasm6809_oldstyle.exe "$pkgdir${MINGW_PREFIX}/bin/"
-  cp vasm6809_std.exe "$pkgdir${MINGW_PREFIX}/bin/"
-  cp vasm6809_mot.exe "$pkgdir${MINGW_PREFIX}/bin/"
 
   mkdir -p "$pkgdir${MINGW_PREFIX}/share/licenses/${_realname}"
   install -Dm644 ${srcdir}/LICENSE \
     "$pkgdir${MINGW_PREFIX}/share/licenses/${_realname}/"
+}
+
+package_vasm6809() {
+  pkgdesc="Assembler for the Motorola 6809 and Hitachi 6309 microprocessors (mingw-w64)"
+  depends=("${MINGW_PACKAGE_PREFIX}-${_realname}")
+
+  cd "${_realname}"
+
+  mkdir -p "$pkgdir${MINGW_PREFIX}/bin/"
+  cp vasm6809_oldstyle.exe "$pkgdir${MINGW_PREFIX}/bin/"
+  cp vasm6809_std.exe "$pkgdir${MINGW_PREFIX}/bin/"
+  cp vasm6809_mot.exe "$pkgdir${MINGW_PREFIX}/bin/"
+}
+
+package_vasm6502() {
+  pkgdesc="Assembler for the 6502 and related microprocessors (mingw-w64)"
+  depends=("${MINGW_PACKAGE_PREFIX}-${_realname}")
+
+  cd "${_realname}"
+
+  mkdir -p "$pkgdir${MINGW_PREFIX}/bin/"
+  cp vasm6502_oldstyle.exe "$pkgdir${MINGW_PREFIX}/bin/"
+  cp vasm6502_std.exe "$pkgdir${MINGW_PREFIX}/bin/"
+  cp vasm6502_mot.exe "$pkgdir${MINGW_PREFIX}/bin/"
 }
 
 # template start; name=mingw-w64-splitpkg-wrappers; version=1.0;
