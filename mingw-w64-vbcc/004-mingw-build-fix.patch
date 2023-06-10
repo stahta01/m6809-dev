@@ -1,0 +1,22 @@
+From 33fea25eb581fbbfb7e4821973cdd7e398b4ebff Mon Sep 17 00:00:00 2001
+From: Tim Stahlhut <stahta01@gmail.com>
+Date: Thu, 8 Jun 2023 12:16:17 -0400
+Subject: mingw build fix
+
+---
+ machines/6502/machine.h | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/machines/6502/machine.h b/machines/6502/machine.h
+index b2c5e45..aa24e4c 100755
+--- a/machines/6502/machine.h
++++ b/machines/6502/machine.h
+@@ -10,6 +10,7 @@
+ #define NUM_BIGP (NUM_BIG/2)
+ #define FIXED_SP 1
+ 
++#include <stdint.h>
+ #include "dt.h"
+ 
+ #undef CHAR
+-- 
