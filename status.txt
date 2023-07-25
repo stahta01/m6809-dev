@@ -4,6 +4,7 @@ asm6809             builds for MINGW32, MINGW64, and UCRT64
 cc65                builds for MINGW32, MINGW64, and UCRT64
 cmoc                builds for MINGW32, MINGW64, and UCRT64
 cmoc-os9            builds for MINGW32, MINGW64, and UCRT64
+gcc6502             builds for MINGW32, MINGW64, and UCRT64
 gcc6809as           boot package builds for MINGW32 and MINGW64
 gcc6809lw           boot package builds for MINGW32 and MINGW64
 lwtools             builds for MINGW32, MINGW64, and UCRT64
@@ -30,3 +31,4 @@ cmoc-os9
 
 Secondary packages listed in normal build order (not normally built)
 cc65
+gcc6502
