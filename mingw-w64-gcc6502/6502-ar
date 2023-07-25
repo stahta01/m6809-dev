@@ -1,0 +1,13 @@
+#!/bin/sh
+CC65_PATH=${CC65_PATH:-$MINGW_PREFIX/bin}
+AR65=${CC65_PATH}/ar65
+ARG=$1
+case "$ARG" in
+  "rc"|"cr")
+    ARG=a
+    ;;
+  *)
+    ;;
+esac
+shift
+exec ${AR65} $ARG $@

@@ -1,0 +1,104 @@
+# Maintainer:  Tim Stahlhut <stahta01@gmail.com>
+
+_last_gcc_commit=457a4c2e2d7ebc5d6943d378e129a7653a8d44d3
+
+_realname=gcc6502
+_sourcedir=${_realname}-git
+pkgbase=mingw-w64-${_realname}
+pkgname="${MINGW_PACKAGE_PREFIX}-${_realname}-git"
+provides=("${MINGW_PACKAGE_PREFIX}-${_realname}")
+conflicts=("${MINGW_PACKAGE_PREFIX}-${_realname}")
+pkgver=6.0.0.r138533.c1057
+pkgrel=1
+pkgdesc="GCC C compiler for 6502 family microprocessors (mingw-w64)"
+arch=('any')
+mingw_arch=('mingw32' 'mingw64' 'ucrt64')
+options=('!strip')
+license=('GPL2')
+makedepends=('git'
+             "${MINGW_PACKAGE_PREFIX}-cc65"
+             "${MINGW_PACKAGE_PREFIX}-gcc")
+url='https://github.com/itszor/gcc-6502/'
+source=(${_sourcedir}::git+https://github.com/itszor/gcc-6502
+        '6502-ar'
+        '6502-ranlib')
+sha512sums=('SKIP'
+            'be6d0fc77e1a20d461811538f0e1c03096ab2d47265977decfac4d94b21ad1cd31c40b18797c0d668395aeb6d3bdbc3f475da3e084567b40ac2865fca78255ad'
+            'b16d8486464d73d9fab7192c6b4893b75554e80cda5292d2ec51db30e2a9c3bea6b137c311f14e82d17aec67b7c77570f877b181f95fca51c06504e6856861b6')
+
+_git_prepatch_commit=
+
+pkgver() {
+  cd ${srcdir}/${_sourcedir}
+
+  if [[ -n "${_git_prepatch_commit}" ]]; then
+    printf "%s.r%s.c%s" "6.0.0" $(git rev-list --count ${_last_gcc_commit}) \
+      $(git rev-list --count ${_last_gcc_commit}..${_git_prepatch_commit})
+  else
+    printf "%s" ${pkgver}
+  fi
+}
+
+prepare() {
+  cd ${srcdir}/${_sourcedir}
+  _git_prepatch_commit=$(git rev-parse HEAD)
+
+}
+
+build() {
+  # Replace the MSys2 default FLAG values
+  export LDFLAGS="-pipe"
+  export CPPFLAGS=""
+  export CFLAGS="-pipe"
+
+  MORE_OPTIONS="--enable-checking"
+  DEBUG_FLAGS="-O0 -g"
+
+  CA65_PATH="${MINGW_PREFIX}/bin/ca65"
+  LD65_PATH="${MINGW_PREFIX}/bin/ld65"
+
+  echo ""
+  echo "CC [gcc] := ${CC-gcc}"
+  ${CC-gcc} --version | head -1
+  pacman -Q ${MINGW_PACKAGE_PREFIX}-headers
+  pacman -Q ${MINGW_PACKAGE_PREFIX}-crt
+  echo ""
+
+  if [[ -d "build-${MSYSTEM}" ]]; then
+    rm -rf build-${MSYSTEM}
+  fi
+  mkdir build-${MSYSTEM} && cd build-${MSYSTEM}
+
+  pwd
+
+  ../${_sourcedir}/configure \
+      --prefix=${MINGW_PREFIX} \
+      --datarootdir=${MINGW_PREFIX}/share/6502 \
+      --with-sysroot=${MINGW_PREFIX}/6502 \
+      --with-build-sysroot=${MINGW_PREFIX}/6502 \
+      --target=6502 \
+      --enable-languages=c \
+      --with-as=${CA65_PATH} \
+      --with-ld=${LD65_PATH} \
+      --without-headers \
+      --with-newlib \
+      --disable-nls \
+      --disable-decimal-float \
+      --disable-libssp \
+      --disable-threads \
+      --disable-libatomic \
+      --disable-libitm \
+      --disable-libsanitizer \
+      --disable-libquadmath \
+      --disable-lto \
+      --enable-sjlj-exceptions \
+      --without-isl $MORE_OPTIONS
+
+      make -j1 all-gcc AR_FOR_TARGET="${srcdir}/6502-ar" RANLIB_FOR_TARGET="${srcdir}/6502-ranlib" BOOT_CFLAGS="$DEBUG_FLAGS" CFLAGS="$DEBUG_FLAGS" CXXFLAGS="$DEBUG_FLAGS"
+}
+
+package() {
+  cd ${srcdir}/build-${MSYSTEM}
+
+  make -j1 RANLIB_FOR_TARGET="${srcdir}/6502-ranlib" DESTDIR="$pkgdir/" install-gcc
+}
