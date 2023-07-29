@@ -6,7 +6,7 @@ pkgbase=mingw-w64-${_realname}
 pkgname=(
   ${MINGW_PACKAGE_PREFIX}-${_realname}
 )
-pkgver=0.35.v+0.c1.gde72c35
+pkgver=0.35.v+1.c1.gfba52d4
 pkgrel=1
 pkgdesc="DisASseMbler FrameWork (mingw-w64)"
 arch=('any')
@@ -32,7 +32,11 @@ _git_base_commit=
 pkgver() {
   cd ${srcdir}/${_sourcedir}
   local _version=$(head -n 80 dasmfw.h | grep 'DASMFW_VERSION' | sed -e 's/.* //' | tr '\n' '.' | sed -e 's/\"//g' | sed 's/.$/\n/')
-  printf "%s.v+%s.c%s.g%s" "$_version" $(git rev-list --count $(git rev-list -1 ${_git_base_commit} dasmfw.h)..${_git_base_commit}) $(git rev-list --count ${_git_base_commit}..HEAD) $(git rev-parse --short ${_git_base_commit})
+  if [[ -n "${_git_base_commit}" ]]; then
+    printf "%s.v+%s.c%s.g%s" "$_version" $(git rev-list --count $(git rev-list -1 ${_git_base_commit} dasmfw.h)..${_git_base_commit}) $(git rev-list --count ${_git_base_commit}..HEAD) $(git rev-parse --short ${_git_base_commit})
+  else
+    printf "%s" ${pkgver}
+  fi
 }
 
 prepare() {
