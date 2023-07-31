@@ -1,0 +1,149 @@
+# Maintainer:  Tim Stahlhut <stahta01@gmail.com>
+# Contributor: Alexey Pavlov <alexpux@gmail.com>
+
+### Major build options
+_include_sub_folder=/${MINGW_CHOST}
+_build_headers_only=no                # Yes for bootstrap part 1
+
+_realname=crt
+pkgbase=mingw-w64-${_realname}-git
+pkgname=($([[ "$_build_headers_only" != "yes" ]] && echo  "${MINGW_PACKAGE_PREFIX}-${_realname}-git")
+         "${MINGW_PACKAGE_PREFIX}-headers-git")
+replaces=("${MINGW_PACKAGE_PREFIX}-${_realname}-svn")
+pkgver=6.0.0.r56.gd72c4fe62
+pkgrel=1
+_commit='d72c4fe62568a216d52dca47ca8bace4e220d84f'
+pkgdesc='MinGW-w64 CRT for Windows'
+arch=('any')
+url='https://mingw-w64.sourceforge.io/'
+license=('custom')
+groups=("${MINGW_PACKAGE_PREFIX}-toolchain")
+depends=("${MINGW_PACKAGE_PREFIX}-headers-git")
+makedepends=("git"
+             "${MINGW_PACKAGE_PREFIX}-gcc"
+             "${MINGW_PACKAGE_PREFIX}-binutils")
+options=('!strip' 'staticlibs' '!buildflags' '!emptydirs')
+source=("mingw-w64"::"git+https://git.code.sf.net/p/mingw-w64/mingw-w64#commit=$_commit"
+        0001-Allow-to-use-bessel-and-complex-functions-without-un.patch
+        0002-DirectX-9-fixes-for-VLC.patch
+        0003-DirectX-11-fixes-for-VLC.patch)
+sha256sums=('SKIP'
+            'd641257f7e1469aff89adc33e57702b75fe9667ca035978f890eae1020b6814c'
+            '74dc78f8ef27599d4ebf020f9496316c6afd6677381f13561f30780d144a07e1'
+            'e80b76aa3eef6d0206c4d99ac340a60cfd92ea80392a6ec5122dc3851fbd3286')
+
+pkgver() {
+  cd "${srcdir}/mingw-w64"
+  git describe --long ${_commit} | sed 's/\([^-]*-g\)/r\1/;s/-/./g;s/^v//g'
+}
+
+prepare() {
+  cd ${srcdir}/mingw-w64
+
+  git am --committer-date-is-author-date "${srcdir}/0001-Allow-to-use-bessel-and-complex-functions-without-un.patch"
+  git am --committer-date-is-author-date "${srcdir}/0002-DirectX-9-fixes-for-VLC.patch"
+  git am --committer-date-is-author-date "${srcdir}/0003-DirectX-11-fixes-for-VLC.patch"
+}
+
+build() {
+
+  msg "Configuring ${MSYSTEM} headers"
+  [[ -d ${srcdir}/headers-${MSYSTEM} ]] && rm -rf ${srcdir}/headers-${MSYSTEM}
+  mkdir -p ${srcdir}/headers-${MSYSTEM} && cd ${srcdir}/headers-${MSYSTEM}
+
+  local _default_msvcrt=msvcrt
+  if [[ $MINGW_PACKAGE_PREFIX == *-clang-* ]] || [[ $MINGW_PACKAGE_PREFIX == *-ucrt-* ]]; then
+    _default_msvcrt=ucrt
+  fi
+
+  echo ""
+  echo "CC [gcc] := ${CC-gcc}"
+  ${CC-gcc} --version | head -1
+  echo ""
+
+  ${srcdir}/mingw-w64/mingw-w64-headers/configure \
+    --build=${MINGW_CHOST} \
+    --host=${MINGW_CHOST} \
+    --target=${MINGW_CHOST} \
+    --prefix=${MINGW_PREFIX}${_include_sub_folder} \
+    --enable-sdk=all \
+    --with-default-win32-winnt=0x601 \
+    --with-default-msvcrt=${_default_msvcrt} \
+    --enable-secure-api \
+    --enable-idl --without-widl
+
+if [[ "$_build_headers_only" != "yes" ]]; then
+  msg "Building ${MSYSTEM} CRT"
+  case "$CARCH" in
+    i686)
+      _crt_configure_args="--disable-lib64 --enable-lib32"
+    ;;
+    x86_64)
+      _crt_configure_args="--disable-lib32 --enable-lib64"
+    ;;
+  esac
+
+  local _default_msvcrt=msvcrt
+  if [[ $MINGW_PACKAGE_PREFIX == *-clang-* ]] || [[ $MINGW_PACKAGE_PREFIX == *-ucrt-* ]]; then
+    _default_msvcrt=ucrt
+  fi
+
+  [[ -d ${srcdir}/crt-${MSYSTEM} ]] && rm -rf ${srcdir}/crt-${MSYSTEM}
+  mkdir -p ${srcdir}/crt-${MSYSTEM} && cd ${srcdir}/crt-${MSYSTEM}
+
+  echo ""
+  echo "CC [gcc] := ${CC-gcc}"
+  ${CC-gcc} --version | head -1
+  echo ""
+
+  ${srcdir}/mingw-w64/mingw-w64-crt/configure \
+    --prefix=${MINGW_PREFIX}${_include_sub_folder} \
+    --build=${MINGW_CHOST} \
+    --host=${MINGW_CHOST} \
+    --target=${MINGW_CHOST} \
+    --with-default-msvcrt=${_default_msvcrt} \
+    --with-sysroot=${MINGW_PREFIX}${_include_sub_folder} \
+    --enable-wildcard \
+    ${_crt_configure_args}
+  make
+fi
+}
+
+package_crt-git() {
+  provides=("${MINGW_PACKAGE_PREFIX}-${_realname}")
+  conflicts=("${MINGW_PACKAGE_PREFIX}-${_realname}")
+
+  msg "Installing ${MSYSTEM} crt"
+  cd ${srcdir}/crt-${MSYSTEM}
+  make DESTDIR=${pkgdir} install-strip
+}
+
+package_headers-git() {
+  pkgdesc="MinGW-w64 headers for Windows"
+  provides=("${MINGW_PACKAGE_PREFIX}-headers")
+  conflicts=("${MINGW_PACKAGE_PREFIX}-headers")
+
+  msg "Installing ${MINGW_CHOST} headers"
+  cd ${srcdir}/headers-${MSYSTEM}
+  make DESTDIR=${pkgdir} install
+
+  rm ${pkgdir}${MINGW_PREFIX}${_include_sub_folder}/include/pthread_signal.h
+  rm ${pkgdir}${MINGW_PREFIX}${_include_sub_folder}/include/pthread_time.h
+  rm ${pkgdir}${MINGW_PREFIX}${_include_sub_folder}/include/pthread_unistd.h
+
+  msg "Installing MinGW-w64 licenses"
+  install -Dm644 ${srcdir}/mingw-w64/mingw-w64-headers/ddk/readme.txt ${pkgdir}${MINGW_PREFIX}/share/licenses/${_realname}/ddk-readme.txt
+  install -Dm644 ${srcdir}/mingw-w64/mingw-w64-headers/direct-x/COPYING.LIB ${pkgdir}${MINGW_PREFIX}/share/licenses/${_realname}/direct-x-COPYING.LIB
+  install -Dm644 ${srcdir}/mingw-w64/mingw-w64-headers/direct-x/readme.txt ${pkgdir}${MINGW_PREFIX}/share/licenses/${_realname}/direct-x-readme.txt
+}
+
+# template start; name=mingw-w64-splitpkg-wrappers; version=1.0;
+# vim: set ft=bash :
+
+# generate wrappers
+for _name in "${pkgname[@]}"; do
+  _short="package_${_name#${MINGW_PACKAGE_PREFIX}-}"
+  _func="$(declare -f "${_short}")"
+  eval "${_func/#${_short}/package_${_name}}"
+done
+# template end;
