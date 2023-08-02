@@ -8,5 +8,9 @@
 # Folders to ignore
 /*/pkg/
 /*/src/
+/*/*-git/
+/packages/
 /*toolshed*/toolshed*/
 /mingw-w64-boot-gcc6809lw-git/gcc
+/mingw-w64-crt-git/mingw-w64/
+/mingw-w64-cmoc-os9/cmoc_os9/
