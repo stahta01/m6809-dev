@@ -6,8 +6,6 @@
 /*/*.tar.gz
 /*/*.zip
 # Folders to ignore
-/*/pkg/
-/*/src/
 /*/*-git/
 /packages/
 /*toolshed*/toolshed*/
