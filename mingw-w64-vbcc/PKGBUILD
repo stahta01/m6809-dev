@@ -1,4 +1,4 @@
-# Maintainer: Tim S <stahta01@gmail.com>
+# Maintainer: Tim Stahlhut <stahta01@gmail.com>
 
 _realname=vbcc
 _cpu1=6809
@@ -11,8 +11,8 @@ pkgname=(
   "${MINGW_PACKAGE_PREFIX}-${_realname}"
 )
 pkgver=0_9h
-_patch=P2
-pkgrel=5
+_patch=P3
+pkgrel=6
 pkgdesc="code-generator for 6809/6803/68hc12 (mingw-w64)"
 arch=('any')
 url="http://sun.hasenbraten.de/vbcc/"
@@ -28,7 +28,7 @@ source=(
   '003-Add-6502-dt.-c-h.patch'
   '004-mingw-build-fix.patch'
 )
-sha256sums=('1f07497c76125eee1f40414779fb9c9aa547cc2a413b73d5b5adb31f9146bcbb'
+sha256sums=('cc5571f36ff63158f31b2757c5374b636e073451e147f05575307d56572d9029'
             '19c2e232b482672a816bdf95fc1e7d8b3095272fb6d1ebea4538b0d4546b324a'
             '1b1f73475bb9eab31f75f8f83300816c0aeccfdf39adf002e417e764d172b0a5'
             '276e0ded19a651399be0d21b51f7bcc90ee77559bff23e57c2a991314d460955'
