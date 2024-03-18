@@ -1,24 +1,22 @@
-# Maintainer: Tim S <stahta01@gmail.com>
+# Maintainer: Tim Stahlhut <stahta01@gmail.com>
 
 _realname=asm6809
 
 pkgbase=mingw-w64-${_realname}
 pkgname="${MINGW_PACKAGE_PREFIX}-${_realname}"
-pkgver=2.12
+pkgver=2.13
 pkgrel=1
 pkgdesc="Cross Assembler for the Motorola 6809 and Hitachi 6309 microprocessors (mingw-w64)"
 arch=('any')
 url="https://www.6809.org.uk/asm6809/"
 license=('GPL3')
 groups=("${MINGW_PACKAGE_PREFIX}-${_target}-toolchain")
-source=("https://www.6809.org.uk/asm6809/dl/${_realname}-${pkgver}.tar.gz"
-        '102-Edit-symbol-output-in-program.c.patch')
-sha256sums=('32044f0087ac8fa94ff5f3e54279d91c3df2c21b5c2098b48bbc2754678b22a2'
-            'ce9cfd69272c0dad1e3177c48e268b086a2330353b1d1ddd3f9f71260fb599b2')
+source=("https://www.6809.org.uk/asm6809/dl/${_realname}-${pkgver}.tar.gz")
+sha256sums=('1a5caa2ab411d6f0bdcb97004f7aa2b7f3ade0b7a281a2322380ff9fe116c6cb')
 prepare() {
   cd ${_realname}-$pkgver
 
-  #patch --forward -p1 -i "$srcdir"/102-Edit-symbol-output-in-program.c.patch
+  #patch --forward -p1 -i "$srcdir"/
 }
 
 build() {
