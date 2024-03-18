@@ -1,8 +1,8 @@
 # Maintainer:  Tim Stahlhut <stahta01@gmail.com>
-# Contributor: Alexey Pavlov <alexpux@gmail.com>
-# Contributor: Alexey Borzenkov <snaury@gmail.com>
-# Contributor: Ray Donnelly <mingw.android@gmail.com>
-# Contributor: Renato Silva <br.renatosilva@gmail.com>
+# Contributor: Alexey Pavlov
+# Contributor: Alexey Borzenkov
+# Contributor: Ray Donnelly
+# Contributor: Renato Silva
 
 ### Major build options
 _include_sub_folder=/${MINGW_CHOST}
@@ -36,23 +36,25 @@ fi
 # =========================================== #
 
 _realname=gcc
-pkgbase=mingw-w64-${_realname}6
-pkgname=("${MINGW_PACKAGE_PREFIX}-${_realname}"
-         "${MINGW_PACKAGE_PREFIX}-${_realname}-libs"
-         $([[ "$_enable_fortran" == "yes" ]] && echo "${MINGW_PACKAGE_PREFIX}-${_realname}-libgfortran")
-         $([[ "$_enable_fortran" == "yes" ]] && echo "${MINGW_PACKAGE_PREFIX}-${_realname}-fortran")
-         $([[ "$_enable_ada" == "yes" ]] && echo "${MINGW_PACKAGE_PREFIX}-${_realname}-ada")
-         $([[ "$_enable_objc" == "yes" ]] && echo "${MINGW_PACKAGE_PREFIX}-${_realname}-objc")
+_basepkgver=6
+_basepkgname=${_realname}${_basepkgver}
+pkgbase=mingw-w64-${_realname}${_basepkgver}
+pkgname=("${MINGW_PACKAGE_PREFIX}-${_basepkgname}"
+         "${MINGW_PACKAGE_PREFIX}-${_basepkgname}-libs"
+         $([[ "$_enable_fortran" == "yes" ]] && echo "${MINGW_PACKAGE_PREFIX}-${_basepkgname}-libgfortran")
+         $([[ "$_enable_fortran" == "yes" ]] && echo "${MINGW_PACKAGE_PREFIX}-${_basepkgname}-fortran")
+         $([[ "$_enable_ada" == "yes" ]] && echo "${MINGW_PACKAGE_PREFIX}-${_basepkgname}-ada")
+         $([[ "$_enable_objc" == "yes" ]] && echo "${MINGW_PACKAGE_PREFIX}-${_basepkgname}-objc")
         )
 pkgver=6.5.0
-pkgrel=1
+pkgrel=2
 _sourcedir=${_realname}-${pkgver}
 pkgdesc="GCC for the MinGW-w64"
 arch=('any')
 url="https://gcc.gnu.org"
 license=('GPL' 'LGPL' 'FDL' 'custom')
 groups=("${MINGW_PACKAGE_PREFIX}-toolchain")
-makedepends=("${MINGW_PACKAGE_PREFIX}-${_realname}"
+makedepends=("${MINGW_PACKAGE_PREFIX}-cc"
              $([[ "$_enable_ada" == "yes" ]] && echo "${MINGW_PACKAGE_PREFIX}-${_realname}-ada")
              'libtool'
              "${MINGW_PACKAGE_PREFIX}-binutils"
@@ -381,7 +383,7 @@ build() {
   fi
 }
 
-package_mingw-w64-gcc-libs() {
+package_gcc6-libs() {
   pkgdesc="GNU Compiler Collection (libraries) for MinGW-w64"
   depends=("${MINGW_PACKAGE_PREFIX}-gmp"
            "${MINGW_PACKAGE_PREFIX}-mpc"
@@ -389,6 +391,8 @@ package_mingw-w64-gcc-libs() {
   if [[ "$_enable_threads" == "yes" && "$_threads" == "posix" ]]; then
     depends+=("${MINGW_PACKAGE_PREFIX}-libwinpthread")
   fi
+  provides=("${MINGW_PACKAGE_PREFIX}-${_realname}-libs")
+  conflicts=("${MINGW_PACKAGE_PREFIX}-${_realname}-libs")
 
   # Licensing information
 
@@ -426,22 +430,24 @@ ENDFILE
   fi
 }
 
-package_mingw-w64-gcc() {
+package_gcc6() {
   pkgdesc="GNU Compiler Collection (C,C++,OpenMP) for MinGW-w64"
   depends=("${MINGW_PACKAGE_PREFIX}-binutils"
            "${MINGW_PACKAGE_PREFIX}-crt"
            "${MINGW_PACKAGE_PREFIX}-headers"
            "${MINGW_PACKAGE_PREFIX}-libiconv"
            "${MINGW_PACKAGE_PREFIX}-mpc"
-           "${MINGW_PACKAGE_PREFIX}-${_realname}-libs=${pkgver}-${pkgrel}"
+           "${MINGW_PACKAGE_PREFIX}-${_basepkgname}-libs=${pkgver}-${pkgrel}"
            "${MINGW_PACKAGE_PREFIX}-windows-default-manifest"
            "${MINGW_PACKAGE_PREFIX}-zlib")
   if [[ "$_enable_threads" == "yes" && "$_threads" == "posix" ]]; then
     depends+=("${MINGW_PACKAGE_PREFIX}-winpthreads")
   fi
   provides=("${MINGW_PACKAGE_PREFIX}-${_realname}-base"
+            "${MINGW_PACKAGE_PREFIX}-${_realname}"
             "${MINGW_PACKAGE_PREFIX}-cc")
-  conflicts=("${MINGW_PACKAGE_PREFIX}-${_realname}-base")
+  conflicts=("${MINGW_PACKAGE_PREFIX}-${_realname}-base"
+             "${MINGW_PACKAGE_PREFIX}-${_realname}")
 
   mkdir -p ${pkgdir}${MINGW_PREFIX}/{bin,include,lib,share}
 
@@ -541,19 +547,19 @@ package_mingw-w64-gcc() {
   sed -i 's|%GCC_NAME%|gcc-'${pkgver}'|g' ${pkgdir}${MINGW_PREFIX}/etc/gdbinit
 }
 
-package_mingw-w64-gcc-libgfortran() {
+package_gcc6-libgfortran() {
   pkgdesc="GNU Compiler Collection (libgfortran) for MinGW-w64"
-  depends=("${MINGW_PACKAGE_PREFIX}-${_realname}-libs=${pkgver}-${pkgrel}")
+  depends=("${MINGW_PACKAGE_PREFIX}-${_basepkgname}-libs=${pkgver}-${pkgrel}")
 
   mkdir -p ${pkgdir}${MINGW_PREFIX}/bin
   cd ${srcdir}${MINGW_PREFIX}
   cp bin/libgfortran*.dll                                ${pkgdir}${MINGW_PREFIX}/bin/
 }
 
-package_mingw-w64-gcc-fortran() {
+package_gcc6-fortran() {
   pkgdesc="GNU Compiler Collection (Fortran) for MinGW-w64"
-  depends=("${MINGW_PACKAGE_PREFIX}-${_realname}=${pkgver}-${pkgrel}"
-           "${MINGW_PACKAGE_PREFIX}-${_realname}-libgfortran=${pkgver}-${pkgrel}")
+  depends=("${MINGW_PACKAGE_PREFIX}-${_basepkgname}=${pkgver}-${pkgrel}"
+           "${MINGW_PACKAGE_PREFIX}-${_basepkgname}-libgfortran=${pkgver}-${pkgrel}")
 
   mkdir -p ${pkgdir}${MINGW_PREFIX}/{bin,lib,share}
 
@@ -574,9 +580,9 @@ package_mingw-w64-gcc-fortran() {
   cp share/info/gfortran.info*                          ${pkgdir}${MINGW_PREFIX}/share/info/
 }
 
-package_mingw-w64-gcc-ada() {
+package_gcc6-ada() {
   pkgdesc="GNU Compiler Collection (Ada) for MinGW-w64"
-  depends=("${MINGW_PACKAGE_PREFIX}-${_realname}=${pkgver}-${pkgrel}")
+  depends=("${MINGW_PACKAGE_PREFIX}-${_basepkgname}=${pkgver}-${pkgrel}")
 
   mkdir -p ${pkgdir}${MINGW_PREFIX}/{bin,lib,share}
 
@@ -596,9 +602,9 @@ package_mingw-w64-gcc-ada() {
   cp share/info/gnat_ugn.info*                          ${pkgdir}${MINGW_PREFIX}/share/info/
 }
 
-package_mingw-w64-gcc-objc() {
+package_gcc6-objc() {
   pkgdesc="GNU Compiler Collection (ObjC,Obj-C++) for MinGW-w64"
-  depends=("${MINGW_PACKAGE_PREFIX}-${_realname}=${pkgver}-${pkgrel}")
+  depends=("${MINGW_PACKAGE_PREFIX}-${_basepkgname}=${pkgver}-${pkgrel}")
 
   mkdir -p ${pkgdir}${MINGW_PREFIX}/{bin,lib}
 
@@ -612,79 +618,13 @@ package_mingw-w64-gcc-objc() {
   cp lib/libobjc.*                                       ${pkgdir}${MINGW_PREFIX}/lib/gcc/${MINGW_CHOST}/${pkgver}/
 }
 
-# Wrappers for package functions
+# template start; name=mingw-w64-splitpkg-wrappers; version=1.0;
+# vim: set ft=bash :
 
-# 32-bit wrappers
-package_mingw-w64-i686-gcc-libs() {
-  package_mingw-w64-gcc-libs
-}
-
-package_mingw-w64-i686-gcc() {
-  package_mingw-w64-gcc
-}
-
-package_mingw-w64-i686-gcc-libgfortran() {
-  package_mingw-w64-gcc-libgfortran
-}
-
-package_mingw-w64-i686-gcc-fortran() {
-  package_mingw-w64-gcc-fortran
-}
-
-package_mingw-w64-i686-gcc-ada() {
-  package_mingw-w64-gcc-ada
-}
-
-package_mingw-w64-i686-gcc-objc() {
-  package_mingw-w64-gcc-objc
-}
-
-# 64-bit wrappers
-package_mingw-w64-x86_64-gcc-libs() {
-  package_mingw-w64-gcc-libs
-}
-
-package_mingw-w64-x86_64-gcc() {
-  package_mingw-w64-gcc
-}
-
-package_mingw-w64-x86_64-gcc-libgfortran() {
-  package_mingw-w64-gcc-libgfortran
-}
-
-package_mingw-w64-x86_64-gcc-fortran() {
-  package_mingw-w64-gcc-fortran
-}
-
-package_mingw-w64-x86_64-gcc-ada() {
-  package_mingw-w64-gcc-ada
-}
-
-package_mingw-w64-x86_64-gcc-objc() {
-  package_mingw-w64-gcc-objc
-}
-
-# URT64-bit wrappers
-package_mingw-w64-ucrt-x86_64-gcc-libs() {
-  package_mingw-w64-gcc-libs
-}
-
-package_mingw-w64-ucrt-x86_64-gcc() {
-  package_mingw-w64-gcc
-}
-
-package_mingw-w64-ucrt-x86_64-gcc-libgfortran() {
-  package_mingw-w64-gcc-libgfortran
-}
-
-package_mingw-w64-ucrt-x86_64-gcc-fortran() {
-  package_mingw-w64-gcc-fortran
-}
-
-package_mingw-w64-ucrt-x86_64-gcc-ada() {
-  package_mingw-w64-gcc-ada
-}
-
-package_mingw-w64-ucrt-x86_64-gcc-objc() {
-  package_mingw-w64-gcc-objc
-}
+# generate wrappers
+for _name in "${pkgname[@]}"; do
+  _short="package_${_name#${MINGW_PACKAGE_PREFIX}-}"
+  _func="$(declare -f "${_short}")"
+  eval "${_func/#${_short}/package_${_name}}"
+done
+# template end;
