@@ -1,0 +1,54 @@
+# Maintainer: Tim S <stahta01@gmail.com>
+# Original Author: Paul Hentschel <paul at hpminc dot com>
+
+_realname=toolshed
+_machine=m6809
+_target=${_machine}-unknown
+_basepkgver=2.2
+
+pkgname=${_realname}-hg
+pkgver=2.2+r819.221d493c19f8
+pkgrel=1
+pkgdesc="Utilities for Tandy Color Computer and Dragon microcomputers cross-development"
+arch=('x86_64')
+url="http://toolshed.sourceforge.net"
+license=('PerlArtistic')
+groups=("${_target}-toolchain")
+makedepends=('gcc' 'make' 'mercurial' 'patch')
+source=("${_realname}::hg+http://hg.code.sf.net/p/toolshed/code")
+sha256sums=('SKIP')
+
+pkgver() {
+  cd "${_realname}"
+  printf "${_basepkgver}+r%s.%s" "$(hg identify -n)" "$(hg identify -i)"
+}
+
+prepare() {
+  cd "${_realname}"
+}
+
+build() {
+  cd "${_realname}"
+  make -C build/unix clean
+  make -C build/unix
+}
+
+check() {
+  cd "${_realname}"
+  ./tests/hybrid-dsk.sh
+  ./tests/multihdb-dsk.sh
+}
+
+package() {
+  cd "${_realname}"
+  make DESTDIR="$pkgdir/" -C build/unix install
+
+  # Install license file
+  sed -n '/Copyright/,/PARTICULAR PURPOSE./p' casm/src/util.h > LICENSE
+  install -Dm644 -t "$pkgdir${MSYSTEM_PREFIX}/share/licenses/${_realname}" LICENSE
+
+  # Install image for HTML manual
+  install -m644 doc/cover.jpg "$pkgdir${MSYSTEM_PREFIX}/share/doc/${_realname}/"
+}
+
+# vim:set ts=2 sw=2 et:
