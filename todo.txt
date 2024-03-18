@@ -1,3 +1,6 @@
 Fix LWTools check/test bug
 Fix CMOC check/test bug
 Test cmoc-os9
+Upgrade CMOC; requires source code changes
+Upgrade vbcc; likely requires source code changes
+Try converting toolshed to an MSys2/Cygwin package instead of an MSys2 MinGW package
