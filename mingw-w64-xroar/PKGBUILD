@@ -3,7 +3,7 @@
 _realname=xroar
 pkgbase=mingw-w64-${_realname}
 pkgname=(${MINGW_PACKAGE_PREFIX}-${_realname})
-pkgver=1.4.1
+pkgver=1.5.4
 pkgrel=1
 _sourcedir=${_realname}-${pkgver}
 pkgdesc="Color Computer 1/2/3 emulator (mingw-w64)"
@@ -13,6 +13,7 @@ license=("GPL3")
 url="https://www.6809.org.uk/xroar"
 depends=("${MINGW_PACKAGE_PREFIX}-gcc-libs" # no idea if this is required at run-time
          "${MINGW_PACKAGE_PREFIX}-SDL2"
+         "${MINGW_PACKAGE_PREFIX}-libpng"
          "${MINGW_PACKAGE_PREFIX}-libsystre"
          "${MINGW_PACKAGE_PREFIX}-zlib"
          "${MINGW_PACKAGE_PREFIX}-libsndfile")
@@ -24,7 +25,7 @@ checkdepends=()
 options=('!strip')
 source=("https://www.6809.org.uk/xroar/dl/xroar-${pkgver}.tar.gz"
         '001-Mingw-build-fix.patch')
-sha256sums=('3cbc2cb1788c0f2a353753eb4cc3cb1ef552c268c1cfd90cad93864a6aeeb939'
+sha256sums=('c28aa42f4e47f672a41c079a06ffc7748e0c2e034e0e0a981163408205475316'
             '0497698cdbde32a560f1786b4f991ebe09c508ec5e45a18d0cb225eacc520d26')
 
 prepare() {
@@ -36,13 +37,14 @@ prepare() {
 build() {
   cd "${srcdir}/${_sourcedir}"
 
-  # Add missing mingw library of regex
-  sed --in-place 's|MINGW_LIBS="-lmingw32 -lwinmm -mwindows -lws2_32 -lcomctl32"|MINGW_LIBS="-lmingw32 -lwinmm -mwindows -lws2_32 -lcomctl32 -lregex"|' configure
+  # Add missing mingw libraries of uuid, ole32 and regex
+  sed --in-place 's|MINGW_LIBS="-lmingw32 -lwinmm -mwindows -lws2_32 -lcomctl32"|MINGW_LIBS="-lmingw32 -lwinmm -mwindows -lws2_32 -lcomctl32 -luuid -lole32 -lregex"|' configure
 
   ac_cv_func_malloc_0_nonnull=yes ac_cv_func_realloc_0_nonnull=yes \
   ./configure --enable-coco3 -verbose \
     --build=${MINGW_CHOST} \
     --prefix=${MINGW_PREFIX} \
+    --with-libpng \
     --without-gtk2 --without-gtkgl \
     --enable-filereq-cli --without-alsa \
     --without-oss --without-pulse --without-joydev
