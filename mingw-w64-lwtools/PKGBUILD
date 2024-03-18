@@ -1,4 +1,4 @@
-# Maintainer: Tim S <stahta01@gmail.com>
+# Maintainer: Tim Stahlhut <stahta01@gmail.com>
 # Based on work from https://github.com/hpmachining/os9-dev
 
 _realname=lwtools
@@ -7,7 +7,7 @@ _target=${_machine}-unknown
 
 pkgbase=mingw-w64-${_realname}
 pkgname="${MINGW_PACKAGE_PREFIX}-${_realname}"
-pkgver=4.21
+pkgver=4.22
 pkgrel=1
 pkgdesc="Cross-development tools for the Motorola 6809 and Hitachi 6309 microprocessors (mingw-w64)"
 arch=('any')
@@ -25,7 +25,7 @@ source=(
   '101-printf-debug-added-to-insn_rel.c.patch'
   '102-printf-debug-added-to-insn_indexed.c.patch'
 )
-sha256sums=('f668d943ef98be3427d683f5f3903e8e2900eb1cde4a611c988cfbb6c2b39e8f'
+sha256sums=('94a176c9d567f5cec49800b85ac16e71fffafdfdfefecb15bcf5d784da19301b'
             '7c93dbdaf9a3667ab46fa5cc2bb8fb2c0c992bdce368a0e9a1c26a2d62b26603'
             '7659eacbd05ad1528864468c98dbf9c5e9ba861fdbc5b52e84cee7cbc71af19b'
             '771caed3827c7e73f67c04d80d0cfc489ae435733dab43c3cbffafd17cf825b8'
@@ -34,7 +34,7 @@ sha256sums=('f668d943ef98be3427d683f5f3903e8e2900eb1cde4a611c988cfbb6c2b39e8f'
 prepare() {
   cd "${_realname}-${pkgver}"
 
-  patch -p1 -i ${srcdir}/003-Set-debug-in-Makefile.patch
+  #patch -p1 -i ${srcdir}/003-Set-debug-in-Makefile.patch
   #patch -p1 -i ${srcdir}/004-possible-code-fix.patch
   #patch -p1 -i ${srcdir}/101-printf-debug-added-to-insn_rel.c.patch
   #patch -p1 -i ${srcdir}/102-printf-debug-added-to-insn_indexed.c.patch
