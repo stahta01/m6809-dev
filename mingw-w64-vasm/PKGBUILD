@@ -1,4 +1,4 @@
-# Maintainer: Tim S <stahta01@gmail.com>
+# Maintainer: Tim Stahlhut <stahta01@gmail.com>
 
 _realname=vasm
 _cpu1=6809
@@ -13,8 +13,8 @@ pkgname=(
   "${MINGW_PACKAGE_PREFIX}-${_realname}${_cpu1}"
   "${MINGW_PACKAGE_PREFIX}-${_realname}${_cpu2}"
 )
-pkgver=1_9d
-pkgrel=3
+pkgver=1_9f
+pkgrel=1
 pkgdesc="Assembler for microprocessors (mingw-w64)"
 arch=('any')
 url="http://sun.hasenbraten.de/vasm/"
@@ -27,7 +27,7 @@ source=(
   '001-fix-for-6809-LBEQ-out-of-range-error.patch'
   'LICENSE'
 )
-sha256sums=('0e5d4285bdca8d1db9eae4ea8061788bce603bf5c1f369f070c2218b4915c985'
+sha256sums=('a09d4ff3b5ec50bb7538fb97b9539141376580b590586463569783c36438ebe8'
             'b9676fb57241c9e55c3405720ff167b57dca76470852cef3597e7e8389458e9d'
             '63b3e08e9a45ce5284263fb2a36cf6880c910b789ceda42781eb298ce8175dca')
 
