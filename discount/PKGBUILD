@@ -1,0 +1,58 @@
+# Maintainer: Tim Stahlhut <stahta01@gmail.com>
+# Based on work from https://gitlab.archlinux.org/archlinux/packaging/packages/discount
+#   and https://github.com/msys2/MINGW-packages/tree/master/mingw-w64-discount
+
+_realname=discount
+pkgname=${_realname}
+pkgver=2.2.7d
+pkgrel=1
+pkgdesc="A Markdown implementation written in C"
+arch=('x86_64')
+url="https://www.pell.portland.or.us/~orc/Code/discount/"
+license=('custom:BSD')
+makedepends=('gcc')
+provides=("markdown")
+conflicts=("markdown")
+options=('strip' 'staticlibs')
+#                                       https://www.pell.portland.or.us/~orc/Code/discount/discount-2.2.7c.tar.bz2
+#                                       https://github.com/Orc/discount/archive/refs/tags/v2.2.7d.tar.gz
+source=("${_realname}-${pkgver}.tar.gz"::"https://github.com/Orc/discount/archive/v${pkgver}.tar.gz"
+        'discount-msys-building.patch')
+sha256sums=('eb9f6629dadddb44c3111267b82e51d5fb8364e228cc3533fe937d8a99e0155b'
+            '3e355d880100b054e2acb7a56bd29960da29553bfdcbc9fe812102b55b447a06')
+
+prepare() {
+  cd "${srcdir}"/${_realname}-${pkgver}
+  
+  patch -p1 -i ${srcdir}/discount-msys-building.patch
+
+  sed -e "s/m 444/m 644/g" -i configure.inc
+}
+
+build() {
+  [[ -d "${srcdir}"/build-${MSYSTEM} ]] && rm -rf "${srcdir}"/build-${MSYSTEM}
+  cp -rf "${srcdir}"/${_realname}-${pkgver} "${srcdir}"/build-${MSYSTEM} && cd "${srcdir}"/build-${MSYSTEM}
+
+  # for clang
+  #CFLAGS+=" -Wno-incompatible-function-pointer-types"
+
+  PROG_LN_S=false \
+  AC_CPP_PROG=${MSYSTEM_PREFIX}/bin/cpp.exe \
+  ./configure.sh \
+      --prefix=${MSYSTEM_PREFIX} \
+      --enable-all-features \
+      --shared
+
+  make -j1
+}
+
+package() {
+  cd "${srcdir}/build-${MSYSTEM}"
+  mkdir -p ${pkgdir}${MSYSTEM_PREFIX}/{bin,include,lib}
+  make PREFIX=${MSYSTEM_PREFIX} DESTDIR="${pkgdir}" install.everything
+  mv ${pkgdir}${MSYSTEM_PREFIX}/lib/*.dll ${pkgdir}${MSYSTEM_PREFIX}/bin/
+  install -Dm644 COPYRIGHT "${pkgdir}${MSYSTEM_PREFIX}/share/licenses/${_realname}/LICENSE"
+  
+  local PREFIX_DEPS=$(cygpath -am ${MSYSTEM_PREFIX})
+  find ${pkgdir}${MSYSTEM_PREFIX}/lib/pkgconfig -name *.pc -exec sed -i -e"s|${PREFIX_DEPS}|${MSYSTEM_PREFIX}|g" {} \;
+}
