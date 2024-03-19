@@ -1,0 +1,53 @@
+# Maintainer: Tim S <stahta01@gmail.com>
+# Based on work from https://github.com/hpmachining/os9-dev
+
+_realname=cmoc
+_machine=m6809
+_target=${_machine}-unknown
+
+pkgname=${_realname}
+pkgver=0.1.86
+pkgrel=1
+pkgdesc="6809-generating cross-compiler for a subset of the C language"
+arch=('x86_64')
+url="http://perso.b2b2c.ca/~sarrazip/dev/cmoc.html"
+license=('GPL3')
+groups=("${_target}-toolchain")
+options=('!strip')
+depends=('perl' 'lwtools' 'discount'
+         'gcc' # provides cpp
+        )
+makedepends=('flex')
+source=("http://perso.b2b2c.ca/~sarrazip/dev/$_realname-$pkgver.tar.gz")
+sha256sums=('c9a1ee84b386c927bfccf06ac0ce17935c3bbc0525e0d139c1c7a3c9be6fa567')
+
+prepare() {
+  cd "$_realname-$pkgver"
+}
+
+build() {
+  # Set good default FLAGS
+  export LDFLAGS="-pipe"
+  export CPPFLAGS=""
+  export CFLAGS="-pipe"
+  export CXXFLAGS="-pipe"
+
+  cd "$_realname-$pkgver"
+  ./configure --prefix=${MSYSTEM_PREFIX}
+  make clean && make -j1 && make html
+}
+
+check() {
+  cd "$_realname-$pkgver"
+  make  -k check -j1 # || true
+}
+
+package() {
+  cd "$_realname-$pkgver"
+  make DESTDIR="$pkgdir/" install
+
+  # Install html documentation
+  install -m644 doc/cmoc-{implementation,manual,vectrex}.html "$pkgdir${MSYSTEM_PREFIX}/share/doc/$_realname"
+}
+
+# vim:set ts=2 sw=2 et:
