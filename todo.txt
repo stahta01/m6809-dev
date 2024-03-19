@@ -1,5 +1,3 @@
-Fix LWTools check/test bug
-Fix CMOC check/test bug
+Fix building of cmoc-os9
 Test cmoc-os9
-Upgrade CMOC; requires source code changes
 Upgrade vbcc; likely requires source code changes
