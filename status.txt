@@ -2,15 +2,15 @@
 as6809              builds for MINGW32, MINGW64, and UCRT64
 asm6809             builds for MINGW32, MINGW64, and UCRT64
 cc65                builds for MINGW32, MINGW64, and UCRT64
-cmoc                builds for MINGW32, MINGW64, and UCRT64
-cmoc-os9            builds for MINGW32, MINGW64, and UCRT64
+cmoc                builds for MSYS
+cmoc-os9            Fails to build after cmoc upgrade
 gcc6502             builds for MINGW32, MINGW64, and UCRT64
 gcc6809as           boot package builds for MINGW32 and MINGW64
 gcc6809lw           boot package builds for MINGW32 and MINGW64
-lwtools             builds for MINGW32, MINGW64, and UCRT64
+lwtools             builds for MSYS
 newlib6809as        builds for MINGW32
 newlib6809lw        fails to build
-toolshed            builds for MINGW32 and MINGW64
+toolshed            builds for MSYS
 dasmfw              builds for MINGW32, MINGW64, and UCRT64
 vasm                builds for MINGW32, MINGW64, and UCRT64
 vbcc                builds for MINGW32, MINGW64, and UCRT64         Likely does not work because of missing files
@@ -19,13 +19,14 @@ xroar               builds for MINGW32, MINGW64, and UCRT64
 
 GCC        with posix threads needed to build cmoc
 Primary packages listed in normal build order
+discount            Built with GCC 13.2.0 under MSYS environment
+toolshed            Built with GCC 13.2.0 under MSYS environment
+lwtools             Built with GCC 13.2.0 under MSYS environment
+cmoc                Built with GCC 13.2.0 under MSYS environment
+cmoc-os9            Fails to build with GCC 13.2.0 under MSYS environment
 asm6809             Built with GCC 13.2.0
 dasmfw              Built with GCC 13.2.0
 xroar               Built with GCC 13.2.0
-toolshed            Built with GCC 13.2.0
-lwtools             Built with GCC 13.2.0
-cmoc                Built with GCC 13.2.0
-cmoc-os9            Built with GCC 13.2.0
 vasm                Built with GCC 13.2.0
 
 Secondary packages listed in normal build order (not normally built)
