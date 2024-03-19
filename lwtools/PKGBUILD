@@ -1,0 +1,66 @@
+# Maintainer: Tim Stahlhut <stahta01@gmail.com>
+# Based on work from https://github.com/hpmachining/os9-dev
+
+_realname=lwtools
+_machine=m6809
+_target=${_machine}-unknown
+
+pkgname=${_realname}
+pkgver=4.22
+pkgrel=1
+pkgdesc="Cross-development tools for the Motorola 6809 and Hitachi 6309 microprocessors"
+arch=('x86_64')
+url="http://lwtools.projects.l-w.ca"
+license=('GPL3')
+groups=("${_target}-toolchain")
+options=('!strip')
+makedepends=('patch' 'make' 'perl' 'gcc')
+conflicts=("${MINGW_PACKAGE_PREFIX}-as6809")
+source=(
+  "$url/releases/${_realname}/${_realname}-$pkgver.tar.gz"
+)
+sha256sums=('94a176c9d567f5cec49800b85ac16e71fffafdfdfefecb15bcf5d784da19301b')
+
+prepare() {
+  cd "${_realname}-${pkgver}"
+}
+
+build() {
+  cd "${_realname}-$pkgver"
+  
+  echo "LDFLAGS := $LDFLAGS"
+
+  make clean
+  LDFLAGS+=" -Wl,--allow-multiple-definition" \
+  make V=1
+}
+
+check() {
+  cd "${_realname}-$pkgver"
+  make -k test # || true
+}
+
+package() {
+  cd "${_realname}-$pkgver"
+  make PREFIX=${MSYSTEM_PREFIX} DESTDIR="${pkgdir}" PROGSUFFIX=.exe install
+
+  mkdir -p "${pkgdir}${MSYSTEM_PREFIX}/bin"
+  mkdir -p "${pkgdir}${MSYSTEM_PREFIX}/lib"
+
+  # Install scripts and create symbolic links
+  install -Dm755 -t "$pkgdir${MSYSTEM_PREFIX}/lib/${_realname}" extra/ar extra/as extra/ld
+
+  mkdir -p "$pkgdir${MSYSTEM_PREFIX}/${_target}/bin"
+  cp -f $pkgdir${MSYSTEM_PREFIX}/lib/${_realname}/ar  $pkgdir${MSYSTEM_PREFIX}/${_target}/bin/ar
+  cp -f $pkgdir${MSYSTEM_PREFIX}/lib/${_realname}/as  $pkgdir${MSYSTEM_PREFIX}/${_target}/bin/as
+  cp -f $pkgdir${MSYSTEM_PREFIX}/lib/${_realname}/ld  $pkgdir${MSYSTEM_PREFIX}/${_target}/bin/ld
+
+  cp -f "$pkgdir${MSYSTEM_PREFIX}/lib/${_realname}/ar" "$pkgdir${MSYSTEM_PREFIX}/bin/m6809-unknown-ar"
+  cp -f "$pkgdir${MSYSTEM_PREFIX}/lib/${_realname}/as" "$pkgdir${MSYSTEM_PREFIX}/bin/m6809-unknown-as"
+  cp -f "$pkgdir${MSYSTEM_PREFIX}/lib/${_realname}/ld" "$pkgdir${MSYSTEM_PREFIX}/bin/m6809-unknown-ld"
+
+  # Install documentation
+  install -Dm644 -t "$pkgdir/${MSYSTEM_PREFIX}/share/doc/${_realname}" docs/manual/manual.{html,pdf}
+}
+
+# vim:set ts=2 sw=2 et:
