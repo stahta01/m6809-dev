@@ -1,0 +1,56 @@
+# Maintainer:  Tim Stahlhut <stahta01@gmail.com>
+# Contributor: Paul Hentschel <aur at hpminc.com>
+# Based on work from https://github.com/hpmachining/os9-dev
+
+_realname=cmoc_os9
+_machine=m6809
+_target=${_machine}-unknown
+
+pkgname=${_realname}
+pkgver=r85.9f9dfda
+pkgrel=1
+pkgdesc="CMOC C Library support for OS-9/NitrOS-9"
+arch=('x86_64')
+url='https://github.com/tlindner/cmoc_os9'
+license=('custom')
+groups=("${_target}-toolchain")
+makedepends=('git' 'cmoc')
+options=('!strip')
+install=
+source=('git+https://github.com/tlindner/cmoc_os9.git')
+sha256sums=('SKIP')
+
+pkgver() {
+  cd "$srcdir/${_realname}"
+  printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+}
+
+build() {
+  cd "$srcdir/${_realname}"
+  make -C lib clean
+  make -j1 -C lib
+  make -C cgfx clean
+  make -j1 -C cgfx
+}
+
+#check() {
+#   cd "$srcdir/${pkgname%-git}"
+#   make -k check
+#}
+
+package() {
+  cd "$srcdir/${_realname}"
+  echo "CGFX Library" > LICENSE
+  echo >> LICENSE
+  sed -n '/This library/,/ DODGECOLT (Delphi)/p' cgfx/cgfx.docs >> LICENSE
+#  sed -n '/This library/,/ DODGECOLT (Delphi)/p' 'CGFX Reference.md' \
+#    | sed 's/ \+/ /g' \
+#    | fold -s -w80 >> LICENSE
+  install -Dm644 -t "$pkgdir${MSYSTEM_PREFIX}/share/licenses/${_realname}" LICENSE 
+
+  install -Dm644 -t "$pkgdir${MSYSTEM_PREFIX}/share/cmoc/include/os9" include/*.h
+  install -Dm644 -t "$pkgdir${MSYSTEM_PREFIX}/share/cmoc/include/os9/cgfx" cgfx/include/*.h
+  install -Dm644 -t "$pkgdir${MSYSTEM_PREFIX}/share/cmoc/include/os9/sys" include/sys/*.h
+  install -Dm644 -t "$pkgdir${MSYSTEM_PREFIX}/share/cmoc/lib" lib/libc.a
+  install -Dm644 -t "$pkgdir${MSYSTEM_PREFIX}/share/cmoc/lib" cgfx/libcgfx.a
+}
