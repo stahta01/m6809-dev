@@ -15,7 +15,7 @@ dasmfw              builds for MINGW32, MINGW64, and UCRT64
 vasm                builds for MINGW32, MINGW64, and UCRT64
 vbcc                builds for MINGW32, MINGW64, and UCRT64         Likely does not work because of missing files
 vlink               builds for MINGW32, MINGW64, and UCRT64
-xroar               builds for MINGW32, MINGW64, and UCRT64
+xroar               builds for MINGW32, MINGW64, and UCRT64; fails to work under MINGW32 likely build toolchain issue
 
 GCC        with posix threads needed to build cmoc
 Primary packages listed in normal build order
