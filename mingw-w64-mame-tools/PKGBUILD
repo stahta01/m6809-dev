@@ -1,0 +1,88 @@
+# Maintainer: Tim Stahlhut <stahta01@gmail.com>
+# archlinux Maintainer:  Antonio Rojas
+# archlinux Contributor: Sergej Pupykin
+# archlinux Contributor: robb_force
+# archlinux Contributor: JJDaNiMoTh
+# Based on https://archlinux.org/packages/community/x86_64/mame/ and
+#          https://aur.archlinux.org/packages/mame-git
+
+pkgbase=mingw-w64-mame-tools
+pkgname=("${MINGW_PACKAGE_PREFIX}-mame-tools")
+pkgver=0.264.r72.g3a40a6e572e
+pkgrel=1
+_sourcedir=mame-git
+pkgdesc='Port of the popular Multiple Arcade Machine Emulator using SDL with OpenGL support tools (mingw-w64)'
+url='https://mamedev.org/'
+license=(GPL2)
+arch=(any)
+makedepends=(
+  "${MINGW_PACKAGE_PREFIX}-python"
+  # "${MINGW_PACKAGE_PREFIX}-nasm"
+  # "${MINGW_PACKAGE_PREFIX}-asio"
+  # "${MINGW_PACKAGE_PREFIX}-rapidjson"
+  # "${MINGW_PACKAGE_PREFIX}-glm"
+  # "${MINGW_PACKAGE_PREFIX}-SDL2_ttf"
+  # "${MINGW_PACKAGE_PREFIX}-qt6-base"
+  # "${MINGW_PACKAGE_PREFIX}-lua"
+  # "${MINGW_PACKAGE_PREFIX}-pugixml"
+  # "${MINGW_PACKAGE_PREFIX}-portmidi"
+  # "${MINGW_PACKAGE_PREFIX}-portaudio"
+)
+depends=("${MINGW_PACKAGE_PREFIX}-SDL2"
+         "${MINGW_PACKAGE_PREFIX}-libutf8proc"
+         "${MINGW_PACKAGE_PREFIX}-flac")
+source=(${_sourcedir}::'git+https://github.com/mamedev/mame.git')
+sha256sums=('SKIP')
+options=(!debug !lto) # debug build fails under ArchLinux
+
+pkgver() {
+    cd ${_sourcedir}
+
+    git describe --long --tags | sed 's/\([^-]*-g\)/r\1/;s/-/./g;s/^\(mame\)\([0-9]\)/\2./'
+}
+
+prepare() {
+  cd ${_sourcedir}
+}
+
+build() {
+  cd ${_sourcedir}
+
+  if [[ -d "build-${MSYSTEM}" ]]; then
+    rm -rf build-${MSYSTEM}
+  fi
+
+  if [[ ${MSYSTEM} == "MINGW32" ]]; then
+    export _MAME_TARGET=windows_x86
+    export _MAME_MINGW64=
+    export _MAME_MINGW32=$MINGW_PREFIX
+  elif [[ ${MSYSTEM} == "MINGW64" || ${MSYSTEM} == "UCRT64" ]]; then
+    export _MAME_TARGET=windows_x64
+    export _MAME_MINGW64=$MINGW_PREFIX
+    export _MAME_MINGW32=
+  fi
+
+  export CXXFLAGS+=' -DASMJIT_NO_COMPILER'
+
+  MINGW=$MINGW_PREFIX \
+  MINGW64=${_MAME_MINGW64} \
+  MINGW32=${_MAME_MINGW32} \
+  make ${_MAME_TARGET} \
+    EMULATOR=0 \
+    VERBOSE=1 \
+    NOWERROR=1 \
+    OPTIMIZE=2 \
+    TOOLS=1 \
+    BUILDDIR=build-${MSYSTEM}
+}
+
+package() {
+  cd ${_sourcedir}
+  for _i in castool chdman floptool imgtool jedutil ldresample ldverify nltool nlwav pngcmp regrep romcmp \
+            split srcclean unidasm; do
+    install -Dm755 $_i -t "$pkgdir"${MINGW_PREFIX}/bin
+  done
+  mv "$pkgdir"${MINGW_PREFIX}/bin/{,mame-}split # Fix conflicts
+
+  install -Dm644 docs/man/*.1* -t "$pkgdir"${MINGW_PREFIX}/share/man/man1/
+}
