@@ -19,6 +19,7 @@ _enable_libgomp=yes      # Use yes for production
 _enable_libatomic=yes    # Use yes for production
 _enable_threads=yes      # no had build problems
 _enable_libstdcxx=yes    # no failed to build itself
+_enable_libssp=no        # Use no for production
 
 # =========================================== #
 if [[ $MSYSTEM != MINGW32 && "$_enable_ada" == "yes" ]]; then
@@ -47,7 +48,7 @@ pkgname=("${MINGW_PACKAGE_PREFIX}-${_basepkgname}"
          $([[ "$_enable_objc" == "yes" ]] && echo "${MINGW_PACKAGE_PREFIX}-${_basepkgname}-objc")
         )
 pkgver=6.5.0
-pkgrel=2
+pkgrel=3
 _sourcedir=${_realname}-${pkgver}
 pkgdesc="GCC for the MinGW-w64"
 arch=('any')
@@ -297,6 +298,9 @@ build() {
       extra_config+=("--enable-libstdcxx-debug")
     fi
   fi
+  if [[ "$_enable_libssp" != "yes" ]]; then
+    extra_config+=('--disable-libssp')
+  fi
 
   case "${CARCH}" in
     i686)
@@ -418,7 +422,10 @@ ENDFILE
 
   cd ${srcdir}${MINGW_PREFIX}
   # libitm* and libvtv* are disbled until fixed
-  cp bin/{libatomic*,libgcc*,libssp*}.dll ${pkgdir}${MINGW_PREFIX}/bin/
+  cp bin/{libatomic*,libgcc*}.dll ${pkgdir}${MINGW_PREFIX}/bin/
+  if [[ "$_enable_libssp" == "yes" ]]; then
+    cp bin/libssp*.dll ${pkgdir}${MINGW_PREFIX}/bin/
+  fi
   if [[ "$_enable_libquadmath" == "yes" ]]; then
     cp bin/libquadmath*.dll ${pkgdir}${MINGW_PREFIX}/bin/
   fi
@@ -473,7 +480,9 @@ package_gcc6() {
   #cp bin/{libgcc*,libgomp*,libquadmath*,libssp*,libstdc*}.dll ${pkgdir}${MINGW_PREFIX}/bin/
   mkdir -p ${pkgdir}${MINGW_PREFIX}/lib/gcc/${MINGW_CHOST}/${pkgver}/include
   cp lib/gcc/${MINGW_CHOST}/${pkgver}/include/*.h        ${pkgdir}${MINGW_PREFIX}/lib/gcc/${MINGW_CHOST}/${pkgver}/include/
-  cp -r lib/gcc/${MINGW_CHOST}/${pkgver}/include/ssp     ${pkgdir}${MINGW_PREFIX}/lib/gcc/${MINGW_CHOST}/${pkgver}/include/
+  if [[ "$_enable_libssp" == "yes" ]]; then
+    cp -r lib/gcc/${MINGW_CHOST}/${pkgver}/include/ssp   ${pkgdir}${MINGW_PREFIX}/lib/gcc/${MINGW_CHOST}/${pkgver}/include/
+  fi
   cp -r lib/gcc/${MINGW_CHOST}/${pkgver}/include-fixed   ${pkgdir}${MINGW_PREFIX}/lib/gcc/${MINGW_CHOST}/${pkgver}/
   cp -r lib/gcc/${MINGW_CHOST}/${pkgver}/install-tools   ${pkgdir}${MINGW_PREFIX}/lib/gcc/${MINGW_CHOST}/${pkgver}/
   cp lib/gcc/${MINGW_CHOST}/${pkgver}/cc1.exe            ${pkgdir}${MINGW_PREFIX}/lib/gcc/${MINGW_CHOST}/${pkgver}/
@@ -495,7 +504,9 @@ package_gcc6() {
   if [[ "$_enable_libquadmath" == "yes" ]]; then
     cp lib/libquadmath*                                  ${pkgdir}${MINGW_PREFIX}/lib/gcc/${MINGW_CHOST}/${pkgver}/
   fi
-  cp lib/libssp*                                         ${pkgdir}${MINGW_PREFIX}/lib/gcc/${MINGW_CHOST}/${pkgver}/
+  if [[ "$_enable_libssp" == "yes" ]]; then
+    cp lib/libssp*                                       ${pkgdir}${MINGW_PREFIX}/lib/gcc/${MINGW_CHOST}/${pkgver}/
+  fi
   # cp lib/libvtv*                                         ${pkgdir}${MINGW_PREFIX}/lib/gcc/${MINGW_CHOST}/${pkgver}/
   if [[ "$_enable_libstdcxx" == "yes" ]]; then
     cp lib/libstdc++*                                    ${pkgdir}${MINGW_PREFIX}/lib/gcc/${MINGW_CHOST}/${pkgver}/
