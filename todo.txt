@@ -1,3 +1,4 @@
 Fix building of cmoc-os9
 Test cmoc-os9
 Upgrade vbcc; likely requires source code changes
+Change GCC6 to using git repo
