@@ -15,7 +15,7 @@ dasmfw              builds for MINGW32, MINGW64, and UCRT64
 vasm                builds for MINGW32, MINGW64, and UCRT64
 vbcc                builds for MINGW32, MINGW64, and UCRT64         Likely does not work because of missing files
 vlink               builds for MINGW32, MINGW64, and UCRT64
-xroar               builds for MINGW32, MINGW64, and UCRT64; fails to work under MINGW32; found cause gcc6 was used to build
+xroar               builds for MINGW32, MINGW64, and UCRT64
 
 GCC        with posix threads needed to build cmoc
 Primary packages listed in normal build order
@@ -33,5 +33,5 @@ Secondary packages listed in normal build order (not normally built)
 vlink               Built with GCC 13.2.0
 vbcc                Built with GCC 13.2.0
 cc65                Built with GCC 13.2.0
-GCC6/CRT6           install and/or build needed for gcc6502; causes xroar to fail when ran
+GCC6/CRT6           install and/or build needed for gcc6502; mingw-w64-i686-gcc6-libs causes xroar to fail when ran
 gcc6502
