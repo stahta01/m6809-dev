@@ -12,7 +12,7 @@ pkgname=(
 )
 pkgver=0_9h
 _patch=P2
-pkgrel=5
+pkgrel=6
 pkgdesc="code-generator for 6809/6803/68hc12 (mingw-w64)"
 arch=('any')
 url="http://sun.hasenbraten.de/vbcc/"
@@ -20,7 +20,7 @@ license=('custom')
 groups=()
 options=('!strip')
 makedepends=('patch' 'make' "${MINGW_PACKAGE_PREFIX}-cc")
-depends=("${MINGW_PACKAGE_PREFIX}-vlink" "${MINGW_PACKAGE_PREFIX}-vasm${_cpu1}")
+depends=("${MINGW_PACKAGE_PREFIX}-vlink")
 source=(
   "http://phoenix.owl.de/tags/vbcc${pkgver}${_patch}.tar.gz"
   '001-Add-hc12-dt.-c-h.patch'
