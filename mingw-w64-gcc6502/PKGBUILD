@@ -15,7 +15,7 @@ arch=('any')
 mingw_arch=('mingw32' 'mingw64' 'ucrt64')
 options=('!strip')
 license=('GPL2')
-makedepends=('git'
+makedepends=('git' 'flex' 'texinfo' 'diffutils'
              "${MINGW_PACKAGE_PREFIX}-cc65"
              "${MINGW_PACKAGE_PREFIX}-gcc")
 url='https://github.com/itszor/gcc-6502/'
