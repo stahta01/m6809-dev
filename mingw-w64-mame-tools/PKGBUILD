@@ -1,9 +1,10 @@
-# Maintainer: Tim Stahlhut <stahta01@gmail.com>
+# Maintainer: Tim Stahlhut
 # archlinux Maintainer:  Antonio Rojas
 # archlinux Contributor: Sergej Pupykin
 # archlinux Contributor: robb_force
 # archlinux Contributor: JJDaNiMoTh
-# Based on https://archlinux.org/packages/community/x86_64/mame/ and
+# Based on https://docs.mamedev.org/initialsetup/compilingmame.html#using-a-standard-msys2-installation
+#          https://archlinux.org/packages/community/x86_64/mame/
 #          https://aur.archlinux.org/packages/mame-git
 
 pkgbase=mingw-w64-mame-tools
@@ -16,17 +17,14 @@ url='https://mamedev.org/'
 license=(GPL2)
 arch=(any)
 makedepends=(
+  'git'
   "${MINGW_PACKAGE_PREFIX}-python"
-  # "${MINGW_PACKAGE_PREFIX}-nasm"
-  # "${MINGW_PACKAGE_PREFIX}-asio"
-  # "${MINGW_PACKAGE_PREFIX}-rapidjson"
-  # "${MINGW_PACKAGE_PREFIX}-glm"
-  # "${MINGW_PACKAGE_PREFIX}-SDL2_ttf"
-  # "${MINGW_PACKAGE_PREFIX}-qt6-base"
-  # "${MINGW_PACKAGE_PREFIX}-lua"
-  # "${MINGW_PACKAGE_PREFIX}-pugixml"
-  # "${MINGW_PACKAGE_PREFIX}-portmidi"
-  # "${MINGW_PACKAGE_PREFIX}-portaudio"
+  "${MINGW_PACKAGE_PREFIX}-make"
+  "${MINGW_PACKAGE_PREFIX}-cc"
+  "${MINGW_PACKAGE_PREFIX}-libc++" # likely needed by -fuse-ld=lld
+  "${MINGW_PACKAGE_PREFIX}-lld"    # needed by -fuse-ld=lld
+  "${MINGW_PACKAGE_PREFIX}-lua"    # might not be needed
+  "${MINGW_PACKAGE_PREFIX}-nasm"   # provides asmjit
 )
 depends=("${MINGW_PACKAGE_PREFIX}-SDL2"
          "${MINGW_PACKAGE_PREFIX}-libutf8proc"
@@ -48,9 +46,18 @@ prepare() {
 build() {
   cd ${_sourcedir}
 
-  if [[ -d "build-${MSYSTEM}" ]]; then
-    rm -rf build-${MSYSTEM}
+  if [[ -d "build-tools" ]]; then
+    rm -rf build-tools
   fi
+  if [[ -d "3rdparty/genie/bin" ]]; then
+    rm -rf 3rdparty/genie/bin
+  fi
+  if [[ -d "3rdparty/genie/build/gmake.windows/obj" ]]; then
+    rm -rf 3rdparty/genie/build/gmake.windows/obj
+  fi
+
+  echo "git clean"
+  time git clean -fxd
 
   if [[ ${MSYSTEM} == "MINGW32" ]]; then
     export _MAME_TARGET=windows_x86
@@ -62,18 +69,16 @@ build() {
     export _MAME_MINGW32=
   fi
 
-  export CXXFLAGS+=' -DASMJIT_NO_COMPILER'
-
-  MINGW=$MINGW_PREFIX \
+  LDFLAGS+=' -fuse-ld=lld' \
   MINGW64=${_MAME_MINGW64} \
   MINGW32=${_MAME_MINGW32} \
-  make ${_MAME_TARGET} \
+  mingw32-make ${_MAME_TARGET} \
     EMULATOR=0 \
     VERBOSE=1 \
     NOWERROR=1 \
     OPTIMIZE=2 \
     TOOLS=1 \
-    BUILDDIR=build-${MSYSTEM}
+    BUILDDIR=build-tools
 }
 
 package() {
