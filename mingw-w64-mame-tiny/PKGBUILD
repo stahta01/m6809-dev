@@ -1,0 +1,146 @@
+# Maintainer: Tim Stahlhut <stahta01@gmail.com>
+# archlinux Maintainer:  Antonio Rojas
+# archlinux Contributor: Sergej Pupykin
+# archlinux Contributor: robb_force
+# archlinux Contributor: JJDaNiMoTh
+# Based on https://docs.mamedev.org/initialsetup/compilingmame.html#using-a-standard-msys2-installation
+#          https://archlinux.org/packages/community/x86_64/mame/
+#          https://aur.archlinux.org/packages/mame-git
+
+_realname=mame
+_subrealname=tiny
+
+pkgbase=mingw-w64-${_realname}-${_subrealname}
+pkgname=("${MINGW_PACKAGE_PREFIX}-${_realname}-${_subrealname}")
+pkgver=0.266.r137.g20e4efc223
+pkgrel=1
+_sourcedir=mame-git
+pkgdesc='Port of the popular Multiple Arcade Machine Emulator using SDL with OpenGL support (mingw-w64)'
+url='https://mamedev.org/'
+license=(GPL2)
+arch=(any)
+makedepends=(
+  'git'
+  "${MINGW_PACKAGE_PREFIX}-python"
+  "${MINGW_PACKAGE_PREFIX}-make"
+  "${MINGW_PACKAGE_PREFIX}-cc"
+  "${MINGW_PACKAGE_PREFIX}-libc++"         # likely needed by -fuse-ld=lld
+  "${MINGW_PACKAGE_PREFIX}-lld"            # needed by -fuse-ld=lld
+  "${MINGW_PACKAGE_PREFIX}-lua"
+  "${MINGW_PACKAGE_PREFIX}-nasm"
+  "${MINGW_PACKAGE_PREFIX}-asio"
+  "${MINGW_PACKAGE_PREFIX}-rapidjson"
+  "${MINGW_PACKAGE_PREFIX}-glm"
+  "${MINGW_PACKAGE_PREFIX}-SDL2_ttf"
+  "${MINGW_PACKAGE_PREFIX}-lua"
+  "${MINGW_PACKAGE_PREFIX}-libutf8proc"
+  "${MINGW_PACKAGE_PREFIX}-pugixml"
+  "${MINGW_PACKAGE_PREFIX}-portmidi"
+  "${MINGW_PACKAGE_PREFIX}-portaudio"
+  "${MINGW_PACKAGE_PREFIX}-flac"
+)
+depends=(
+  "${MINGW_PACKAGE_PREFIX}-flac"
+  "${MINGW_PACKAGE_PREFIX}-SDL2_ttf"
+  "${MINGW_PACKAGE_PREFIX}-qt6-base"
+  "${MINGW_PACKAGE_PREFIX}-lua"
+  "${MINGW_PACKAGE_PREFIX}-libutf8proc"
+  "${MINGW_PACKAGE_PREFIX}-pugixml"
+  "${MINGW_PACKAGE_PREFIX}-portmidi"
+  "${MINGW_PACKAGE_PREFIX}-portaudio"
+  "${MINGW_PACKAGE_PREFIX}-hicolor-icon-theme"
+)
+
+source=(${_sourcedir}::'git+https://github.com/mamedev/mame.git')
+sha256sums=('SKIP')
+options=(!debug !lto) # debug build fails under ArchLinux
+
+pkgver() {
+    cd ${_sourcedir}
+
+    git describe --long --tags | sed 's/\([^-]*-g\)/r\1/;s/-/./g;s/^\(mame\)\([0-9]\)/\2./'
+}
+
+prepare() {
+  cd ${_sourcedir}
+}
+
+_domake() {
+  LDFLAGS+=' -fuse-ld=lld' \
+  MINGW64=${_MAME_MINGW64} \
+  MINGW32=${_MAME_MINGW32} \
+  mingw32-make --jobs=1 ${_MAME_TARGET} \
+    SUBTARGET=${_subrealname} \
+    VERBOSE=1 \
+    NOWERROR=1 \
+    OPTIMIZE=2 \
+    TOOLS=0 \
+    BUILDDIR=build-mame
+}
+
+build() {
+  cd ${_sourcedir}
+
+  if [[ -d "build-mame" ]]; then
+    rm -rf build-mame
+  fi
+  if [[ -d "3rdparty/genie/bin" ]]; then
+    rm -rf 3rdparty/genie/bin
+  fi
+  if [[ -d "3rdparty/genie/build/gmake.windows/obj" ]]; then
+    rm -rf 3rdparty/genie/build/gmake.windows/obj
+  fi
+
+  echo "git clean"
+  time git clean -fxd
+
+  if [[ ${MSYSTEM} == "MINGW32" ]]; then
+    export _MAME_TARGET=windows_x86
+    export _MAME_MINGW64=
+    export _MAME_MINGW32=$MINGW_PREFIX
+  elif [[ ${MSYSTEM} == "MINGW64" || ${MSYSTEM} == "UCRT64" ]]; then
+    export _MAME_TARGET=windows_x64
+    export _MAME_MINGW64=$MINGW_PREFIX
+    export _MAME_MINGW32=
+  fi
+
+  # Work around build error in 3rdparty/asmjit/src/asmjit/core/rapass.cpp
+  # Looks like an GCC Toolchain or shell caused error.
+  export CPPFLAGS+=" -DASMJIT_NO_COMPILER"
+  # FORCE_DRC_C_BACKEND=1 # Might also fix the problem; but, might cause other bugs
+
+  # The make fails sometimes; try again
+  _domake || _domake
+}
+
+package() {
+  provides=("${MINGW_PACKAGE_PREFIX}-${_realname}")
+  conflicts=("${MINGW_PACKAGE_PREFIX}-${_realname}")
+
+  cd ${_sourcedir}
+
+  mkdir -p "$pkgdir"${MINGW_PREFIX}/bin
+  cp ${_realname}${_subrealname}.exe "$pkgdir"${MINGW_PREFIX}/bin/$_realname.exe
+
+  ## Install the binaries
+  #install -Dm755 mame -t "$pkgdir"${MINGW_PREFIX}/lib/mame
+
+  # Install the extra bits
+  install -Dm644 src/osd/modules/opengl/shader/glsl*.*h -t "$pkgdir"${MINGW_PREFIX}/lib/$_realname/shader/
+  cp -ar {artwork,bgfx,plugins,language,ctrlr,keymaps,hash} "$pkgdir"${MINGW_PREFIX}/lib/$_realname/
+
+  # Include the license
+  install -Dm644 docs/LICENSE "$pkgdir"${MINGW_PREFIX}/share/licenses/$_realname/LICENSE
+
+  ## FS#28203
+  #sed -i 's|KEYCODE_2_PAD|KEYCODE_2PAD|' "$pkgdir"${MINGW_PREFIX}/lib/mame/ctrlr/*.cfg
+  #sed -i 's|KEYCODE_4_PAD|KEYCODE_4PAD|' "$pkgdir"${MINGW_PREFIX}/lib/mame/ctrlr/*.cfg
+  #sed -i 's|KEYCODE_6_PAD|KEYCODE_6PAD|' "$pkgdir"${MINGW_PREFIX}/lib/mame/ctrlr/*.cfg
+  #sed -i 's|KEYCODE_8_PAD|KEYCODE_8PAD|' "$pkgdir"${MINGW_PREFIX}/lib/mame/ctrlr/*.cfg
+
+  # documentation
+  install -dm0755 "$pkgdir"${MINGW_PREFIX}/share/doc
+  cp -a docs "$pkgdir"${MINGW_PREFIX}/share/doc/$_realname
+  rm -r "$pkgdir"${MINGW_PREFIX}/share/doc/$_realname/man
+  install -Dm644 docs/man/*.6* -t "$pkgdir"${MINGW_PREFIX}/share/man/man6/
+}
