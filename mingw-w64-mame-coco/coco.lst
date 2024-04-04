@@ -1,0 +1,46 @@
+// license:BSD-3-Clause
+// copyright-holders:Aaron Giles
+/******************************************************************************
+
+    coco.lst
+
+    List of all enabled drivers in the system. This file is parsed by
+    makelist.exe, sorted, and output as C code describing the drivers.
+
+******************************************************************************/
+
+@source:trs/coco12.cpp
+cd6809                          // Codimex CD-6809
+coco                            // Color Computer 1/2
+coco2b                          // Color Computer 2B (uses M6847T1 video chip)
+coco2bh                         // Color Computer 2B (uses M6847T1 video chip) with HD6309 CPU
+cocoh                           // Color Computer 1/2 with HD6309 CPU
+cp400                           // Prológica CP400
+cp400c2                         // Prológica CP400 Color II
+deluxecoco                      // Deluxe Color Computer
+lzcolor64                       // Novo Tempo / LZ Equipamentos Color64
+ms1600                          // ILCE / SEP Micro-SEP 1600
+mx1600                          // Dynacom MX-1600
+t4426                           // Terco 4426 CNC programming station
+
+@source:trs/coco3.cpp
+coco3                           // Color Computer 3 (NTSC)
+coco3h                          // Hacked Color Computer 3 (6309)
+coco3p                          // Color Computer 3 (PAL)
+msm3                            // ILCE / SEP Micro-SEP Model 3
+
+@source:trs/dgn_beta.cpp
+dgnbeta                         // Dragon Beta
+
+@source:trs/dgnalpha.cpp
+dgnalpha                        // Dragon Alpha
+
+@source:trs/dragon.cpp
+d64plus                         // Dragon 64 + Compusense Plus addon
+dragon200                       // Dragon 200
+dragon200e                      // Dragon 200E
+dragon32                        // Dragon 32
+dragon64                        // Dragon 64
+tanodr64                        // Tano Dragon 64 (NTSC)
+dragon64h                       // Dragon 64 with HD6309
+tanodr64h                       // Tano Dragon 64 (NTSC) with HD6309

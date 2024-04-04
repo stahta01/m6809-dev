@@ -1,0 +1,22 @@
+From 6c06170cbcf43cdb2872ccf8e47cbfd98d795b36 Mon Sep 17 00:00:00 2001
+From: Tim Stahlhut <stahta01@gmail.com>
+Date: Wed, 3 Apr 2024 21:33:08 -0400
+Subject: Add coco.flt
+
+---
+ src/mame/coco.flt | 5 +++++
+ 1 file changed, 5 insertions(+)
+ create mode 100644 src/mame/coco.flt
+
+diff --git a/src/mame/coco.flt b/src/mame/coco.flt
+new file mode 100644
+index 00000000000..c43c4cc2f71
+--- /dev/null
++++ b/src/mame/coco.flt
+@@ -0,0 +1,5 @@
++trs/coco12.cpp
++trs/coco3.cpp
++trs/dgn_beta.cpp
++trs/dgnalpha.cpp
++trs/dragon.cpp
+-- 
