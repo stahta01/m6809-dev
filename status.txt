@@ -8,6 +8,7 @@ gcc6502             builds for MINGW32, MINGW64, and UCRT64
 gcc6809as           boot package builds for MINGW32 and MINGW64
 gcc6809lw           boot package builds for MINGW32 and MINGW64
 lwtools             builds for MSYS
+mame-tools          builds for MINGW32, MINGW64, and ??UCRT64??
 newlib6809as        builds for MINGW32
 newlib6809lw        fails to build
 toolshed            builds for MSYS
@@ -23,7 +24,7 @@ discount            Built with GCC 13.2.0 under MSYS environment
 toolshed            Built with GCC 13.2.0 under MSYS environment
 lwtools             Built with GCC 13.2.0 under MSYS environment
 cmoc                Built with GCC 13.2.0 under MSYS environment
-cmoc-os9            Fails to build with GCC 13.2.0 under MSYS environment
+cmoc-os9            Built with GCC 13.2.0 under MSYS environment; after floating point code was disabled
 asm6809             Built with GCC 13.2.0
 dasmfw              Built with GCC 13.2.0
 xroar               Built with GCC 13.2.0
@@ -32,6 +33,7 @@ vasm                Built with GCC 13.2.0
 Secondary packages listed in normal build order (not normally built)
 vlink               Built with GCC 13.2.0
 vbcc                Built with GCC 13.2.0
+mame-tools          Built with GCC 13.2.0
 cc65                Built with GCC 13.2.0
 GCC6/CRT6           install and/or build needed for gcc6502; mingw-w64-i686-gcc6-libs causes xroar to fail when ran
 gcc6502
