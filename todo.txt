@@ -1,4 +1,3 @@
-Fix building of cmoc-os9
+Fix building of cmoc-os9 floating point code or at least printf code
 Test cmoc-os9
 Upgrade vbcc; likely requires source code changes
-Change GCC6 to using git repo
