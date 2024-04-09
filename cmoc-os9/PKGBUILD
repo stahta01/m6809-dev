@@ -17,12 +17,19 @@ groups=("${_target}-toolchain")
 makedepends=('git' 'cmoc')
 options=('!strip')
 install=
-source=('git+https://github.com/tlindner/cmoc_os9.git')
-sha256sums=('SKIP')
+source=('git+https://github.com/tlindner/cmoc_os9.git'
+        '001-Edit-lib-Makefile.patch')
+sha256sums=('SKIP'
+            'e4dc2a8c3aab6bd11726d069ffada034128c139af0ae49329e3f990d1a2df2bf')
 
 pkgver() {
   cd "$srcdir/${_realname}"
   printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+}
+
+prepare() {
+  cd "$srcdir/${_realname}"
+  patch --forward -p1 -i ${srcdir}/001-Edit-lib-Makefile.patch
 }
 
 build() {
