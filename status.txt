@@ -3,12 +3,12 @@ as6809              builds for MINGW32, MINGW64, and UCRT64
 asm6809             builds for MINGW32, MINGW64, and UCRT64
 cc65                builds for MINGW32, MINGW64, and UCRT64
 cmoc                builds for MSYS
-cmoc-os9            Fails to build after cmoc upgrade
+cmoc-os9            builds for MSYS; after floating point code was disabled
 gcc6502             builds for MINGW32, MINGW64, and UCRT64
 gcc6809as           boot package builds for MINGW32 and MINGW64
 gcc6809lw           boot package builds for MINGW32 and MINGW64
 lwtools             builds for MSYS
-mame-tools          builds for MINGW32, MINGW64, and ??UCRT64??
+mame-tools          builds for MINGW32, MINGW64, and UCRT64
 newlib6809as        builds for MINGW32
 newlib6809lw        fails to build
 toolshed            builds for MSYS
