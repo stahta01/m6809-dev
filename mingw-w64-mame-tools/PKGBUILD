@@ -23,12 +23,7 @@ makedepends=(
   "${MINGW_PACKAGE_PREFIX}-cc"
   "${MINGW_PACKAGE_PREFIX}-libc++" # likely needed by -fuse-ld=lld
   "${MINGW_PACKAGE_PREFIX}-lld"    # needed by -fuse-ld=lld
-  "${MINGW_PACKAGE_PREFIX}-lua"    # might not be needed
-  "${MINGW_PACKAGE_PREFIX}-nasm"   # provides asmjit
 )
-depends=("${MINGW_PACKAGE_PREFIX}-SDL2"
-         "${MINGW_PACKAGE_PREFIX}-libutf8proc"
-         "${MINGW_PACKAGE_PREFIX}-flac")
 source=(${_sourcedir}::'git+https://github.com/mamedev/mame.git')
 sha256sums=('SKIP')
 options=(!debug !lto) # debug build fails under ArchLinux
