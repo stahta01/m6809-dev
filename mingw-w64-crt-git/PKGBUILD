@@ -1,5 +1,5 @@
-# Maintainer:  Tim Stahlhut <stahta01@gmail.com>
-# Contributor: Alexey Pavlov <alexpux@gmail.com>
+# Maintainer:  Tim Stahlhut
+# Contributor: Alexey Pavlov
 
 ### Major build options
 _include_sub_folder=/${MINGW_CHOST}
@@ -12,7 +12,10 @@ pkgname=($([[ "$_build_headers_only" != "yes" ]] && echo  "${MINGW_PACKAGE_PREFI
 replaces=("${MINGW_PACKAGE_PREFIX}-${_realname}-svn")
 pkgver=6.0.0.r56.gd72c4fe62
 pkgrel=1
-_commit='d72c4fe62568a216d52dca47ca8bace4e220d84f'
+#_commit='98dad1fefed2a07ade0b37ca6c610ad66739631a' (tag: v8.0.0)
+_commit='f0ccc499e98762e50f22f3cc3bd6889456ca81c4'  # 7
+#_commit='5eece15a2eb2e97da10d1e8cf5ff46e72b3bd768' # 7
+#_commit='d72c4fe62568a216d52dca47ca8bace4e220d84f' # 6.0.0.r56
 pkgdesc='MinGW-w64 CRT for Windows'
 arch=('any')
 url='https://mingw-w64.sourceforge.io/'
