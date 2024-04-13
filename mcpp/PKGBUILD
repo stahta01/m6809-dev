@@ -1,0 +1,34 @@
+# MSys2 MINGW Maintainer: Martell Malone
+
+_realname=mcpp
+pkgbase=${_realname}
+pkgname=${_realname}
+pkgver=2.7.2
+pkgrel=2
+pkgdesc="Matsui's CPP implementation precisely conformed to standards (mingw-w64)"
+arch=('any')
+license=('custom')
+url="https://mcpp.sourceforge.io/"
+makedepends=(gcc pkg-config)
+depends=(gcc-libs libiconv)
+options=('staticlibs' 'strip')
+source=("https://downloads.sourceforge.net/mcpp/${_realname}-${pkgver}.tar.gz")
+sha256sums=('3b9b4421888519876c4fc68ade324a3bbd81ceeb7092ecdbbc2055099fcb8864')
+
+build() {
+  [[ -d "${srcdir}/build-${MSYSTEM}" ]] && rm -rf "${srcdir}/build-${MSYSTEM}"
+  mkdir -p "${srcdir}/build-${MSYSTEM}"
+  cd "${srcdir}/build-${MSYSTEM}"
+  ../${_realname}-${pkgver}/configure \
+    --prefix=${MSYSTEM_PREFIX} \
+    --build=x86_64-pc-cygwin \
+    --host=x86_64-pc-cygwin \
+    --enable-mcpplib
+
+  make
+}
+
+package() {
+  cd "${srcdir}/build-${MSYSTEM}"
+  make DESTDIR="${pkgdir}" install
+}
