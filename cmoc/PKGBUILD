@@ -7,7 +7,7 @@ _target=${_machine}-unknown
 
 pkgname=${_realname}
 pkgver=0.1.86
-pkgrel=2
+pkgrel=1
 pkgdesc="6809-generating cross-compiler for a subset of the C language"
 arch=('x86_64')
 url="http://perso.b2b2c.ca/~sarrazip/dev/cmoc.html"
@@ -15,16 +15,18 @@ license=('GPL3')
 groups=("${_target}-toolchain")
 options=('!strip')
 depends=('perl' 'lwtools' 'discount'
-         'mcpp' # provides cpp
+         'gcc' # provides cpp
         )
-makedepends=('flex' 'gcc')
+makedepends=('flex') # 'gcc')
 source=("http://perso.b2b2c.ca/~sarrazip/dev/$_realname-$pkgver.tar.gz")
 sha256sums=('c9a1ee84b386c927bfccf06ac0ce17935c3bbc0525e0d139c1c7a3c9be6fa567')
 
 prepare() {
   cd "$_realname-$pkgver"
 
-  sed -i 's|"cpp -xc++ -U__cplusplus"|"mcpp -xc++ -U__cplusplus"|' src/Parameters.cpp
+  # These sed failed to work or mcpp failed to work
+  #sed -i 's|"cpp -xc++ -U__cplusplus"|"mcpp -+ -I- -U__cplusplus"|' src/Parameters.cpp
+  #sed -i 's|" -U__GNUC__ -nostdinc -undef"|" -U__GNUC__"|' src/Parameters.cpp
 }
 
 build() {
@@ -33,7 +35,6 @@ build() {
   export CPPFLAGS=""
   export CFLAGS="-pipe"
   export CXXFLAGS="-pipe"
-  export CPP="mcpp"
 
   cd "$_realname-$pkgver"
   ./configure --prefix=${MSYSTEM_PREFIX}
