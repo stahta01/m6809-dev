@@ -1,0 +1,24 @@
+From a79e45137284e023f81651bfb9d7ce9343409712 Mon Sep 17 00:00:00 2001
+From: Tim Stahlhut <stahta01@gmail.com>
+Date: Sun, 21 Apr 2024 11:23:15 -0400
+Subject: Add include
+
+---
+ wiring.h | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/wiring.h b/wiring.h
+index 7c69bfc..119bfa2 100644
+--- a/wiring.h
++++ b/wiring.h
+@@ -8,6 +8,7 @@
+ 
+ #pragma once
+ 
++#include <cstdint>
+ #include <functional>
+ 
+ //---------------------------------------------------------------------
+-- 
+2.44.0
+

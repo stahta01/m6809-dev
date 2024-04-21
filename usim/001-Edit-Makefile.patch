@@ -1,0 +1,29 @@
+From 97da6e6c1f98bf4fb673e9c0fb2b019f5c622c69 Mon Sep 17 00:00:00 2001
+From: Tim Stahlhut <stahta01@gmail.com>
+Date: Sun, 21 Apr 2024 11:22:49 -0400
+Subject: Edit Makefile
+
+---
+ Makefile | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index 74531ff..33d0e41 100644
+--- a/Makefile
++++ b/Makefile
+@@ -1,9 +1,9 @@
+-DEBUG		= -O3
+-CXX			= g++ --std=c++17 -Wall -Wextra -Werror -flto
++DEBUG		= -O2
++CXX			= g++ --std=c++17 -Wall -Wextra -Werror
+ CC			= gcc --std=c9x -Wall -Werror
+ CCFLAGS		= $(DEBUG)
+ CPPFLAGS	= -D_POSIX_SOURCE -I. -o $(@)
+-LDFLAGS		= -flto
++#LDFLAGS		= -flto
+ 
+ LIB_SRCS	= usim.cpp mc6809.cpp mc6809in.cpp mc6850.cpp memory.cpp
+ 
+-- 
+2.44.0
+

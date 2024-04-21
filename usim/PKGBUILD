@@ -1,0 +1,52 @@
+# Maintainer: Tim S <stahta01@gmail.com>
+
+_machine=m6809
+
+_realname=usim
+
+pkgname=${_realname}
+pkgver=release.0.99.r62.g52c4b2500d7
+pkgrel=1
+_sourcedir=${_realname}-git
+pkgdesc="6809-generating cross-compiler for a subset of the C language"
+arch=('x86_64')
+url="https://github.com/raybellis/usim"
+license=('GPL3')
+groups=("${_machine}-toolchain")
+options=('!strip')
+depends=()
+makedepends=('ncurses-devel')
+source=(${_sourcedir}::"git+https://github.com/raybellis/usim.git"
+        '001-Edit-Makefile.patch'
+        '002-Add-include.patch')
+sha256sums=('SKIP'
+            '5db2625bb3819d07a409651d125914fea86434dbb22139eab90bb264da04eba2'
+            '07f39925a6616e2f5c5392c962c2075e97edf34839c48848911d078b936126c3')
+
+pkgver() {
+  cd ${srcdir}/${_sourcedir}
+
+  git describe --abbrev=11 --long --tags | sed 's/\([^-]*-g\)/r\1/;s/-/./g;s/^\(release\)\([0-9]\)/\2./'
+}
+
+prepare() {
+  cd ${srcdir}/${_sourcedir}
+
+  patch --forward -p1 -i ${srcdir}/001-Edit-Makefile.patch
+  patch --forward -p1 -i ${srcdir}/002-Add-include.patch
+}
+
+build() {
+  cd ${srcdir}/${_sourcedir}
+
+  make clean && make -j1
+}
+
+package() {
+  cd ${srcdir}/${_sourcedir}
+
+  mkdir -p $pkgdir${MSYSTEM_PREFIX}/bin
+  cp usim.exe $pkgdir${MSYSTEM_PREFIX}/bin/
+}
+
+# vim:set ts=2 sw=2 et:
