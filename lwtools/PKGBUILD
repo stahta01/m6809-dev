@@ -15,7 +15,7 @@ license=('GPL3')
 groups=("${_target}-toolchain")
 options=('!strip')
 makedepends=('patch' 'make' 'perl' 'gcc')
-conflicts=("${MINGW_PACKAGE_PREFIX}-as6809")
+conflicts=()
 source=(
   "$url/releases/${_realname}/${_realname}-$pkgver.tar.gz"
 )
