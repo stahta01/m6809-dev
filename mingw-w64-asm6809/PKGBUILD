@@ -8,6 +8,7 @@ pkgver=2.13
 pkgrel=1
 pkgdesc="Cross Assembler for the Motorola 6809 and Hitachi 6309 microprocessors (mingw-w64)"
 arch=('any')
+makedepends=("${MINGW_PACKAGE_PREFIX}-cc")
 url="https://www.6809.org.uk/asm6809/"
 license=('GPL3')
 groups=("${MINGW_PACKAGE_PREFIX}-${_target}-toolchain")
