@@ -33,7 +33,8 @@ vasm                Built with GCC 14.1.0
 Secondary packages listed in normal build order (not normally built)
 vlink               Fails with GCC 14.1.0
 vbcc                Built with GCC 13.2.0
-mame-tools          Built with GCC 14.1.0 # after remove fuse-ld=lld and add jobs=1
+mame-tools          Built with GCC 14.1.0 # after add jobs=1 likely makefile issue
+mame-coco3          Built with GCC 14.1.0 under MINGW64 and UCRT64 environment(s)
 cc65                Built with GCC 14.1.0
 GCC6/CRT6           install and/or build needed for gcc6502; mingw-w64-i686-gcc6-libs causes xroar to fail when ran
 gcc6502
