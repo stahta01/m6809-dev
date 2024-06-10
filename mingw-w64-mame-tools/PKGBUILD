@@ -9,7 +9,7 @@
 
 pkgbase=mingw-w64-mame-tools
 pkgname=("${MINGW_PACKAGE_PREFIX}-mame-tools")
-pkgver=0.264.r202.gd8ecec3e00d
+pkgver=0.264.r499.g132626651dd
 pkgrel=1
 _sourcedir=mame-git
 pkgdesc='Port of the popular Multiple Arcade Machine Emulator using SDL with OpenGL support tools (mingw-w64)'
@@ -21,10 +21,10 @@ makedepends=(
   "${MINGW_PACKAGE_PREFIX}-python"
   "${MINGW_PACKAGE_PREFIX}-make"
   "${MINGW_PACKAGE_PREFIX}-cc"
-  "${MINGW_PACKAGE_PREFIX}-libc++" # likely needed by -fuse-ld=lld
-  "${MINGW_PACKAGE_PREFIX}-lld"    # needed by -fuse-ld=lld
+  #"${MINGW_PACKAGE_PREFIX}-libc++" # likely needed by -fuse-ld=lld
+  #"${MINGW_PACKAGE_PREFIX}-lld"    # needed by -fuse-ld=lld
 )
-source=(${_sourcedir}::'git+https://github.com/mamedev/mame.git')
+source=(${_sourcedir}::'git+https://github.com/mamedev/mame.git#branch=master')
 sha256sums=('SKIP')
 options=(!debug !lto) # debug build fails under ArchLinux
 
@@ -64,10 +64,11 @@ build() {
     export _MAME_MINGW32=
   fi
 
-  LDFLAGS+=' -fuse-ld=lld' \
+  #LDFLAGS+=' -fuse-ld=lld'
   MINGW64=${_MAME_MINGW64} \
   MINGW32=${_MAME_MINGW32} \
-  mingw32-make ${_MAME_TARGET} \
+  mingw32-make --jobs=1 ${_MAME_TARGET} \
+    REGENIE=1 \
     EMULATOR=0 \
     VERBOSE=1 \
     NOWERROR=1 \
