@@ -20,20 +20,20 @@ xroar               builds for MINGW32, MINGW64, and UCRT64
 
 GCC        with posix threads needed to build cmoc
 Primary packages listed in normal build order
-lwtools             Built with GCC 13.2.0 under MSYS environment
-discount            Built with GCC 13.2.0 under MSYS environment
-cmoc                Built with GCC 13.2.0 under MSYS environment
-cmoc-os9            Built with GCC 13.2.0 under MSYS environment; after floating point code was disabled
-toolshed            Built with GCC 13.2.0 under MSYS environment
+lwtools             Built with GCC 13.3.0 under MSYS environment
+discount            Built with GCC 13.3.0 under MSYS environment
+cmoc                Built with GCC 13.3.0 under MSYS environment
+cmoc-os9            Built with GCC 13.3.0 under MSYS environment; after floating point code was disabled
+toolshed-hg         Built with GCC 13.3.0 under MSYS environment
 asm6809             Built with GCC 14.1.0
 dasmfw              Built with GCC 14.1.0
 xroar               Built with GCC 14.1.0
 vasm                Built with GCC 14.1.0
 
 Secondary packages listed in normal build order (not normally built)
-vlink               Built with GCC 13.2.0
+vlink               Fails with GCC 14.1.0
 vbcc                Built with GCC 13.2.0
-mame-tools          Built with GCC 13.2.0
-cc65                Built with GCC 13.2.0
+mame-tools          Built with GCC 14.1.0 # after remove fuse-ld=lld and add jobs=1
+cc65                Built with GCC 14.1.0
 GCC6/CRT6           install and/or build needed for gcc6502; mingw-w64-i686-gcc6-libs causes xroar to fail when ran
 gcc6502
