@@ -9,7 +9,7 @@
 
 pkgbase=mingw-w64-mame-tools
 pkgname=("${MINGW_PACKAGE_PREFIX}-mame-tools")
-pkgver=0.264.r499.g132626651dd
+pkgver=0.266.r147.gc9cb6d225ab
 pkgrel=1
 _sourcedir=mame-git
 pkgdesc='Port of the popular Multiple Arcade Machine Emulator using SDL with OpenGL support tools (mingw-w64)'
@@ -21,8 +21,8 @@ makedepends=(
   "${MINGW_PACKAGE_PREFIX}-python"
   "${MINGW_PACKAGE_PREFIX}-make"
   "${MINGW_PACKAGE_PREFIX}-cc"
-  #"${MINGW_PACKAGE_PREFIX}-libc++" # likely needed by -fuse-ld=lld
-  #"${MINGW_PACKAGE_PREFIX}-lld"    # needed by -fuse-ld=lld
+  "${MINGW_PACKAGE_PREFIX}-libc++" # likely needed by -fuse-ld=lld
+  "${MINGW_PACKAGE_PREFIX}-lld"    # needed by -fuse-ld=lld
 )
 source=(${_sourcedir}::'git+https://github.com/mamedev/mame.git#branch=master')
 sha256sums=('SKIP')
@@ -36,23 +36,17 @@ pkgver() {
 
 prepare() {
   cd ${_sourcedir}
-}
-
-build() {
-  cd ${_sourcedir}
 
   if [[ -d "build-tools" ]]; then
     rm -rf build-tools
   fi
-  if [[ -d "3rdparty/genie/bin" ]]; then
-    rm -rf 3rdparty/genie/bin
-  fi
-  if [[ -d "3rdparty/genie/build/gmake.windows/obj" ]]; then
-    rm -rf 3rdparty/genie/build/gmake.windows/obj
-  fi
 
   echo "git clean"
   time git clean -fxd
+}
+
+build() {
+  cd ${_sourcedir}
 
   if [[ ${MSYSTEM} == "MINGW32" ]]; then
     export _MAME_TARGET=windows_x86
@@ -64,7 +58,35 @@ build() {
     export _MAME_MINGW32=
   fi
 
-  #LDFLAGS+=' -fuse-ld=lld'
+  #LDFLAGS+=' -fuse-ld=lld' \
+  #MINGW64=${_MAME_MINGW64} \
+  #MINGW32=${_MAME_MINGW32} \
+  #mingw32-make --jobs=1 generate \
+    #REGENIE=1 \
+    #EMULATOR=0 \
+    #VERBOSE=1 \
+    #NOWERROR=1 \
+    #OPTIMIZE=2 \
+    #TOOLS=1 \
+    #BUILDDIR=build-tools
+
+  #LDFLAGS+=' -fuse-ld=lld' \
+  #MINGW64=${_MAME_MINGW64} \
+  #MINGW32=${_MAME_MINGW32} \
+  #mingw32-make build-tools/projects/windows/mame/gmake-mingw64-gcc/Makefile \
+    #REGENIE=1 \
+    #EMULATOR=0 \
+    #VERBOSE=1 \
+    #NOWERROR=1 \
+    #OPTIMIZE=2 \
+    #TOOLS=1 \
+    #BUILDDIR=build-tools
+
+  # Something overwrites these changes
+  #sed -i 's/bx.make/bx.make --jobs=1/' build-tools/projects/windows/mame/gmake-mingw64-gcc/Makefile
+  #sed -i 's/bx.make/ledutil.make --jobs=1/' build-tools/projects/windows/mame/gmake-mingw64-gcc/Makefile
+
+  LDFLAGS+=' -fuse-ld=lld' \
   MINGW64=${_MAME_MINGW64} \
   MINGW32=${_MAME_MINGW32} \
   mingw32-make --jobs=1 ${_MAME_TARGET} \
