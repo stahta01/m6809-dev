@@ -25,15 +25,15 @@ discount            Built with GCC 13.3.0 under MSYS environment
 cmoc                Built with GCC 13.3.0 under MSYS environment
 cmoc-os9            Built with GCC 13.3.0 under MSYS environment; after floating point code was disabled
 toolshed-hg         Built with GCC 13.3.0 under MSYS environment
-asm6809             Built with GCC 14.1.0
-dasmfw              Built with GCC 14.1.0
-xroar               Built with GCC 14.1.0
-vasm                Built with GCC 14.1.0
+asm6809             Built with GCC 14.2.0
+dasmfw              Built with GCC 14.2.0
+xroar               Built with GCC 14.2.0
+vasm                Built with GCC 14.2.0
 
 Secondary packages listed in normal build order (not normally built)
-vlink               Fails with GCC 14.1.0
+vlink               Fails with GCC 14.1.0 and 14.2.0
 vbcc                Built with GCC 13.2.0
-mame-tools          Built with GCC 14.1.0 # after add jobs=1 likely makefile issue
+mame-tools          Built with GCC 14.2.0 # after add jobs=1 likely makefile issue
 mame-coco3          Built with GCC 14.1.0 under MINGW64 and UCRT64 environment(s)
 cc65                Built with GCC 14.1.0
 GCC6/CRT6           install and/or build needed for gcc6502; mingw-w64-i686-gcc6-libs causes xroar to fail when ran
