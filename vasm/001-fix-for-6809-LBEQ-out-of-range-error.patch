@@ -1,0 +1,25 @@
+From 1d48e2a0529cd2ace004dc15db5ab444906fc89d Mon Sep 17 00:00:00 2001
+From: Tim Stahlhut <stahta01@gmail.com>
+Date: Wed, 10 May 2023 13:17:30 -0400
+Subject: Work around fix for 6809 LBEQ out of range error
+
+---
+ cpus/6809/cpu.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/cpus/6809/cpu.c b/cpus/6809/cpu.c
+index bbcc813..1caa951 100644
+--- a/cpus/6809/cpu.c
++++ b/cpus/6809/cpu.c
+@@ -953,6 +952,10 @@ static size_t process_instruction(instruction *ip,section *sec,
+                 cpu_error(9,(long)pcd);  /* decrement branch out of range */
+               break;
+             case AM_REL16:
++              if (pcd<-0x8000 || pcd>0xffff) {
++                if (pcd<-0x8000) pcd+=0x10000;
++                if (pcd>0xffff) pcd-=0x10000;
++              }
+               if (pcd<-0x8000 || pcd>0xffff)
+                 cpu_error(10,(long)pcd);  /* long branch out of range */
+               break;
+-- 
