@@ -1,0 +1,23 @@
+From 60d1fbe52ab7c087011d5358511f2b5eb20bd636 Mon Sep 17 00:00:00 2001
+From: Tim Stahlhut <stahta01@gmail.com>
+Date: Tue, 6 Jun 2023 15:23:24 -0400
+Subject: mingw build fix
+
+---
+ machines/hc12/machine.h | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/machines/hc12/machine.h b/machines/hc12/machine.h
+index 096e608..6298f1d 100644
+--- a/machines/hc12/machine.h
++++ b/machines/hc12/machine.h
+@@ -1,5 +1,6 @@
+ /*  Example of a code-generator for Motorola 68hc12 16bit microcontrollers.*/
+ 
++#include <stdint.h>
+ #include "dt.h"
+ 
+ /* We have extended types! What we have to do to support them:      */
+-- 
+2.41.0
+
