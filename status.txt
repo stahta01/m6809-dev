@@ -1,21 +1,21 @@
   package                           status
-as6809              builds for MINGW32, MINGW64, and UCRT64
+as6809              builds for MSYS
 asm6809             builds for MINGW32, MINGW64, and UCRT64
 cc65                builds for MINGW32, MINGW64, and UCRT64
 cmoc                builds for MSYS
 cmoc-os9            builds for MSYS; after floating point code was disabled
 gcc6502             builds for MINGW32, MINGW64, and UCRT64
-gcc6809as           boot package builds for MINGW32 and MINGW64
-gcc6809lw           boot package builds for MINGW32 and MINGW64
+gcc6809as           builds for MSYS
+gcc6809lw           fails to build MINGW32 GCC 14.2.0
 lwtools             builds for MSYS
 mame-tools          builds for MINGW32, MINGW64, and UCRT64
-newlib6809as        builds for MINGW32
+newlib6809as        builds for MSYS
 newlib6809lw        fails to build
 toolshed            builds for MSYS
 dasmfw              builds for MINGW32, MINGW64, and UCRT64
-vasm                builds for MINGW32, MINGW64, and UCRT64
-vbcc                builds for MINGW32, MINGW64, and UCRT64         Likely does not work because of missing files
-vlink               builds for MINGW32, MINGW64, and UCRT64
+vasm                builds for MSYS
+vbcc                builds for MSYS                               Likely does not work because of missing files
+vlink               builds for MSYS
 xroar               builds for MINGW32, MINGW64, and UCRT64
 
 GCC        with posix threads needed to build cmoc
@@ -33,8 +33,11 @@ xroar               Built with GCC 14.2.0
 Secondary packages listed in normal build order (not normally built)
 vlink               Built with GCC 13.3.0 under MSYS environment
 vbcc                Built with GCC 13.3.0 under MSYS environment
+as6809              Built with GCC 13.3.0 under MSYS environment
+gcc6809as           Built with GCC 13.3.0 under MSYS environment
+newlib6809as        Built with GCC 13.3.0 under MSYS environment
 mame-tools          Built with GCC 14.2.0 # after add jobs=1 likely makefile issue
-mame-coco3          Built with GCC 14.1.0 under MINGW64 and UCRT64 environment(s)
-cc65                Built with GCC 14.1.0
+mame-coco3          Built with GCC 14.2.0 under MINGW64 and UCRT64 environment(s)
+cc65                Built with GCC 14.2.0
 GCC6/CRT6           install and/or build needed for gcc6502; mingw-w64-i686-gcc6-libs causes xroar to fail when ran
 gcc6502
