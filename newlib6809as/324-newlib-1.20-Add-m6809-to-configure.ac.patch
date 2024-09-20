@@ -1,0 +1,27 @@
+From a4e11d7dccf8ae0f24d0e7751544b3237203254f Mon Sep 17 00:00:00 2001
+From: Tim S <tim.stahlhut@gmail.com>
+Date: Tue, 29 Jan 2019 14:56:09 -0500
+Subject: [PATCH] Add m6809 to configure.ac
+
+libgloss_dir=m6809
+---
+ configure.ac | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/configure.ac b/configure.ac
+index 9d48e90..577a6b0 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -719,6 +719,9 @@ case "${target}" in
+   m68hc11-*-*|m6811-*-*|m68hc12-*-*|m6812-*-*)
+     libgloss_dir=m68hc11
+     ;;
++  m6809-*-*)
++    libgloss_dir=m6809
++    ;;
+   m68*-*-* | fido-*-*)
+     libgloss_dir=m68k
+     ;;
+-- 
+2.19.1.windows.1
+
