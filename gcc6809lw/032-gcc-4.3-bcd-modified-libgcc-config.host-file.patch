@@ -1,0 +1,28 @@
+From 8dfb2f9cca3f2f3846beff14327fad33ebf726e4 Mon Sep 17 00:00:00 2001
+From: Tim S <tim.stahlhut@gmail.com>
+Date: Sat, 2 Feb 2019 14:32:24 -0500
+Subject: build: edit libgcc/config.host
+
+This patch is based on the work of 
+Brian Dominy https://github.com/bcd/gcc
+
+---
+ libgcc/config.host | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/libgcc/config.host b/libgcc/config.host
+index 8c8013798..61dc64270 100644
+--- a/libgcc/config.host
++++ b/libgcc/config.host
+@@ -407,6 +407,8 @@ m32r-*-linux*)
+  	;;
+ m32rle-*-linux*)
+ 	;;
++m6809*)
++	;;
+ m68hc11-*-*|m6811-*-*)
+         ;;
+ m68hc12-*-*|m6812-*-*)
+-- 
+2.19.1.windows.1
+
