@@ -1,3 +1,4 @@
 Fix building of cmoc-os9 floating point code or at least printf code
 Test cmoc-os9
 Upgrade vbcc; likely requires source code changes
+Convert gcc6809lw and newlib6809lw into msys2 packages
