@@ -1,0 +1,65 @@
+# Maintainer: Tim Stahlhut <stahta01@gmail.com>
+
+_realname=dasmfw
+_sourcedir=${_realname}-git
+pkgbase=${_realname}
+pkgname=(${_realname})
+pkgver=0.35.v+1.c1.gfba52d4
+pkgrel=1
+pkgdesc="DisASseMbler FrameWork"
+arch=('any')
+license=("GPL2")
+url="https://github.com/Arakula/dasmfw"
+depends=('gcc-libs')
+makedepends=(
+  'git'
+  'make'
+  'gcc'
+)
+checkdepends=()
+options=('!strip')
+source=(${_sourcedir}::"git+https://github.com/Arakula/dasmfw.git#branch=master"
+        '001-Clean-Fix.patch')
+sha256sums=('SKIP'
+            '4e232d6f7bf46cdfc49873ec89877d81a6784adf29048719afd4ab499688e824')
+
+# Declare global variables; begin with underscore to avoid name conflicts
+_git_base_commit=
+
+pkgver() {
+  cd ${srcdir}/${_sourcedir}
+  local _version=$(head -n 80 dasmfw.h | grep 'DASMFW_VERSION' | sed -e 's/.* //' | tr '\n' '.' | sed -e 's/\"//g' | sed 's/.$/\n/')
+  if [[ -n "${_git_base_commit}" ]]; then
+    printf "%s.v+%s.c%s.g%s" "$_version" $(git rev-list --count $(git rev-list -1 ${_git_base_commit} dasmfw.h)..${_git_base_commit}) $(git rev-list --count ${_git_base_commit}..HEAD) $(git rev-parse --short ${_git_base_commit})
+  else
+    printf "%s" ${pkgver}
+  fi
+}
+
+prepare() {
+  cd "${srcdir}/${_sourcedir}"
+
+  _git_base_commit=$(git rev-parse HEAD)
+  GIT_AM="git am --committer-date-is-author-date"
+
+  git config --local user.name  "nobody"
+  git config --local user.email "nobody@example.com"
+
+  ${GIT_AM} ${srcdir}/001-Clean-Fix.patch
+}
+
+build() {
+  cd "${srcdir}/${_sourcedir}"
+
+  make clean
+  make # -j1 VERBOSE=1
+}
+
+package() {
+  cd "${srcdir}/${_sourcedir}"
+
+  mkdir -p "$pkgdir${MSYSTEM_PREFIX}/bin/"
+  cp dasmfw.exe "$pkgdir${MSYSTEM_PREFIX}/bin/"
+
+  install -Dm644 -t "$pkgdir${MSYSTEM_PREFIX}/share/licenses/${_realname}" LICENSE
+}
