@@ -18,9 +18,9 @@ makedepends=('git' 'cmoc')
 options=('!strip')
 install=
 source=('git+https://github.com/tlindner/cmoc_os9.git'
-        '001-Edit-lib-Makefile.patch')
+        '010-Edit-lib-Makefile.patch')
 sha256sums=('SKIP'
-            'e4dc2a8c3aab6bd11726d069ffada034128c139af0ae49329e3f990d1a2df2bf')
+            '59b78a4c15c1627565dcd37b09fca316b5dba62e60beaa813632745b1b7f2110')
 
 pkgver() {
   cd "$srcdir/${_realname}"
@@ -29,7 +29,8 @@ pkgver() {
 
 prepare() {
   cd "$srcdir/${_realname}"
-  patch --forward -p1 -i ${srcdir}/001-Edit-lib-Makefile.patch
+
+  patch --forward -p1 -i ${srcdir}/010-Edit-lib-Makefile.patch
 }
 
 build() {
@@ -53,7 +54,7 @@ package() {
 #  sed -n '/This library/,/ DODGECOLT (Delphi)/p' 'CGFX Reference.md' \
 #    | sed 's/ \+/ /g' \
 #    | fold -s -w80 >> LICENSE
-  install -Dm644 -t "$pkgdir${MSYSTEM_PREFIX}/share/licenses/${_realname}" LICENSE 
+  install -Dm644 -t "$pkgdir${MSYSTEM_PREFIX}/share/licenses/${_realname}" LICENSE
 
   install -Dm644 -t "$pkgdir${MSYSTEM_PREFIX}/share/cmoc/include/os9" include/*.h
   install -Dm644 -t "$pkgdir${MSYSTEM_PREFIX}/share/cmoc/include/os9/cgfx" cgfx/include/*.h
