@@ -1,0 +1,35 @@
+From daa6dab663824b9d837160b9997908e6a27f4562 Mon Sep 17 00:00:00 2001
+From: Tim Stahlhut <stahta01@gmail.com>
+Date: Fri, 25 Oct 2024 17:46:46 -0400
+Subject: Disable OPENGL files
+
+---
+ src/Makefile.am | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/src/Makefile.am b/src/Makefile.am
+index 4e2bb88b..6f7f1339 100644
+--- a/src/Makefile.am
++++ b/src/Makefile.am
+@@ -238,12 +238,12 @@ EXTRA_DIST += wasm/exported_functions
+ 
+ # Common OpenGL support
+ 
+-if OPENGL
+-xroar_CFLAGS += $(GL_CFLAGS)
+-xroar_LDADD += $(GL_LIBS)
+-xroar_SOURCES += \
+-	vo_opengl.c vo_opengl.h
+-endif
++#if OPENGL
++#xroar_CFLAGS += $(GL_CFLAGS)
++#xroar_LDADD += $(GL_LIBS)
++#xroar_SOURCES += \
++#	vo_opengl.c vo_opengl.h
++#endif
+ 
+ # GTK+ 3 user interface
+ 
+-- 
+2.45.2.windows.1
+

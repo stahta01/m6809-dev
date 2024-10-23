@@ -1,0 +1,79 @@
+# Maintainer: Tim Stahlhut <stahta01@gmail.com>
+# https://www.6809.org.uk/xroar/doc/xroar.shtml#Building-from-source
+
+_realname=xroar
+pkgbase=${_realname}
+pkgname=(${_realname})
+pkgver=1.6.6
+pkgrel=1
+_sourcedir=${_realname}-${pkgver}
+pkgdesc="Color Computer 1/2/3 emulator"
+arch=('any')
+license=("GPL3")
+url="https://www.6809.org.uk/xroar"
+depends=(gcc-libs # no idea if this is required at run-time
+         sdl2
+         libpng
+         zlib
+         libsndfile)
+makedepends=(
+  'make'
+  'gcc'
+)
+checkdepends=()
+options=('!strip')
+source=("https://www.6809.org.uk/xroar/dl/xroar-${pkgver}.tar.gz"
+        '001-Mingw-build-fix.patch'
+        '002-Disable-OPENGL-files.patch')
+sha256sums=('2f5f95f655beb41fecb65019f0a24a9c026527edf6d83bd1df55decdf1466494'
+            '0497698cdbde32a560f1786b4f991ebe09c508ec5e45a18d0cb225eacc520d26'
+            '5d2f6b1d09346331eeffdde3edbeda05203cff7ac714fb482eda045d136231f0')
+prepare() {
+  cd "${srcdir}/${_sourcedir}"
+
+  #patch -p1 -i ${srcdir}/001-Mingw-build-fix.patch
+  patch -p1 -i ${srcdir}/002-Disable-OPENGL-files.patch
+
+  # Add missing mingw libraries of uuid, ole32 and regex
+  sed --in-place 's|MINGW_LIBS="-lmingw32 -lwinmm -mwindows -lws2_32 -lcomctl32"|MINGW_LIBS="-lmingw32 -lwinmm -mwindows -lws2_32 -lcomctl32 -luuid -lole32 -lregex"|' configure
+
+  #sed --in-place 's|#ifdef WINDOWS32|#if 1|' src/vo_opengl.h
+}
+
+build() {
+  cd "${srcdir}/${_sourcedir}"
+
+  echo "CC := $CC"
+
+  ac_cv_func_malloc_0_nonnull=yes ac_cv_func_realloc_0_nonnull=yes \
+  ./configure --enable-coco3 -verbose \
+    --build=${MSYSTEM_CHOST} \
+    --prefix=${MSYSTEM_PREFIX} \
+    --with-libpng \
+    --without-gtk3 --without-gtk2 --without-gtkgl \
+    --enable-filereq-cli --without-alsa \
+    --without-oss --without-pulse --without-joydev
+  make clean
+  echo "GL_CFLAGS := $GL_CFLAGS"
+  echo "GL_LIBS := $GL_LIBS"
+  echo "LDFLAGS := $LDFLAGS"
+  make -j1
+}
+
+# Locations that worked under MSys2 are:
+#   ~/.xroar/roms  AKA /home/[USERNAME]/.xroar/roms
+
+package() {
+  cd "${srcdir}/${_sourcedir}"
+
+  mkdir -p "$pkgdir${MSYSTEM_PREFIX}/bin/"
+  cp src/xroar.exe "$pkgdir${MSYSTEM_PREFIX}/bin/"
+
+  install -Dm644 -t "$pkgdir${MSYSTEM_PREFIX}/share/licenses/${_realname}" COPYING.GPL
+  install -Dm644 -t "$pkgdir${MSYSTEM_PREFIX}/share/doc/${_realname}" ChangeLog
+  install -Dm644 -t "$pkgdir${MSYSTEM_PREFIX}/share/doc/${_realname}" README.SDS
+  install -Dm644 -t "$pkgdir${MSYSTEM_PREFIX}/share/doc/${_realname}" README
+  cd doc
+  install -Dm644 -t "$pkgdir${MSYSTEM_PREFIX}/share/doc/${_realname}" xroar.conf.example
+  #install -Dm644 -t "$pkgdir${MSYSTEM_PREFIX}/share/doc/${_realname}" xroar.pdf
+}
