@@ -12,7 +12,7 @@ _subrealname=coco3
 
 pkgbase=mingw-w64-${_realname}-${_subrealname}
 pkgname=("${MINGW_PACKAGE_PREFIX}-${_realname}-${_subrealname}")
-pkgver=0.266.r109.g10d9e0cd08
+pkgver=0.270.r274.g575f1bb883a
 pkgrel=1
 _sourcedir=mame-git
 pkgdesc='Port of the popular Multiple Arcade Machine Emulator using SDL with OpenGL support (mingw-w64)'
