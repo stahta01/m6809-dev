@@ -16,7 +16,7 @@ pkgver=1.16.0
 # Version 1.20 still using libgloss/m68k instead of libgloss/m6809
 pkgrel=1
 pkgdesc="A C standard library implementation for the ${_machine} microprocessor"
-arch=('any')
+arch=('i686' 'x86_64')
 url="https://sourceware.org/newlib/"
 license=('Various')
 groups=("${_target}-toolchain")
