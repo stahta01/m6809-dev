@@ -16,7 +16,7 @@ dasmfw              builds for MSYS
 vasm                builds for MSYS
 vbcc                builds for MSYS                               Likely does not work because of missing files
 vlink               builds for MSYS
-xroar               builds for MINGW32, MINGW64, and UCRT64
+xroar               builds for MSYS, MINGW32, MINGW64, and UCRT64
 
 GCC        with posix threads needed to build cmoc
 Primary packages listed in normal build order
@@ -28,7 +28,8 @@ vasm                Built with GCC 13.3.0 under MSYS environment
 toolshed-hg         Built with GCC 13.3.0 under MSYS environment
 asm6809             Built with GCC 13.3.0 under MSYS environment
 dasmfw              Built with GCC 13.3.0 under MSYS environment
-xroar               Built with GCC 14.2.0
+xroar               Built with GCC 13.3.0 under MSYS environment
+mingw-w64-xroar     Built with GCC 14.2.0
 
 Secondary packages listed in normal build order (not normally built)
 vlink               Built with GCC 13.3.0 under MSYS environment
