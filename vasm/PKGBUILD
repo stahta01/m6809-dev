@@ -14,9 +14,9 @@ pkgname=(
   "${_realname}${_cpu2}"
 )
 pkgver=2_0
-pkgrel=1
+pkgrel=2
 pkgdesc="Assembler for microprocessors (mingw-w64)"
-arch=('any')
+arch=('i686' 'x86_64')
 url="http://sun.hasenbraten.de/vasm/"
 license=('custom')
 groups=()
