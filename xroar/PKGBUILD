@@ -37,7 +37,16 @@ prepare() {
   # Add missing mingw libraries of uuid, ole32 and regex
   sed --in-place 's|MINGW_LIBS="-lmingw32 -lwinmm -mwindows -lws2_32 -lcomctl32"|MINGW_LIBS="-lmingw32 -lwinmm -mwindows -lws2_32 -lcomctl32 -luuid -lole32 -lregex"|' configure
 
+  # Attempt at build fix of vo_opengl.c; it failed because of linking issues
   #sed --in-place 's|#ifdef WINDOWS32|#if 1|' src/vo_opengl.h
+
+  ### The following almost worked; but, seemed to have missing headers and linking errors on _open_osfhandle
+  ## Fix build errors from src/Makefile.am edit
+  #sed --in-place 's|_O_TEXT|O_TEXT|' src/windows32/guicon.c
+  #sed --in-place 's|#include <winuser.h>|//#include <winuser.h>|' src/windows32/xroar.rc
+  #sed --in-place 's|#include <commctrl.h>|//#include <commctrl.h>|' src/windows32/xroar.rc
+  ##
+  #sed --in-place 's|if MINGW|if !X11|' src/Makefile.am
 }
 
 build() {
