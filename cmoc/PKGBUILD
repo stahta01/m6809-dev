@@ -7,14 +7,14 @@ _target=${_machine}-unknown
 
 pkgname=${_realname}
 pkgver=0.1.89
-pkgrel=1
+pkgrel=2
 pkgdesc="6809-generating cross-compiler for a subset of the C language"
 arch=('x86_64')
 url="http://perso.b2b2c.ca/~sarrazip/dev/cmoc.html"
 license=('GPL3')
 groups=("${_target}-toolchain")
 options=('!strip')
-depends=('perl' 'lwtools' 'discount'
+depends=('perl' 'lwtools' 'markdown'
          'gcc' # provides cpp
         )
 makedepends=('flex')
