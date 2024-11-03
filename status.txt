@@ -21,7 +21,7 @@ xroar               builds for MSYS, MINGW32, MINGW64, and UCRT64
 GCC        with posix threads needed to build cmoc
 Primary packages listed in normal build order
 lwtools             Built with GCC 13.3.0 under MSYS environment
-discount            Built with GCC 13.3.0 under MSYS environment
+discount            No longer build use markdown instead
 cmoc                Built with GCC 13.3.0 under MSYS environment
 cmoc-os9            Built with GCC 13.3.0 under MSYS environment; after floating point code was disabled
 vasm                Built with GCC 13.3.0 under MSYS environment
