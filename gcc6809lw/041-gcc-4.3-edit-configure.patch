@@ -1,20 +1,21 @@
-From bce21cf27efdcfb87907002b8b6d995b00145745 Mon Sep 17 00:00:00 2001
+From c118b038eeaf885a4a577dfd5e8b9500d9936ae6 Mon Sep 17 00:00:00 2001
 From: Tim S <tim.stahlhut@gmail.com>
-Date: Wed, 20 Feb 2019 18:42:35 -0500
+Date: Sat, 2 Feb 2019 14:34:18 -0500
 Subject: build: edit configure
 
-This patch is based on the work of
+This patch is based on the work of 
 Brian Dominy https://github.com/bcd/gcc and
 David Flamand https://gitlab.com/dfffffff/gcc6809
+
 ---
  configure | 3 +++
  1 file changed, 3 insertions(+)
 
 diff --git a/configure b/configure
-index 6be5e9d2b60..3dfbcab3354 100755
+index 655e51597..a8ab88900 100644
 --- a/configure
 +++ b/configure
-@@ -3439,6 +3439,9 @@ case "${target}" in
+@@ -2441,6 +2441,9 @@ case "${target}" in
    m32r-*-*)
      noconfigdirs="$noconfigdirs ${libgcj}"
      ;;
@@ -22,6 +23,8 @@ index 6be5e9d2b60..3dfbcab3354 100755
 +    noconfigdirs="$noconfigdirs target-libiberty target-libstdc++-v3 target-libgloss ${libgcj}"
 +    ;;
    m68hc11-*-*|m6811-*-*|m68hc12-*-*|m6812-*-*)
-     noconfigdirs="$noconfigdirs target-libstdc++-v3 ${libgcj}"
+     noconfigdirs="$noconfigdirs target-libiberty target-libstdc++-v3 ${libgcj}"
      libgloss_dir=m68hc11
 -- 
+2.19.1.windows.1
+

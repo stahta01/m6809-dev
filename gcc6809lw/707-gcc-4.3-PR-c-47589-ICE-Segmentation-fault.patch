@@ -1,0 +1,36 @@
+From 3fe7ad75deef482fdb57a725c230eac07a78301b Mon Sep 17 00:00:00 2001
+From: Tim Stahlhut <stahta01@gmail.com>
+Date: Sun, 20 Nov 2022 14:41:27 -0500
+Subject: Backport SVN169813 Segmentation fault fix
+
+PR c++/47589 (internal compiler error: Segmentation fault)
+
+This patch edited to change only one file by Tim S.
+
+2011-02-03  Jonathan Wakely  <jwakely.gcc@gmail.com>
+
+	PR c++/47589
+	Backport from mainline
+	2010-11-09  Jakub Jelinek  <jakub@redhat.com>
+
+	PR c++/45894
+	* tree.c (lvalue_kind): Don't crash if ref has NULL type.
+---
+ gcc/cp/tree.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/gcc/cp/tree.c b/gcc/cp/tree.c
+index 70cf67d7fe7..746f474666f 100644
+--- a/gcc/cp/tree.c
++++ b/gcc/cp/tree.c
+@@ -75,7 +75,8 @@ lvalue_p_1 (tree ref,
+     return lvalue_p_1 (TREE_OPERAND (ref, 0),
+                        treat_class_rvalues_as_lvalues);
+ 
+-  if (TREE_CODE (TREE_TYPE (ref)) == REFERENCE_TYPE)
++  if (TREE_TYPE (ref)
++      && TREE_CODE (TREE_TYPE (ref)) == REFERENCE_TYPE)
+     {
+       /* unnamed rvalue references are rvalues */
+       if (TYPE_REF_IS_RVALUE (TREE_TYPE (ref))
+-- 
