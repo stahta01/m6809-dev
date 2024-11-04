@@ -13,7 +13,7 @@ _patch_version=
 
 pkgbase=${_realname}
 # If newlib is missing, enable _build_boot_gcc
-_build_boot_gcc=yes
+_build_boot_gcc=no
 if [[ "${_build_boot_gcc}" == "yes" ]]; then
   pkgname="boot-${_realname}"
   pkgdesc="The GNU bootstrap C compiler for the ${_machine} microprocessor"
@@ -22,7 +22,7 @@ else
   pkgdesc="The GNU C++ compiler for the ${_machine} microprocessor"
 fi
 pkgver=4.3.6
-pkgrel=1
+pkgrel=2
 options=('!emptydirs') # '!strip' 'debug')
 arch=('i686' 'x86_64')
 url="https://github.com/stahta01/gcc4.3"
