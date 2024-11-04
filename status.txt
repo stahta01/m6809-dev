@@ -20,16 +20,18 @@ xroar               builds for MSYS, MINGW32, MINGW64, and UCRT64
 
 GCC        with posix threads needed to build cmoc
 Primary packages listed in normal build order
-lwtools             Built with GCC 13.3.0 under MSYS environment
-discount            No longer build use markdown instead
-cmoc                Built with GCC 13.3.0 under MSYS environment
-cmoc-os9            Built with GCC 13.3.0 under MSYS environment; after floating point code was disabled
-vasm                Built with GCC 13.3.0 under MSYS environment
-toolshed-hg         Built with GCC 13.3.0 under MSYS environment
 asm6809             Built with GCC 13.3.0 under MSYS environment
 dasmfw              Built with GCC 13.3.0 under MSYS environment
+discount            No longer build use markdown instead
+lwtools             Built with GCC 13.3.0 under MSYS environment
+cmoc                Built with GCC 13.3.0 under MSYS environment
+cmoc-os9            Built with GCC 13.3.0 under MSYS environment; after floating point code was disabled
+gcc6809lw           Built with GCC 13.3.0 under MSYS 32-bit environment
+newlib6809lw        Built with GCC 13.3.0 under MSYS 32-bit environment
+toolshed-hg         Built with GCC 13.3.0 under MSYS environment
 xroar               Built with GCC 13.3.0 under MSYS environment
 mingw-w64-xroar     Built with GCC 14.2.0
+vasm                Built with GCC 13.3.0 under MSYS environment
 
 Secondary packages listed in normal build order (not normally built)
 vlink               Built with GCC 13.3.0 under MSYS environment
