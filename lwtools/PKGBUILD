@@ -7,7 +7,7 @@ _target=${_machine}-unknown
 
 pkgname=${_realname}
 pkgver=4.23
-pkgrel=1
+pkgrel=2
 pkgdesc="Cross-development tools for the Motorola 6809 and Hitachi 6309 microprocessors"
 arch=('x86_64')
 url="http://lwtools.projects.l-w.ca"
@@ -18,8 +18,10 @@ makedepends=('patch' 'make' 'perl' 'gcc')
 conflicts=()
 source=(
   "$url/releases/${_realname}/${_realname}-$pkgver.tar.gz"
+  'm6809-unknown-ar'
 )
-sha256sums=('f05255516783ea5b118e7e32e8e4d420b6835864c2833ecde3477b4be19db038')
+sha256sums=('f05255516783ea5b118e7e32e8e4d420b6835864c2833ecde3477b4be19db038'
+            '3b373858678985016c2abccceb99819ac4532eed192d0dd225c86ea3efb9e088')
 
 prepare() {
   cd "${_realname}-${pkgver}"
@@ -55,7 +57,7 @@ package() {
   cp -f $pkgdir${MSYSTEM_PREFIX}/lib/${_realname}/as  $pkgdir${MSYSTEM_PREFIX}/${_target}/bin/as
   cp -f $pkgdir${MSYSTEM_PREFIX}/lib/${_realname}/ld  $pkgdir${MSYSTEM_PREFIX}/${_target}/bin/ld
 
-  cp -f "$pkgdir${MSYSTEM_PREFIX}/lib/${_realname}/ar" "$pkgdir${MSYSTEM_PREFIX}/bin/m6809-unknown-ar"
+  cp -f "$srcdir/m6809-unknown-ar" "$pkgdir${MSYSTEM_PREFIX}/bin/m6809-unknown-ar"
   cp -f "$pkgdir${MSYSTEM_PREFIX}/lib/${_realname}/as" "$pkgdir${MSYSTEM_PREFIX}/bin/m6809-unknown-as"
   cp -f "$pkgdir${MSYSTEM_PREFIX}/lib/${_realname}/ld" "$pkgdir${MSYSTEM_PREFIX}/bin/m6809-unknown-ld"
 
