@@ -6,11 +6,11 @@ cmoc                builds for MSYS
 cmoc-os9            builds for MSYS; after floating point code was disabled
 gcc6502             builds for MINGW32, MINGW64, and UCRT64
 gcc6809as           builds for MSYS
-gcc6809lw           fails to build MINGW32 GCC 14.2.0
+gcc6809lw           builds for MSYS
 lwtools             builds for MSYS
 mame-tools          builds for MINGW32, MINGW64, and UCRT64
 newlib6809as        builds for MSYS
-newlib6809lw        fails to build
+newlib6809lw        builds for MSYS
 toolshed            builds for MSYS
 dasmfw              builds for MSYS
 vasm                builds for MSYS
@@ -26,8 +26,8 @@ discount            No longer build use markdown instead
 lwtools             Built with GCC 13.3.0 under MSYS environment
 cmoc                Built with GCC 13.3.0 under MSYS environment
 cmoc-os9            Built with GCC 13.3.0 under MSYS environment; after floating point code was disabled
-gcc6809lw           Built with GCC 13.3.0 under MSYS 32-bit environment
-newlib6809lw        Built with GCC 13.3.0 under MSYS 32-bit environment
+gcc6809lw           Built with GCC 13.3.0 under MSYS environment
+newlib6809lw        Built with GCC 13.3.0 under MSYS environment
 toolshed-hg         Built with GCC 13.3.0 under MSYS environment
 xroar               Built with GCC 13.3.0 under MSYS environment
 mingw-w64-xroar     Built with GCC 14.2.0
