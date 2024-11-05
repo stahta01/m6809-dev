@@ -16,7 +16,7 @@ pkgver=1.16.0
 # Version 1.20 still using libgloss/m68k instead of libgloss/m6809
 # Could not get msys2 mingw32 to build versions 1.15 and 1.17 of newlib.
 # Could not get msys2 mingw64 to build any version of newlib
-pkgrel=1
+pkgrel=2
 pkgdesc="A C standard library implementation for the ${_machine} microprocessor"
 arch=('i686' 'x86_64')
 url="https://sourceware.org/newlib/"
@@ -25,7 +25,7 @@ groups=("${_target}-toolchain")
 conflicts=(${_target}-${_basename}${_machine_suffix})
 provides=(${_target}-${_basename}${_machine_suffix})
 depends=()
-makedepends=('lwtools' 'boot-gcc6809lw')
+makedepends=('lwtools' 'boot-gcc6809lw' 'gcc')
 options=('staticlibs' '!strip' '!emptydirs')
 # Could not get msys2-mingw32 to build versions 1.15 and 1.17 of newlib.
 # newlib version 1.18/19/20 gives configure.ac:26: error: Please use exactly Autoconf 2.64 instead of 2.59.
