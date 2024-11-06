@@ -1,5 +1,6 @@
-Fix building of cmoc-os9 floating point code or at least printf code
-Test cmoc-os9
+Fix building of cmoc-os9 floating point code or at least printf code; partly done needs tested.
 Upgrade vbcc; likely requires source code changes
-Convert gcc6809lw and newlib6809lw into msys2 packages
 Convert cc65 and gcc6502 into msys2 packages
+Convert mame-tools into msys2 package; wait till it builds under Cygwin
+Test asm commands still build coco roms correctly
+Test gcc6809lw works with hello world code
