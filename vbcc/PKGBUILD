@@ -13,7 +13,7 @@ pkgname=(
 pkgver=0_9h
 _patch=P2
 pkgrel=6
-pkgdesc="code-generator for 6809/6803/68hc12 (mingw-w64)"
+pkgdesc="code-generator for 6809/6803/68hc12"
 arch=('i686' 'x86_64')
 url="http://sun.hasenbraten.de/vbcc/"
 license=('custom')
@@ -75,7 +75,7 @@ package_vbcc() {
 }
 
 package_vbcc6809() {
-  pkgdesc="code-generator for 6809/6803/68hc12 (mingw-w64)"
+  pkgdesc="code-generator for 6809/6803/68hc12"
   depends=("${_realname}")
 
   cd "${_realname}"
@@ -85,7 +85,7 @@ package_vbcc6809() {
 }
 
 package_vbcc6502() {
-  pkgdesc="code-generator for 6502 (mingw-w64)"
+  pkgdesc="code-generator for 6502"
   depends=("${_realname}")
 
   cd "${_realname}"
