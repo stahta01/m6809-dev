@@ -1,0 +1,76 @@
+# Maintainer: Tim Stahlhut
+# archlinux Maintainer:  Antonio Rojas
+# archlinux Contributor: Sergej Pupykin
+# archlinux Contributor: robb_force
+# archlinux Contributor: JJDaNiMoTh
+# Based on https://docs.mamedev.org/initialsetup/compilingmame.html#using-a-standard-msys2-installation
+#          https://archlinux.org/packages/extra/x86_64/mame/
+#          https://aur.archlinux.org/packages/mame-git
+
+pkgbase=mame-tools
+pkgname=("mame-tools")
+pkgver=0.270
+pkgrel=1
+_sourcedir=mame-git
+pkgdesc='Port of the popular Multiple Arcade Machine Emulator using SDL with OpenGL support tools'
+url='https://mamedev.org/'
+license=(GPL2 various)
+arch=('i686' 'x86_64')
+makedepends=(
+  'git'
+  'python'
+  'gcc'
+  'lua'
+)
+source=(${_sourcedir}::git+https://github.com/mamedev/mame#tag=mame${pkgver/./})
+sha256sums=('SKIP')
+options=(!debug !lto) # debug build fails under ArchLinux
+
+prepare() {
+  cd ${_sourcedir}
+
+  echo "git clean"
+  time git clean -fxd
+}
+
+build() {
+  cd ${_sourcedir}
+
+  if [[ ${MSYSTEM_CARCH} == "i686" ]]; then
+    export _MAME_TARGET=linux_x86
+    export _MAME_MINGW64=
+    export _MAME_MINGW32=$MSYSTEM_PREFIX
+  elif [[ ${MSYSTEM_CARCH} == "x86_64" ]]; then
+    export _MAME_TARGET=linux_x64
+    export _MAME_MINGW64=$MSYSTEM_PREFIX
+    export _MAME_MINGW32=
+  fi
+
+  # some reason these files are not found during build; may have copied the wrong files
+  cp scripts/genie.lua ./genie.lua
+  cp scripts/extlib.lua ./extlib.lua
+  cp scripts/toolchain.lua ./toolchain.lua
+
+  MINGW64=${_MAME_MINGW64} \
+  MINGW32=${_MAME_MINGW32} \
+  make --jobs=1 ${_MAME_TARGET} \
+    REGENIE=1 \
+    EMULATOR=0 \
+    VERBOSE=1 \
+    NOWERROR=1 \
+    OPTIMIZE=2 \
+    NO_OPENGL=1 \
+    OSD=sdl \
+    TOOLS=1
+}
+
+package() {
+  cd ${_sourcedir}
+  for _i in castool chdman floptool imgtool jedutil ldresample ldverify nltool nlwav pngcmp regrep romcmp \
+            split srcclean unidasm; do
+    install -Dm755 $_i -t "$pkgdir"${MSYSTEM_PREFIX}/bin
+  done
+  mv "$pkgdir"${MSYSTEM_PREFIX}/bin/{,mame-}split # Fix conflicts
+
+  install -Dm644 docs/man/*.1* -t "$pkgdir"${MSYSTEM_PREFIX}/share/man/man1/
+}
