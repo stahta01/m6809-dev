@@ -15,7 +15,7 @@ pkgname=(
 )
 pkgver=2_0
 pkgrel=2
-pkgdesc="Assembler for microprocessors (mingw-w64)"
+pkgdesc="Assembler for microprocessors"
 arch=('i686' 'x86_64')
 url="http://sun.hasenbraten.de/vasm/"
 license=('custom')
@@ -67,7 +67,7 @@ package_vasm() {
 }
 
 package_vasm6809() {
-  pkgdesc="Assembler for the Motorola 6809 and Hitachi 6309 microprocessors (mingw-w64)"
+  pkgdesc="Assembler for the Motorola 6809 and Hitachi 6309 microprocessors"
   depends=("${_realname}")
 
   cd "${_realname}"
@@ -79,7 +79,7 @@ package_vasm6809() {
 }
 
 package_vasm6502() {
-  pkgdesc="Assembler for the 6502 and related microprocessors (mingw-w64)"
+  pkgdesc="Assembler for the 6502 and related microprocessors"
   depends=("${_realname}")
 
   cd "${_realname}"
