@@ -7,6 +7,7 @@ cmoc-os9            builds for MSYS; after floating point code was disabled
 gcc6502             builds for MINGW32, MINGW64, and UCRT64
 gcc6809as           builds for MSYS
 gcc6809lw           builds for MSYS
+gcc4.6_6809lw       builds for MSYS; fails to build newlib6809lw
 lwtools             builds for MSYS
 mame-tools          builds for MINGW32, MINGW64, and UCRT64
 newlib6809as        builds for MSYS
@@ -29,6 +30,7 @@ gcc6809lw           Built with GCC 13.3.0 under MSYS environment
 newlib6809lw        Built with GCC 13.3.0 under MSYS environment
 toolshed-hg         Built with GCC 13.3.0 under MSYS environment
 vasm                Built with GCC 13.3.0 under MSYS environment
+vlink               Built with GCC 13.3.0 under MSYS environment
 
 m6809 emulator packages listed in normal build order 
 xroar               Built with GCC 13.3.0 under MSYS environment (Newer 32 bit installation needed to build)
@@ -37,7 +39,6 @@ mame-tools          Built with GCC 14.2.0 # after add jobs=1 likely makefile iss
 mame-coco3          Built with GCC 14.2.0 under MINGW64 and UCRT64 environment(s)
 
 other packages listed in normal build order (not normally built)
-vlink               Built with GCC 13.3.0 under MSYS environment
 vbcc                Built with GCC 13.3.0 under MSYS environment
 as6809              Built with GCC 13.3.0 under MSYS environment
 gcc6809as           Built with GCC 13.3.0 under MSYS environment
