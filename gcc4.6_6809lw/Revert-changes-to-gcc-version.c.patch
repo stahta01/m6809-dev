@@ -1,0 +1,40 @@
+From e151031a6f1a084e3d6ee5a9bae46cd4d9e8ed9c Mon Sep 17 00:00:00 2001
+From: Tim Stahlhut <stahta01@gmail.com>
+Date: Sun, 24 Nov 2024 21:17:08 -0500
+Subject: Revert changes to gcc/version.c
+
+I do not think this is the most correct way to update version.c file.
+And, it uses an in-correct URL in my opinion.
+
+---
+ gcc/version.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/gcc/version.c b/gcc/version.c
+index 173fe86..9744449 100644
+--- a/gcc/version.c
++++ b/gcc/version.c
+@@ -21,16 +21,16 @@ along with GCC; see the file COPYING3.  If not see
+ 
+ /* This is the location of the online document giving instructions for
+    reporting bugs.  If you distribute a modified version of GCC,
+-   please change this to refer to a document giving instructions for
+-   reporting bugs to you, not us.  (You are of course welcome to
+-   forward us bugs reported to you, if you determine that they are
+-   not bugs in your modifications.)  */
++   please configure with --with-bugurl pointing to a document giving
++   instructions for reporting bugs to you, not us.  (You are of course
++   welcome to forward us bugs reported to you, if you determine that
++   they are not bugs in your modifications.)  */
+ 
+-const char bug_report_url[] = "<URL:http://lost.l-w.ca/coco/lwtools/>";
++const char bug_report_url[] = BUGURL;
+ 
+ /* The complete version string, assembled from several pieces.
+    BASEVER, DATESTAMP, DEVPHASE, and REVISION are defined by the
+    Makefile.  */
+ 
+-const char version_string[] = BASEVER DATESTAMP DEVPHASE REVISION " (gcc6809lw pl9)";
++const char version_string[] = BASEVER DATESTAMP DEVPHASE REVISION;
+ const char pkgversion_string[] = PKGVERSION;
+-- 

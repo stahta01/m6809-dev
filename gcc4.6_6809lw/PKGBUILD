@@ -1,0 +1,183 @@
+# Maintainer: Tim S <stahta01@gmail.com>
+
+### Major build options
+_BUGURL='https://github.com/stahta01/gcc4.6/issues'
+_BUILTBY='Built by stahta01'
+# If newlib is missing, enable _build_boot_gcc
+_build_boot_gcc=yes
+
+### build options not normally changed
+_basename=gcc
+_machine_suffix=6809
+_realname_suffix=lw
+_realname=${_basename}${_machine_suffix}${_realname_suffix}
+_filename=${_basename}
+_foldername=${_basename}
+_machine=m${_machine_suffix}
+_target=${_machine}-unknown
+_assembler=lwtools
+_patch_version=
+
+pkgbase=gcc4.6_6809lw
+if [[ "${_build_boot_gcc}" == "yes" ]]; then
+  pkgname="boot-${_realname}"
+  pkgdesc="The GNU bootstrap C compiler for the ${_machine} microprocessor"
+else
+  pkgname="${_realname}"
+  pkgdesc="The GNU C++ compiler for the ${_machine} microprocessor"
+fi
+pkgver=4.6.4
+_sourcedir=${_foldername}-${pkgver}
+pkgrel=1
+options=('!emptydirs') # '!strip' 'debug')
+arch=('i686' 'x86_64')
+url="https://github.com/stahta01/gcc4.6"
+license=('GPL3')
+groups=("${_target}-toolchain")
+depends=(lwtools)
+_makedepends=(
+  'bison' 'diffutils' 'gettext' 'gettext-devel'
+  'intltool' 'make' 'patch' 'perl' 'tar')
+if [[ "${_build_boot_gcc}" == "yes" ]]; then
+  makedepends=(${_makedepends[@]})
+  optdepends=("${_target}-newlib${_machine_suffix}${_realname_suffix}: Standard C library optimized for embedded systems")
+else
+  makedepends=(${_makedepends[@]} ${_target}-newlib${_machine_suffix}${_realname_suffix})
+fi
+replaces=(boot-${_realname})
+provides=(boot-${_realname})
+conflicts=(boot-${_realname})
+
+MPFR_VERSION=2.4.2
+GMP_VERSION=4.3.2
+MPC_VERSION=0.8.1
+noextract=("mpfr-${MPFR_VERSION}.tar.bz2"
+           "gmp-${GMP_VERSION}.tar.bz2"
+           "mpc-${MPC_VERSION}.tar.gz"
+           ${_filename}-${pkgver}.tar.bz2)
+source=(ftp://gcc.gnu.org/pub/gcc/infrastructure/mpfr-${MPFR_VERSION}.tar.bz2
+        ftp://gcc.gnu.org/pub/gcc/infrastructure/gmp-${GMP_VERSION}.tar.bz2
+        ftp://gcc.gnu.org/pub/gcc/infrastructure/mpc-${MPC_VERSION}.tar.gz
+        "https://ftp.gnu.org/gnu/gcc/gcc-${pkgver}/${_filename}-${pkgver}.tar.bz2"
+        'gcc6809lw-4.6.4-9.patch'
+        'z1_backported_cprop_ff5a75fc.patch'
+        'Revert-changes-to-gcc-version.c.patch'
+)
+sha256sums=('c7e75a08a8d49d2082e4caee1591a05d11b9d5627514e678f02d66a124bcf2ba'
+            '936162c0312886c21581002b79932829aa048cfaf9937c6265aeaa14f1cd1775'
+            'e664603757251fd8a352848276497a4c79b7f8b21fd8aedd5cc0598a38fee3e4'
+            '35af16afa0b67af9b8eb15cafb76d2bc5f568540552522f5dc2c88dd45d977e8'
+            '33d7f6e60ff5a528271b72bce26e5bb5157a88cedd5a904a9984b9d02205eeef'
+            '54ef4662457fa5604cad0afee60840c7badcf92ceaca11fca9fe5e21df1fa7c6'
+            '5052794ff228096915cb0a27862b8d038d6b02aeb1196308a5f39fa8f13bd1a4')
+# =========================================== #
+_extract_to_gcc_folder() {
+    local tarfile="$1"
+    local subfolder="$(echo "$tarfile" | sed 's/-.*$//')"
+    if [ ! -d  "$_sourcedir/$subfolder" ]; then
+        echo "Extracting ${tarfile} to $_sourcedir/$subfolder"
+        mkdir -p "$_sourcedir/$subfolder"
+        tar -x --strip-components=1 -f "$tarfile" -C "$_sourcedir/$subfolder"
+    else
+        echo "Folder $_sourcedir/$subfolder already exists"
+    fi
+}
+# =========================================== #
+prepare() {
+  tar --overwrite -xjf ${_filename}-${pkgver}.tar.bz2 -C ${srcdir} --checkpoint=100 \
+    --exclude=${_foldername}-${pkgver}/{INSTALL,libjava,libgo,libgfortran} \
+    --exclude=${_foldername}-${pkgver}/gcc/{ada,fortran,java,po}
+
+  cd ${srcdir}
+  _extract_to_gcc_folder            gmp-${GMP_VERSION}.tar.bz2
+  _extract_to_gcc_folder            mpfr-${MPFR_VERSION}.tar.bz2
+  _extract_to_gcc_folder            mpc-${MPC_VERSION}.tar.gz
+
+  cd ${_foldername}-${pkgver}
+  # Remove files added by patches below
+  rm -fr gcc/config/m6809
+  rm -f  README.LW
+
+  patch --forward -p1 -i ${srcdir}/gcc6809lw-4.6.4-9.patch
+  patch --forward -p1 -i ${srcdir}/z1_backported_cprop_ff5a75fc.patch
+  patch --forward -p1 -i ${srcdir}/Revert-changes-to-gcc-version.c.patch
+}
+
+build() {
+  if [[ -d "build-gcc-${CARCH}" ]]; then
+    rm -rf build-gcc-${CARCH}
+  fi
+  mkdir build-gcc-${CARCH}
+  cd build-gcc-${CARCH}
+
+  local -a _gcc_pass_cfg_options
+  if [[ "${_build_boot_gcc}" == "yes" ]]; then
+    _gcc_pass_cfg_options+=("--without-headers")
+    _gcc_pass_cfg_options+=("--enable-languages=c")
+  else
+    _gcc_pass_cfg_options+=("--with-headers=${MSYSTEM_PREFIX}/${_target}/include")
+    _gcc_pass_cfg_options+=("--oldincludedir=${MSYSTEM_PREFIX}/${_target}/include")
+    _gcc_pass_cfg_options+=("--enable-languages=c,c++")
+    _gcc_pass_cfg_options+=("--with-sysroot=${MSYSTEM_PREFIX}/${_target}")
+  fi
+
+  echo "CC=${CC-gcc}"
+
+  local CYGWIN_CHOST="${CHOST/-msys/-cygwin}"
+
+  CPPFLAGS=""
+  CXXFLAGS="-g3 -Wno-error=format-security"
+  CFLAGS="-g3 -Wno-error=format-security"
+  MAKEINFO=false \
+  ../${_foldername}-$pkgver/configure \
+    "${_gcc_pass_cfg_options[@]}" \
+    --with-newlib \
+    --prefix=${MSYSTEM_PREFIX} \
+    --libexecdir=${MSYSTEM_PREFIX}/lib \
+    --infodir=${MSYSTEM_PREFIX}/share/info \
+    --mandir=${MSYSTEM_PREFIX}/share/man \
+    --build=${CYGWIN_CHOST} \
+    --host=${CYGWIN_CHOST} \
+    --with-pkgversion="${_realname}${_patch_version} Rev${pkgrel}, ${_BUILTBY}" \
+    --with-bugurl="$_BUGURL" \
+    --target=${_target} \
+    --program-prefix="${_target}-" \
+    --disable-multilib \
+    --disable-werror \
+    --disable-nsl \
+    --disable-shared \
+    --disable-decimal-float \
+    --disable-lto \
+    --disable-threads \
+    --disable-tls \
+    --disable-libada \
+    --disable-libffi \
+    --disable-libgomp \
+    --disable-libmudflap \
+    --disable-libquadmath \
+    --disable-libsanitizer \
+    --disable-libssp \
+    --disable-libstdcxx-pch \
+    --with-as=${MSYSTEM_PREFIX}/bin/${_target}-as \
+    --with-ld=${MSYSTEM_PREFIX}/bin/${_target}-ld \
+    --with-ar=${MSYSTEM_PREFIX}/bin/${_target}-ar
+
+  make -j1 all-gcc
+}
+
+#check() {
+#  cd "${_realname}-$pkgver/build-gcc-${CARCH}"
+#  make -k check-gcc
+#}
+
+package() {
+  CPPFLAGS=""
+  CFLAGS="-g3"
+  cd "build-gcc-${CARCH}"
+  make -j1 DESTDIR="$pkgdir/" install-gcc
+
+  # Remove man7 files to avoid conflict
+  rm -fr $pkgdir${MSYSTEM_PREFIX}/share/man/man7
+}
+
+# vim:set ts=2 sw=2 et:
