@@ -1,0 +1,60 @@
+From d66f21a470e82639966421351b71579200fd49d6 Mon Sep 17 00:00:00 2001
+From: Tim S <tim.stahlhut@gmail.com>
+Date: Sat, 26 Jan 2019 03:52:34 -0500
+Subject: [PATCH 311/328] bcd modified source files
+
+This patch is based on the work of 
+Brian Dominy https://github.com/bcd/newlib-6809
+
+---
+ libgloss/libnosys/warning.h          | 4 ++++
+ newlib/libc/include/machine/ieeefp.h | 2 +-
+ newlib/libc/include/machine/setjmp.h | 5 +++++
+
+diff --git a/libgloss/libnosys/warning.h b/libgloss/libnosys/warning.h
+index 9232a92..e7bc60f 100644
+--- a/libgloss/libnosys/warning.h
++++ b/libgloss/libnosys/warning.h
+@@ -1,6 +1,10 @@
+ #ifndef __WARNING_H__
+ #define __WARNING_H__
+ 
++#ifdef __m6809__
++#undef HAVE_GNU_LD
++#endif
++
+ #ifdef HAVE_GNU_LD
+ # ifdef HAVE_ELF
+ 
+diff --git a/newlib/libc/include/machine/ieeefp.h b/newlib/libc/include/machine/ieeefp.h
+index 9e5b5ae..adc20ca 100644
+--- a/newlib/libc/include/machine/ieeefp.h
++++ b/newlib/libc/include/machine/ieeefp.h
+@@ -86,7 +86,7 @@
+ #endif
+ #endif
+ 
+-#if defined(__m68k__) || defined(__mc68000__)
++#if defined(__m68k__) || defined(__mc68000__) || defined(__m6809__)
+ #define __IEEE_BIG_ENDIAN
+ #endif
+ 
+diff --git a/newlib/libc/include/machine/setjmp.h b/newlib/libc/include/machine/setjmp.h
+index f751bfb..aa8c95d 100644
+--- a/newlib/libc/include/machine/setjmp.h
++++ b/newlib/libc/include/machine/setjmp.h
+@@ -44,6 +44,11 @@ _BEGIN_STD_C
+ #define _JBLEN  32
+ #endif
+ 
++#if defined(__m6809__)
++/* D, X, Y, U, S, PC, DP, CC, plus some padding */
++#define _JBLEN 10
++#endif
++
+ #if defined(__Z8001__) || defined(__Z8002__)
+ /* 16 regs + pc */
+ #define _JBLEN 20
+-- 
+2.19.1.windows.1
+
