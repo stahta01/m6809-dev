@@ -1,0 +1,24 @@
+From 27d3ea1853c9c40c579d26639946ec638991bdf8 Mon Sep 17 00:00:00 2001
+From: Tim S <tim.stahlhut@gmail.com>
+Date: Wed, 30 Jan 2019 11:46:12 -0500
+Subject: [PATCH] add-string-h
+
+---
+ newlib/doc/makedoc.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/newlib/doc/makedoc.c b/newlib/doc/makedoc.c
+index 00ff75c..5d6bdd9 100644
+--- a/newlib/doc/makedoc.c
++++ b/newlib/doc/makedoc.c
+@@ -39,6 +39,7 @@ There is  no
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <ctype.h>
++#include <string.h>
+ 
+ #define DEF_SIZE 5000
+ #define STACK 50
+-- 
+2.19.1.windows.1
+
