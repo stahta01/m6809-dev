@@ -1,0 +1,28 @@
+From 85af342acb14bdae4d7a6a4ac640bdf21613068e Mon Sep 17 00:00:00 2001
+From: Tim S <tim.stahlhut@gmail.com>
+Date: Tue, 29 Jan 2019 20:14:14 -0500
+Subject: Add m6809 to configure.ac
+
+libgloss_dir=m6809
+---
+ configure.ac | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/configure.ac b/configure.ac
+index 6efc633c3..1ec1e90a7 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -764,6 +764,10 @@ case "${target}" in
+     noconfigdirs="$noconfigdirs target-libiberty target-libstdc++-v3 ${libgcj}"
+     libgloss_dir=m68hc11
+     ;;
++  m6809-*-*)
++    noconfigdirs="$noconfigdirs target-libiberty target-libstdc++-v3 ${libgcj}"
++    libgloss_dir=m6809
++    ;;
+   m68k-*-elf*)
+     noconfigdirs="$noconfigdirs ${libgcj}"
+     ;;
+-- 
+2.45.2.windows.1
+
