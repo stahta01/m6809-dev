@@ -1,0 +1,38 @@
+From 0cc47a1790e76384071fc704ce403a0cae6bb156 Mon Sep 17 00:00:00 2001
+From: Tim Stahlhut <stahta01@gmail.com>
+Date: Mon, 25 Nov 2024 23:55:30 -0500
+Subject: Regenerate libgloss/configure
+
+---
+ libgloss/configure | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/libgloss/configure b/libgloss/configure
+index 4b17fd898..9ef594849 100755
+--- a/libgloss/configure
++++ b/libgloss/configure
+@@ -277,6 +277,7 @@ ac_subdirs_all="$ac_subdirs_all libnosys"
+ ac_subdirs_all="$ac_subdirs_all i386"
+ ac_subdirs_all="$ac_subdirs_all m32r"
+ ac_subdirs_all="$ac_subdirs_all m68hc11"
++ac_subdirs_all="$ac_subdirs_all m6809"
+ ac_subdirs_all="$ac_subdirs_all m68k"
+ ac_subdirs_all="$ac_subdirs_all pa"
+ ac_subdirs_all="$ac_subdirs_all i960"
+@@ -1848,6 +1849,13 @@ subdirs="$subdirs m68hc11"
+ 
+ 	config_testsuite=true
+ 	;;
++  m6809-*-*)
++
++
++subdirs="$subdirs m6809"
++
++	config_testsuite=false
++	;;
+   fido-*-* | m68*-*-*)
+ 
+ 
+-- 
+2.45.2.windows.1
+
