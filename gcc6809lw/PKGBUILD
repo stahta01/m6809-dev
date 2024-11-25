@@ -1,5 +1,12 @@
 # Maintainer: Tim S <stahta01@gmail.com>
 
+### Major build options
+_BUGURL='https://github.com/stahta01/gcc4.3/issues'
+_BUILTBY='Built by stahta01'
+# If newlib is missing, enable _build_boot_gcc
+_build_boot_gcc=no
+
+### build options not normally changed
 _basename=gcc
 _machine_suffix=6809
 _realname_suffix=lw
@@ -12,8 +19,6 @@ _assembler=lwtools
 _patch_version=
 
 pkgbase=${_realname}
-# If newlib is missing, enable _build_boot_gcc
-_build_boot_gcc=no
 if [[ "${_build_boot_gcc}" == "yes" ]]; then
   pkgname="boot-${_realname}"
   pkgdesc="The GNU bootstrap C compiler for the ${_machine} microprocessor"
@@ -23,7 +28,7 @@ else
 fi
 pkgver=4.3.6
 _sourcedir=${_foldername}-${pkgver}
-pkgrel=3
+pkgrel=4
 options=('!emptydirs') # '!strip' 'debug')
 arch=('i686' 'x86_64')
 url="https://github.com/stahta01/gcc4.3"
@@ -189,8 +194,8 @@ build() {
     --mandir=${MSYSTEM_PREFIX}/share/man \
     --build=${CYGWIN_CHOST} \
     --host=${CYGWIN_CHOST} \
-    --with-pkgversion="${_realname}${_patch_version}" \
-    --with-bugurl="${url}/issues" \
+    --with-pkgversion="${_realname}${_patch_version} Rev${pkgrel}, ${_BUILTBY}" \
+    --with-bugurl="$_BUGURL" \
     --target=${_target} \
     --program-prefix="${_target}-" \
     --disable-multilib \
@@ -213,7 +218,12 @@ build() {
     --with-ld=${MSYSTEM_PREFIX}/bin/${_target}-ld \
     --with-ar=${MSYSTEM_PREFIX}/bin/${_target}-ar
 
-  make -j1 all-gcc
+  #if [[ "${_build_boot_gcc}" == "yes" ]]; then
+    make -j1 all-gcc
+  #else
+    #make -j1 all
+    ## Fails with "m6809-unknown-ranlib: No such file or directory"
+  #fi
 }
 
 #check() {
@@ -225,7 +235,11 @@ package() {
   CPPFLAGS=""
   CFLAGS="-O2"
   cd "build-gcc-${CARCH}"
-  make -j1 DESTDIR="$pkgdir/" install-gcc
+  #if [[ "${_build_boot_gcc}" == "yes" ]]; then
+    make -j1 DESTDIR="$pkgdir/" install-gcc
+  #else
+    #make -j1 DESTDIR="$pkgdir/" install
+  #fi
 
   ## Add prefix to info pages to avoid conflict
   #mv "$pkgdir${MSYSTEM_PREFIX}/share/info/cpp.info" \
