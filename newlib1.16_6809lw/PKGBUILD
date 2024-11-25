@@ -1,0 +1,173 @@
+# Maintainer: Tim S <stahta01@gmail.com>
+
+_basename=newlib
+_machine_suffix=6809
+_realname_suffix=lw
+_realname=${_basename}${_machine_suffix}${_realname_suffix}
+_filename=${_basename}
+_machine=m6809
+_target=${_machine}-unknown
+
+pkgbase=newlib1.16_6809lw
+pkgname=("${_realname}")
+conflicts=("${_target}-${_realname}")
+provides=("${_target}-${_realname}")
+pkgver=1.16.0
+# OLD INFO NEEDS RETESTED:: Versions 1.18, 1.19, and 1.20 wants to use libgloss/m68k instead of libgloss/m6809
+# OLD INFO NEEDS RETESTED:: Disable building of target-libgloss in Versions 1.18 and 1.19
+# OLD INFO NEEDS RETESTED:: Version 1.20 still using libgloss/m68k instead of libgloss/m6809
+# Could not get msys2 mingw32 to build versions 1.15 and 1.17 of newlib.
+# Could not get msys2 mingw64 to build any version of newlib
+pkgrel=1
+pkgdesc="A C standard library implementation for the ${_machine} microprocessor"
+arch=('i686' 'x86_64')
+url="https://sourceware.org/newlib/"
+license=('Various')
+groups=("${_target}-toolchain")
+conflicts=(${_target}-${_basename}${_machine_suffix})
+provides=(${_target}-${_basename}${_machine_suffix})
+depends=()
+makedepends=('lwtools' 'boot-gcc6809lw' 'gcc')
+options=('staticlibs' '!strip' '!emptydirs')
+# OLD INFO NEEDS RETESTED:: Could not get msys2-mingw32 to build versions 1.15 and 1.17 of newlib.
+# OLD INFO NEEDS RETESTED:: newlib version 1.18/19/20 gives configure.ac:26: error: Please use exactly Autoconf 2.64 instead of 2.59.
+
+source=("ftp://sourceware.org/pub/newlib/newlib-${pkgver}.tar.gz"
+        301-newlib-1.15-df-changed-seek-offset-from-int-to-_fpos_t.patch
+        302-newlib-1.16-include-string-h.patch
+        306-newlib-1.15-edit-newlib-configure-host.patch
+        310-newlib-1.15-bcd-modified-source-files.patch
+        311-newlib-1.15-bcd-added-source-files.patch
+        312-newlib-1.15-bcd-added-.m4-files.patch
+        313-newlib-1.15-bcd-added-.am-files.patch
+        314-newlib-1.15-bcd-added-Makefile.in-files.patch
+        315-newlib-1.15-bcd-added-configure.in-files.patch
+        316-newlib-1.15-bcd-added-configure-files.patch
+        317-newlib-1.15-df-modified-source-files.patch
+        318-newlib-1.15-df-added-source-files.patch
+        319-newlib-1.15-df-modified-build-files-except-for-configure-files.patch
+        1001-Add-m6809-to-configure.ac.patch
+        1002-Edit-config.sub.patch
+        1003-Add-coco-and-m6809sim-to-sys-configure.in.patch
+        1004-Add-m6809-to-newlib-libc-machine-configure.in.patch
+        1005-Add-m6809-to-libgloss-configure.in.patch
+        1006-Regenerate-libgloss-configure.patch
+        1007-Regenerate-newlib-libc-machine-configure.patch
+        1008-Regenerate-newlib-libc-sys-configure.patch)
+sha256sums=('db426394965c48c1d29023e1cc6d965ea6b9a9035d8a849be2750ca4659a3d07'
+            '8c0f1fbcc985631a7b6efc37ff9c12837fc61531797c7189dc27986c70b18a00'
+            '97ec4d5af573a29e29242c8e8ddeae87577cf2bce46a880c3f92c3d18ffaab3f'
+            '0daeca7d26418ea46ba7eb68af0aa78ffb47642af809e7834f86623ba8dd84f6'
+            'ec140344e41fb1ea12ce79dcbcd6b70b93e0a3c198a34ec56eed052238735ec4'
+            '6fb87c7acb8ac797b8f43559fbcbbbe7956028367e5a0e35a21e3b39db9b18a2'
+            '0db2d8148d5fd8eb0f2e4a5d5a031ae9b06670203e0c54519496c45391ed37a7'
+            '28c7cc1d2586526f0d860d931777cf0f2158ac8e4953c49701d2e8bd5fb32bcf'
+            '88e6b76fb8e4c294f8d69e6e8612ebd7c3f6e7368ef38b11cd7d092ba3dcda61'
+            'a6cf30515ad1ac20cadd9ad096b13f723c0be25bea6abc6d3adb8e369986862d'
+            '9917500976cde31371e0525e6093f0fe57d4c4e68d46da2816b3779849ce343b'
+            'f85c57e8b235ac447acb14c578f99e63d8bca4c698dc80454083e608d60b3ba4'
+            'e890ff111058dc255dd82568102a9c3bcb335923e88ea6d8469b5962e8d04cf4'
+            '38e848e035511a5a6a46534bdcba49e5169c2f9091661d6477760fc5af4f17f0'
+            'cf7a9eaa546440bd8cf73d612240b3d129661102ea43de9bd37466be8309525b'
+            '0736799b8f13ebee6d66ce52661c31104a2cbe2f94706c2950e84bf3fb462e13'
+            '4f4aadd10a573ce7a668b4948d31b35b46279ea0e60ccc369919a149be30576c'
+            '07500191697e3c3513beab248f27d05f7e6aed1f83adf2fbee7a61abc0d3533d'
+            '84fe3968a80c61cb82b44fd2ddcf3ab4bed1d5fd59533e2f2ddbfc521c617a9a'
+            '52bbd7cc1214ecb246441cc62eb9d5a3d0403419d541eee1b526eeb953666463'
+            '741d9350e3d2ee70a0f411e195dcb12fe52a3cad900e252ca8cf1a2f36d509dc'
+            'c3cbe3d7b49ae229b5fa657dfbebf29a7ef4a83e400d9b9eeed8b933bb17cceb'
+            '33faf8fb69ad124c351452d530ffbba7aa4a36b04b17d912e8cd8e0e0cc51c8a'
+            '3f746ad27bb78088d9ccce2701216b31c33b78063644494b2fb33f4af2da10ed')
+prepare() {
+  cd ${srcdir}/${_filename}-${pkgver}
+
+  # Changes that should work with non m6809 targets
+  patch --forward -p1 -i "$srcdir"/301-newlib-1.15-df-changed-seek-offset-from-int-to-_fpos_t.patch
+  patch --forward -p1 -i "$srcdir"/302-newlib-1.16-include-string-h.patch
+
+  # m6809 build system related patches
+  patch --forward -p1 -i "$srcdir"/1001-Add-m6809-to-configure.ac.patch
+  patch --forward -p1 -i "$srcdir"/1002-Edit-config.sub.patch
+  patch --forward -p1 -i "$srcdir"/1003-Add-coco-and-m6809sim-to-sys-configure.in.patch
+  patch --forward -p1 -i "$srcdir"/1004-Add-m6809-to-newlib-libc-machine-configure.in.patch
+  patch --forward -p1 -i "$srcdir"/1005-Add-m6809-to-libgloss-configure.in.patch
+  patch --forward -p1 -i "$srcdir"/1006-Regenerate-libgloss-configure.patch
+  patch --forward -p1 -i "$srcdir"/1007-Regenerate-newlib-libc-machine-configure.patch
+  patch --forward -p1 -i "$srcdir"/1008-Regenerate-newlib-libc-sys-configure.patch
+  patch -p1 -i "$srcdir"/306-newlib-1.15-edit-newlib-configure-host.patch
+  patch -p1 -i "$srcdir"/312-newlib-1.15-bcd-added-.m4-files.patch
+  patch -p1 -i "$srcdir"/313-newlib-1.15-bcd-added-.am-files.patch
+  patch -p1 -i "$srcdir"/314-newlib-1.15-bcd-added-Makefile.in-files.patch
+  patch -p1 -i "$srcdir"/315-newlib-1.15-bcd-added-configure.in-files.patch
+  patch -p1 -i "$srcdir"/316-newlib-1.15-bcd-added-configure-files.patch
+  patch -p1 -i "$srcdir"/319-newlib-1.15-df-modified-build-files-except-for-configure-files.patch
+
+  # m6809 regular code patches
+  patch -p1 -i "$srcdir"/310-newlib-1.15-bcd-modified-source-files.patch
+  patch -p1 -i "$srcdir"/311-newlib-1.15-bcd-added-source-files.patch
+  patch -p1 -i "$srcdir"/317-newlib-1.15-df-modified-source-files.patch
+  patch -p1 -i "$srcdir"/318-newlib-1.15-df-added-source-files.patch
+
+  #cd ${srcdir}/${_filename}-${pkgver}
+  #autoreconf-2.13 --verbose
+
+  #cd ${srcdir}/${_filename}-${pkgver}/libgloss
+  #aclocal -I ..
+  #autoreconf-2.59
+
+  #cd ${srcdir}/${_filename}-${pkgver}/newlib/libc/sys
+  #aclocal -I ../../..
+  #autoreconf-2.59
+
+  #cd ${srcdir}/${_filename}-${pkgver}/newlib/libc/machine
+  #aclocal -I ../../..
+  #autoreconf-2.59
+}
+
+build() {
+  # Build newlib
+  if check_option "debug" "y"; then
+    NEWLIB_CFLAGS="-O0"
+  else
+    # -O3 has a history of bugs in Win32 GCC; instead, use -O2
+    NEWLIB_CFLAGS="-O2"
+  fi
+  NEWLIB_CFLAGS+=" -g -ffunction-sections -fdata-sections"
+  cd $srcdir
+  rm -rf build-${CARCH}
+  mkdir -p $srcdir/build-${CARCH}
+  cd $srcdir/build-${CARCH}
+
+  local CYGWIN_CHOST="${CHOST/-msys/-cygwin}"
+
+  gcc --version
+  m6809-unknown-gcc --version
+
+  CCAS="${MSYSTEM_PREFIX}/bin/${_target}-gcc" \
+  CC_FOR_TARGET="${_target}-gcc" \
+  AS_FOR_TARGET=${MSYSTEM_PREFIX}/bin/lwasm.exe \
+  AR_FOR_TARGET="${_target}-ar" \
+  LD_FOR_TARGET=${MSYSTEM_PREFIX}/bin/lwlink.exe \
+  AR_FLAGS=r \
+  RANLIB_FOR_TARGET="/bin/true" \
+  CFLAGS="${NEWLIB_CFLAGS}" \
+  ../${_filename}-$pkgver/configure \
+    --build=${CYGWIN_CHOST} \
+    --host=${CYGWIN_CHOST} \
+    --prefix=${MSYSTEM_PREFIX} \
+    --target=${_target} \
+    --program-prefix="${_target}-" \
+    --disable-float \
+    --disable-newlib-io-float \
+    PATH="${MSYSTEM_PREFIX}/lib/lwtools:${MSYSTEM_PREFIX}/${_target}/bin:${MSYSTEM_PREFIX}/bin:${PATH}"
+  make -j1 PATH="${MSYSTEM_PREFIX}/lib/lwtools:${MSYSTEM_PREFIX}/${_target}/bin:${MSYSTEM_PREFIX}/bin:${PATH}"
+}
+
+package() {
+  cd ${srcdir}/build-${CARCH}
+  make -j1 DESTDIR=${pkgdir} install
+
+  # Remove files that conflict with host
+  rm -rf "${pkgdir}${MSYSTEM_PREFIX}/share/info"
+  rm -rf "${pkgdir}${MSYSTEM_PREFIX}/info"
+}
