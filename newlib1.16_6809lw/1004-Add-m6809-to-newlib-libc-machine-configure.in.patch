@@ -1,0 +1,27 @@
+From 042dd4980caae2d5fa6e6f86893491ae6a7bf3ba Mon Sep 17 00:00:00 2001
+From: Tim Stahlhut <stahta01@gmail.com>
+Date: Mon, 25 Nov 2024 23:43:09 -0500
+Subject: Add m6809 to newlib/libc/machine/configure.in
+
+This patch is based on the work of
+Brian Dominy https://github.com/bcd/newlib-6809 and
+David Flamand https://gitlab.com/dfffffff/newlib-6809
+---
+ newlib/libc/machine/configure.in | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/newlib/libc/machine/configure.in b/newlib/libc/machine/configure.in
+index 80ac3df9d..b81238ea3 100644
+--- a/newlib/libc/machine/configure.in
++++ b/newlib/libc/machine/configure.in
+@@ -40,6 +40,7 @@ if test -n "${machine_dir}"; then
+ 	m32c) AC_CONFIG_SUBDIRS(m32c) ;;
+ 	m32r) AC_CONFIG_SUBDIRS(m32r) ;;
+ 	m68hc11) AC_CONFIG_SUBDIRS(m68hc11) ;;
++	m6809) AC_CONFIG_SUBDIRS(m6809) ;;
+ 	m68k) AC_CONFIG_SUBDIRS(m68k) ;;
+ 	m88k) AC_CONFIG_SUBDIRS(m88k) ;;
+ 	mep ) AC_CONFIG_SUBDIRS(mep) ;;
+-- 
+2.45.2.windows.1
+
