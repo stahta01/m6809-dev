@@ -1,0 +1,59 @@
+From 8c9e088484f207731fe1f3fff588780a14eb25d2 Mon Sep 17 00:00:00 2001
+From: Tim Stahlhut <stahta01@gmail.com>
+Date: Tue, 26 Nov 2024 00:09:43 -0500
+Subject: Regenerate newlib/libc/sys/configure
+
+---
+ newlib/libc/sys/configure | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
+
+diff --git a/newlib/libc/sys/configure b/newlib/libc/sys/configure
+index ba7031135..34c26fdb4 100755
+--- a/newlib/libc/sys/configure
++++ b/newlib/libc/sys/configure
+@@ -275,11 +275,13 @@ ac_unique_file="a29khif"
+ ac_subdirs_all="$ac_subdirs_all a29khif"
+ ac_subdirs_all="$ac_subdirs_all arc"
+ ac_subdirs_all="$ac_subdirs_all arm"
++ac_subdirs_all="$ac_subdirs_all coco"
+ ac_subdirs_all="$ac_subdirs_all d10v"
+ ac_subdirs_all="$ac_subdirs_all decstation"
+ ac_subdirs_all="$ac_subdirs_all h8300hms"
+ ac_subdirs_all="$ac_subdirs_all h8500hms"
+ ac_subdirs_all="$ac_subdirs_all linux"
++ac_subdirs_all="$ac_subdirs_all m6809sim"
+ ac_subdirs_all="$ac_subdirs_all m88kbug"
+ ac_subdirs_all="$ac_subdirs_all mmixware"
+ ac_subdirs_all="$ac_subdirs_all netware"
+@@ -4651,7 +4653,7 @@ test x"$pic_mode" = xno && libtool_flags="$libtool_flags --prefer-non-pic"
+ case $host in
+ *-*-irix6*)
+   # Find out which ABI we are using.
+-  echo '#line 4654 "configure"' > conftest.$ac_ext
++  echo '#line 4656 "configure"' > conftest.$ac_ext
+   if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
+   (eval $ac_compile) 2>&5
+   ac_status=$?
+@@ -4892,6 +4894,10 @@ subdirs="$subdirs arc"
+ 	arm)
+ 
+ subdirs="$subdirs arm"
++ ;;
++	coco)
++
++subdirs="$subdirs coco"
+  ;;
+ 	d10v)
+ 
+@@ -4912,6 +4918,10 @@ subdirs="$subdirs h8500hms"
+ 	linux)
+ 
+ subdirs="$subdirs linux"
++ ;;
++	m6809sim)
++
++subdirs="$subdirs m6809sim"
+  ;;
+ 	m88kbug)
+ 
+-- 

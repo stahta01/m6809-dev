@@ -1,0 +1,730 @@
+From 55ca36f29a688d9bfdf44e0ee874cc14b9eb5ab5 Mon Sep 17 00:00:00 2001
+From: Tim S <tim.stahlhut@gmail.com>
+Date: Sat, 26 Jan 2019 03:53:57 -0500
+Subject: [PATCH 312/328] bcd added source files
+
+This patch is based on the work of 
+Brian Dominy https://github.com/bcd/newlib-6809
+
+---
+ libgloss/m6809/crt0.c                         | 218 ++++++++++++++++++
+ .../libc/machine/m6809/include/machine/regs.h |  40 ++++
+ newlib/libc/machine/m6809/setjmp.S            | 106 +++++++++
+ newlib/libc/sys/coco/kill.c                   |   7 +
+ newlib/libc/sys/coco/read.c                   |   7 +
+ newlib/libc/sys/coco/sbrk.c                   |  20 ++
+ newlib/libc/sys/coco/sim.c                    |  45 ++++
+ newlib/libc/sys/coco/write.c                  |  13 ++
+ newlib/libc/sys/m6809sim/kill.c               |  16 ++
+ newlib/libc/sys/m6809sim/read.c               |  31 +++
+ newlib/libc/sys/m6809sim/sbrk.c               |  28 +++
+ newlib/libc/sys/m6809sim/sim.c                |  49 ++++
+ newlib/libc/sys/m6809sim/write.c              |  32 +++
+ 13 files changed, 612 insertions(+)
+ create mode 100644 libgloss/m6809/crt0.c
+ create mode 100644 newlib/libc/machine/m6809/include/machine/regs.h
+ create mode 100644 newlib/libc/machine/m6809/setjmp.S
+ create mode 100644 newlib/libc/sys/coco/kill.c
+ create mode 100644 newlib/libc/sys/coco/read.c
+ create mode 100644 newlib/libc/sys/coco/sbrk.c
+ create mode 100644 newlib/libc/sys/coco/sim.c
+ create mode 100644 newlib/libc/sys/coco/write.c
+ create mode 100644 newlib/libc/sys/m6809sim/kill.c
+ create mode 100644 newlib/libc/sys/m6809sim/read.c
+ create mode 100644 newlib/libc/sys/m6809sim/sbrk.c
+ create mode 100644 newlib/libc/sys/m6809sim/sim.c
+ create mode 100644 newlib/libc/sys/m6809sim/write.c
+
+diff --git a/libgloss/m6809/crt0.c b/libgloss/m6809/crt0.c
+new file mode 100644
+index 0000000..5fbd8ae
+--- /dev/null
++++ b/libgloss/m6809/crt0.c
+@@ -0,0 +1,218 @@
++/*
++ * Copyright 2006 by Brian Dominy <brian@oddchange.com>
++ *
++ * This file is part of GCC.
++ *
++ * GCC is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * GCC is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with GCC; if not, write to the Free Software
++ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
++ */
++
++
++
++/** At present, the only supported system is the simulator,
++ * identified by TARGET_SIM being defined.  If this isn't
++ * defined for some reason, then abort here. */
++#ifndef TARGET_SIM
++#define TARGET_SIM
++#endif
++
++/** Defines for the simulator */
++#ifdef TARGET_SIM
++
++#define SIM_OUTPUT_REG 0xE000
++#define SIM_EXIT_REG 0xE001
++#define SIM_INPUT_REG 0xE002
++
++#define __reset _start
++#define __irq __simulator_irq
++
++#endif
++
++/** Declare prototype for main() to avoid a warning */
++extern int main (void);
++
++
++/** Declare prototypes for the following functions defined
++ * here, to override any preexisting notion of what these
++ * functions should do */
++void __simulator_irq_install (void (*handler) (void));
++void _exit (int rc);
++static void _start (void);
++
++
++/** Ensure that there is at least one variable in each of
++ * the .data and .bss sections to avoid linker errors.
++ * aslink barfs if you try to define a section with nothing
++ * in it. */
++char _crt0_force_data_decl = 0;
++const char _crt0_force_bss_decl;
++
++/** An interrupt handler function */
++static void (*__simulator_irq_handler) (void);
++
++
++/** The _exit function, which terminates the program.
++ * This is system dependent. */
++void _exit (int rc)
++{
++#ifdef TARGET_SIM
++	while (1)
++		*(char *)SIM_EXIT_REG = rc;
++#endif
++}
++
++
++#ifdef TARGET_SIM
++static __attribute__((interrupt)) void __simulator_irq (void)
++{
++	(*__simulator_irq_handler) ();
++}
++
++static void __simulator_nop (void)
++{
++}
++
++void __simulator_irq_install (void (*handler) (void))
++{
++	__simulator_irq_handler = handler;
++}
++#endif
++
++
++static __attribute__((naked)) void _start (void)
++{
++	/* Initialize the stack to a safe place first.
++	 * This needs to be done before any local variables
++	 * are used. */
++#ifdef TARGET_SIM
++	asm ("lds\t#0x1FFE");
++#endif
++	{
++		int rc;
++
++		/* Zero the BSS section */
++
++		/* If the _DATA section is in ROM, then copy it
++		 * into RAM so that it is modifiable */
++
++		/* Initialize the heap */
++
++		/* Call any "initializer" functions */
++
++		/* Enable interrupts on the simulator */
++#if defined(TARGET_SIM) && defined(__irq)
++		__simulator_irq_handler = __simulator_nop;
++		asm ("andcc\t#~(0x10|0x40)");
++#endif
++
++		/* Set up the environment */
++
++		/* Set up argc/argv arrays */
++
++		/* Call the main function */
++		rc = main ();
++
++		/* Call any finalizer functions */
++
++		/* If main returns, then invoke _exit()
++		 * to stop the program */
++		_exit (rc);
++	}
++}
++
++
++/* When building for the simulator, we include a
++ * declaration of the vector table, since the simulator
++ * will always start at the reset vector.  Reset is
++ * setup here to point to _start.
++ */
++#ifdef TARGET_SIM
++
++/** The 6809 vector table structure */
++typedef struct
++{
++	void (*unused) (void);
++	void (*swi3) (void);
++	void (*swi2) (void);
++	void (*firq) (void);
++	void (*irq) (void);
++	void (*swi) (void);
++	void (*nmi) (void);
++	void (*reset) (void);
++} m6809_vector_table_t;
++
++#ifndef __exit
++#define __exit __unused_vector
++#define __NEED_UNUSED_VECTOR
++#endif
++#ifndef __swi
++#define __swi __unused_vector
++#define __NEED_UNUSED_VECTOR
++#endif
++#ifndef __swi2
++#define __swi2 __unused_vector
++#define __NEED_UNUSED_VECTOR
++#endif
++#ifndef __swi3
++#define __swi3 __unused_vector
++#define __NEED_UNUSED_VECTOR
++#endif
++#ifndef __irq
++#define __irq __unused_vector
++#define __NEED_UNUSED_VECTOR
++#endif
++#ifndef __firq
++#define __firq __unused_vector
++#define __NEED_UNUSED_VECTOR
++#endif
++#ifndef __nmi
++#define __nmi __unused_vector
++#define __NEED_UNUSED_VECTOR
++#endif
++#ifndef __reset
++#define __reset __unused_vector
++#define __NEED_UNUSED_VECTOR
++#endif
++
++
++/* Only define this empty function if it is
++ * actually needed. */
++#ifdef __NEED_UNUSED_VECTOR
++static void __unused_vector (void) {}
++#endif
++
++
++extern void __exit (void);
++extern void __swi3 (void);
++extern void __swi2 (void);
++extern void __firq (void);
++extern void __irq (void);
++extern void __swi (void);
++extern void __nmi (void);
++extern void __reset (void);
++
++/** Declare the interrupt vector table */
++__attribute__((section("vector"))) volatile m6809_vector_table_t vectors = {
++	.unused = __exit,
++	.swi3 = __swi3,
++	.swi2 = __swi2,
++	.firq = __firq,
++	.irq = __irq,
++	.swi = __swi,
++	.nmi = __nmi,
++	.reset = __reset,
++};
++
++#endif /* TARGET_SIM */
++
+diff --git a/newlib/libc/machine/m6809/include/machine/regs.h b/newlib/libc/machine/m6809/include/machine/regs.h
+new file mode 100644
+index 0000000..8faba0e
+--- /dev/null
++++ b/newlib/libc/machine/m6809/include/machine/regs.h
+@@ -0,0 +1,40 @@
++
++#ifndef __M6809_REGS_H
++#define __M6809_REGS_H
++
++enum cc_flags
++{
++	CC_CARRY = 0x1,
++	CC_OVERFLOW = 0x2,
++	CC_ZERO = 0x4,
++	CC_NEGATIVE = 0x8,
++	CC_IRQ = 0x10,
++	CC_HALF = 0x20,
++	CC_FIRQ = 0x40,
++	CC_E = 0x80,
++};
++
++register unsigned char __cc asm ("cc");
++
++
++extern inline void setstack (const unsigned int s)
++{
++	asm __volatile__ ("lds\t%0" :: "g" (s) : "d");
++}
++
++
++extern inline unsigned int getstack (void)
++{
++	unsigned int result;
++	asm __volatile__ ("lea%0\t,s" : "=a" (result));
++	return result;
++}
++
++
++extern inline void setdp (const unsigned short dp)
++{
++	asm __volatile__ ("tfr\tb, dp" :: "q" (dp));
++}
++
++
++#endif /* __M6809_REGS_H */
+diff --git a/newlib/libc/machine/m6809/setjmp.S b/newlib/libc/machine/m6809/setjmp.S
+new file mode 100644
+index 0000000..d79d24e
+--- /dev/null
++++ b/newlib/libc/machine/m6809/setjmp.S
+@@ -0,0 +1,106 @@
++;;;
++;;; Copyright 2006 by Brian Dominy <brian@oddchange.com>
++;;;
++;;; setjmp/longjmp for m6809
++;;;
++
++;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
++; The jmp_buf is structured as follows:
++;
++; Offset       Value
++; 0            A
++; 1            B
++; 2-3          X
++; 4-5          Y
++; 6-7          U
++; 8-9          S
++; 10-11        PC
++; 12           DP
++; 13           CC
++;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
++
++;;; TODO:
++;;; - Reduce size of jmp_buf a little more
++;;; - Optimize
++;;; - Support nonstandard compiler options
++;;; - Support other state (i.e. HW registers for various platforms)
++
++SAVE_A = 0
++SAVE_B = 1
++SAVE_X = 2
++SAVE_Y = 4
++SAVE_U = 6
++SAVE_S = 8
++SAVE_PC = 10
++SAVE_DP = 12
++SAVE_CC = 13
++
++SETJMP_S = 4
++
++.module sjlj
++.area .text
++
++;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
++;
++; int setjmp(jmp_buf env)
++;
++; A pointer to env is passed in register X.
++; The return value is placed in X.
++;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
++
++	.globl _setjmp 
++_setjmp:
++	pshs y,u              ; Save registers gcc requires
++	std SAVE_A,x          ; Save the A/B registers
++	sty SAVE_Y,x          ; Save the Y register
++	stu SAVE_U,x          ; Save the U register
++	leay SETJMP_S+2,s
++	sty SAVE_S,x          ; Save the S register
++	ldy SETJMP_S,s
++	sty SAVE_PC,x         ; Save the PC register
++
++	tfr dp,a
++	tfr cc,b
++	std SAVE_DP,x         ; Save the DP/CC registers
++
++	ldx #0                ; Return zero
++	puls y,u,pc           ; Restore nonvolatile registers
++
++
++;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
++;
++; void longjmp(jmp_buf env, int val)
++;
++; A pointer to env is passed in register X.
++; val is placed on the stack.
++;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
++
++	.globl _longjmp 
++_longjmp:
++	;-----------------------------------------------
++	; TODO: this sequence assumes that the first
++	; function argument is passed directly in X.
++	; If all args go onto the stack, this is wrong.
++	;-----------------------------------------------
++                         ; X = env
++	ldd 2,s               ; D = return value
++
++	;---------------------------------------------------------
++	; TODO : storing the return value and then reloading it
++	; at the end of the function is wasteful.  Just reference
++	; it from the stack directly at the end, and eliminate
++	; the ldd/std here.
++	;---------------------------------------------------------
++	std SAVE_A,x          ; Store return value into jmp_buf
++
++	ldu SAVE_U,x          ; Restore the U register
++	lds SAVE_S,x          ; Restore the S register
++	lda SAVE_DP,x
++	tfr a,dp              ; Restore the DP register
++	lda SAVE_CC,x
++	ldy SAVE_PC,x
++	pshs y,a              ; Push restored CC/PC onto stack
++	ldy SAVE_Y,x          ; Restore the Y register
++	ldx SAVE_A,x          ; Restore the X register (return val)
++	puls cc,pc            ; Restore CC and PC registers (returning)
++
+diff --git a/newlib/libc/sys/coco/kill.c b/newlib/libc/sys/coco/kill.c
+new file mode 100644
+index 0000000..f66a7f6
+--- /dev/null
++++ b/newlib/libc/sys/coco/kill.c
+@@ -0,0 +1,7 @@
++
++int kill (int pid, int sig)
++{
++	return 0;
++}
++
++
+diff --git a/newlib/libc/sys/coco/read.c b/newlib/libc/sys/coco/read.c
+new file mode 100644
+index 0000000..6816533
+--- /dev/null
++++ b/newlib/libc/sys/coco/read.c
+@@ -0,0 +1,7 @@
++
++
++int read (int fd, char *buf, int len)
++{
++}
++
++
+diff --git a/newlib/libc/sys/coco/sbrk.c b/newlib/libc/sys/coco/sbrk.c
+new file mode 100644
+index 0000000..c0bba55
+--- /dev/null
++++ b/newlib/libc/sys/coco/sbrk.c
+@@ -0,0 +1,20 @@
++
++
++extern void *_data_start asm ("s_.data");
++
++extern void *_data_end asm ("l_.data");
++
++
++void *sbrk (int val)
++{
++	static char *heap_ptr = 0;
++	char *base;
++
++	if (heap_ptr == 0)
++		heap_ptr = (char *)&_data_start + (unsigned int)&_data_end;
++
++	base = heap_ptr;
++	heap_ptr += val;
++	return (base);
++}
++
+diff --git a/newlib/libc/sys/coco/sim.c b/newlib/libc/sys/coco/sim.c
+new file mode 100644
+index 0000000..cb88158
+--- /dev/null
++++ b/newlib/libc/sys/coco/sim.c
+@@ -0,0 +1,45 @@
++/*
++ * Copyright 2006 by Brian Dominy <brian@oddchange.com>
++ *
++ * System calls for m6809.
++ */
++
++
++/*
++ * The main implementations of the routines are given by the
++ * _r versions, which are intended to be reentrant.
++ * Reentrancy is not yet implemented however, so the reent_ptr
++ * is not passed along.
++ */
++
++
++int isatty (int fd)
++{
++	return 1;
++}
++
++
++int fstat (int fd, void *buf)
++{
++	return -1;
++}
++
++
++int lseek (int fd, int offset, int whence)
++{
++	return -1;
++}
++
++
++int close (int fd)
++{
++	return -1;
++}
++
++
++int getpid (void)
++{
++	return 1;
++}
++
++
+diff --git a/newlib/libc/sys/coco/write.c b/newlib/libc/sys/coco/write.c
+new file mode 100644
+index 0000000..a2f1553
+--- /dev/null
++++ b/newlib/libc/sys/coco/write.c
+@@ -0,0 +1,13 @@
++
++
++int write (int fd, const char *buf, int len)
++{
++	while (len > 0)
++	{
++		asm __volatile__ ("lda\t,%0" :: "a"(buf++));
++		asm __volatile__ ("jsr\t[0xA002]");
++		len--;
++	}
++}
++
++
+diff --git a/newlib/libc/sys/m6809sim/kill.c b/newlib/libc/sys/m6809sim/kill.c
+new file mode 100644
+index 0000000..8a9272e
+--- /dev/null
++++ b/newlib/libc/sys/m6809sim/kill.c
+@@ -0,0 +1,16 @@
++
++
++/**
++ * Trivial implementation of the kill() system call.
++ * Since there is no concept of process within the
++ * simple simulator architecture, only kill of self
++ * does anything.
++ */
++int kill (int pid, int sig)
++{
++	if (pid == 1)
++		exit (sig);
++	return 0;
++}
++
++
+diff --git a/newlib/libc/sys/m6809sim/read.c b/newlib/libc/sys/m6809sim/read.c
+new file mode 100644
+index 0000000..fa7d36e
+--- /dev/null
++++ b/newlib/libc/sys/m6809sim/read.c
+@@ -0,0 +1,31 @@
++
++
++/**
++ * inbyte : Low-level function that reads a byte from the console.
++ */
++inline unsigned char inbyte (void)
++{
++	return *(unsigned char *)0xFF02;
++}
++
++
++/**
++ * read : Trivial implementation of the read() system call.
++ * This only supports reading from the console.
++ */
++int read (int fd, char *buf, int len)
++{
++	int _len = len;
++
++	if (fd != 0)
++		return (-1);
++
++	while (len-- > 0)
++	{
++		*buf++ = inbyte ();
++		_len--;
++	}
++	return len;
++}
++
++
+diff --git a/newlib/libc/sys/m6809sim/sbrk.c b/newlib/libc/sys/m6809sim/sbrk.c
+new file mode 100644
+index 0000000..4df256f
+--- /dev/null
++++ b/newlib/libc/sys/m6809sim/sbrk.c
+@@ -0,0 +1,28 @@
++
++
++extern void *_data_start asm ("s_.data");
++extern void *_data_end asm ("l_.data");
++extern void *_bss_start asm ("s_.bss");
++extern void *_bss_end asm ("l_.bss");
++
++
++void *sbrk (int val)
++{
++	static char *heap_ptr = (char *)0xFFFF;
++	char *base;
++
++	if (heap_ptr == (char *)0xFFFF)
++	{
++		if (((char *)&_data_start) > ((char *)&_bss_start))
++			heap_ptr = (char *)&_data_start + (unsigned int)&_data_end;
++		else
++			heap_ptr = (char *)&_bss_start + (unsigned int)&_bss_end;
++	}
++
++	if (heap_ptr + val > (char *)0xBFFF)
++		return (void *)-1;
++	base = heap_ptr;
++	heap_ptr += val;
++	return (base);
++}
++
+diff --git a/newlib/libc/sys/m6809sim/sim.c b/newlib/libc/sys/m6809sim/sim.c
+new file mode 100644
+index 0000000..1ef0889
+--- /dev/null
++++ b/newlib/libc/sys/m6809sim/sim.c
+@@ -0,0 +1,49 @@
++/*
++ * Copyright 2006, 2008 by Brian Dominy <brian@oddchange.com>
++ *
++ * System calls for m6809.
++ */
++
++
++/*
++ * The main implementations of the routines are given by the
++ * _r versions, which are intended to be reentrant.
++ * Reentrancy is not yet implemented however, so the reent_ptr
++ * is not passed along.
++ */
++
++
++int isatty (int fd)
++{
++	/* Return true if the file descriptor is associated
++	 * with the console, which is true for the standard
++	 * in/out/err devices. */
++	return (fd >= 0) && (fd <= 2);
++}
++
++
++int fstat (int fd, void *buf)
++{
++	return -1;
++}
++
++
++int lseek (int fd, int offset, int whence)
++{
++	/* Do not allow seeking on console devices. */
++	return -1;
++}
++
++
++int close (int fd)
++{
++	return -1;
++}
++
++
++int getpid (void)
++{
++	return 1;
++}
++
++
+diff --git a/newlib/libc/sys/m6809sim/write.c b/newlib/libc/sys/m6809sim/write.c
+new file mode 100644
+index 0000000..4e669e0
+--- /dev/null
++++ b/newlib/libc/sys/m6809sim/write.c
+@@ -0,0 +1,32 @@
++
++
++/**
++ * outbyte : Low-level function to write a character to
++ * the console.
++ */
++inline void outbyte (unsigned char c)
++{
++	*(unsigned char *)0xFF00 = c;
++}
++
++
++/**
++ * write : Trivial implementation of the write() system call.
++ * This only supports the console device.
++ */
++int write (int fd, const char *buf, int len)
++{
++	int _len = len;
++
++	if (fd != 1 && fd != 2)
++		return (-1);
++
++	while (_len > 0)
++	{
++		outbyte (*buf++);
++		_len--;
++	}
++	return len;
++}
++
++
+-- 
+2.19.1.windows.1
+
