@@ -1,0 +1,146 @@
+From 5885b07b73bd537b53e8b9d4665a9646874f2c91 Mon Sep 17 00:00:00 2001
+From: Tim S <tim.stahlhut@gmail.com>
+Date: Sat, 26 Jan 2019 04:21:26 -0500
+Subject: [PATCH 321/328] df added source files
+
+This patch is based on the work of 
+David Flamand https://gitlab.com/dfffffff/newlib-6809
+
+---
+ newlib/libc/machine/m6809/memcpy.S | 59 ++++++++++++++++++++++++++++++
+ newlib/libc/machine/m6809/memset.S | 57 +++++++++++++++++++++++++++++
+ 2 files changed, 116 insertions(+)
+ create mode 100644 newlib/libc/machine/m6809/memcpy.S
+ create mode 100644 newlib/libc/machine/m6809/memset.S
+
+diff --git a/newlib/libc/machine/m6809/memcpy.S b/newlib/libc/machine/m6809/memcpy.S
+new file mode 100644
+index 0000000..fdc6b6f
+--- /dev/null
++++ b/newlib/libc/machine/m6809/memcpy.S
+@@ -0,0 +1,59 @@
++;;;
++;;; Copyright 2016 by David Flamand <dflamand@gmail.com>
++;;;
++;;; memcpy for m6809
++;;;
++;;;  support for -mdret and -mabi=stack
++;;;  optimization: copy 2 byte at a time
++;;;
++
++	.module	memcpy.S
++	.area	.text
++
++;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
++;
++; void *memcpy(void *dest, const void *src, size_t n)
++;
++;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
++
++	.globl	_memcpy
++_memcpy:
++#ifdef __ABI_STACK__
++	pshs	u,y
++	ldd	10,s
++	beq	l2
++	ldu	8,s
++	ldy	6,s
++#else
++	pshs	u,y,x
++	ldd	10,s
++	beq	l2
++	ldu	8,s
++	leay	,x
++#endif
++	tfr	d,x
++	bitb	#1
++	beq	l1
++	ldb	,u+
++	stb	,y+
++	leax	-1,x
++	beq	l2
++l1:	ldd	,u++
++	std	,y++
++	leax	-2,x
++	bne	l1
++l2:
++#ifdef __ABI_STACK__
++#ifdef __DRET__
++	ldd	6,s
++#else
++	ldx	6,s
++#endif
++	puls	y,u,pc
++#else
++#ifdef __DRET__
++	puls	d,y,u,pc
++#else
++	puls	x,y,u,pc
++#endif
++#endif
+diff --git a/newlib/libc/machine/m6809/memset.S b/newlib/libc/machine/m6809/memset.S
+new file mode 100644
+index 0000000..06fa9e0
+--- /dev/null
++++ b/newlib/libc/machine/m6809/memset.S
+@@ -0,0 +1,57 @@
++;;;
++;;; Copyright 2016 by David Flamand <dflamand@gmail.com>
++;;;
++;;; memset for m6809
++;;;
++;;;  support for -mdret and -mabi=stack
++;;;  optimization: set 2 byte at a time
++;;;
++
++	.module	memset.S
++	.area	.text
++
++;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
++;
++; void *memset(void *s, int c, size_t n)
++;
++;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
++
++	.globl	_memset
++_memset:
++#ifdef __ABI_STACK__
++	pshs	u
++	ldd	8,s
++	beq	l3
++	ldu	4,s
++#else
++	pshs	u,x
++	ldd	8,s
++	beq	l3
++	leau	,x
++#endif
++	tfr	d,x
++	lda	6+1,s
++	bitb	#1
++	beq	l1
++	sta	,u+
++	leax	-1,x
++	beq	l3
++l1:	tfr	a,b
++l2:	std	,u++
++	leax	-2,x
++	bne	l2
++l3:
++#ifdef __ABI_STACK__
++#ifdef __DRET__
++	ldd	4,s
++#else
++	ldx	4,s
++#endif
++	puls	u,pc
++#else
++#ifdef __DRET__
++	puls	d,u,pc
++#else
++	puls	x,u,pc
++#endif
++#endif
+-- 
+2.19.1.windows.1
+

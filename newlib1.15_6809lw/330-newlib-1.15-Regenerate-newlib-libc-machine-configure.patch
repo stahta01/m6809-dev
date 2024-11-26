@@ -1,0 +1,42 @@
+From 896d988b4671b692d1f8fb44776c089d35328750 Mon Sep 17 00:00:00 2001
+From: Tim Stahlhut <stahta01@gmail.com>
+Date: Tue, 26 Nov 2024 00:05:50 -0500
+Subject: Regenerate newlib/libc/machine/configure
+
+---
+ newlib/libc/machine/configure | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/newlib/libc/machine/configure b/newlib/libc/machine/configure
+index dc98cced1..fa30d7276 100755
+--- a/newlib/libc/machine/configure
++++ b/newlib/libc/machine/configure
+@@ -290,6 +290,7 @@ ac_subdirs_all="$ac_subdirs_all iq2000"
+ ac_subdirs_all="$ac_subdirs_all m32c"
+ ac_subdirs_all="$ac_subdirs_all m32r"
+ ac_subdirs_all="$ac_subdirs_all m68hc11"
++ac_subdirs_all="$ac_subdirs_all m6809"
+ ac_subdirs_all="$ac_subdirs_all m68k"
+ ac_subdirs_all="$ac_subdirs_all m88k"
+ ac_subdirs_all="$ac_subdirs_all mips"
+@@ -4664,7 +4665,7 @@ test x"$pic_mode" = xno && libtool_flags="$libtool_flags --prefer-non-pic"
+ case $host in
+ *-*-irix6*)
+   # Find out which ABI we are using.
+-  echo '#line 4667 "configure"' > conftest.$ac_ext
++  echo '#line 4668 "configure"' > conftest.$ac_ext
+   if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
+   (eval $ac_compile) 2>&5
+   ac_status=$?
+@@ -4965,6 +4966,10 @@ subdirs="$subdirs m32r"
+ 	m68hc11)
+ 
+ subdirs="$subdirs m68hc11"
++ ;;
++	m6809)
++
++subdirs="$subdirs m6809"
+  ;;
+ 	m68k)
+ 
+-- 
