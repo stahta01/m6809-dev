@@ -1,0 +1,28 @@
+From a609210af9722e00223d83cb1701817f6a96fb40 Mon Sep 17 00:00:00 2001
+From: Tim S <tim.stahlhut@gmail.com>
+Date: Tue, 29 Jan 2019 20:14:14 -0500
+Subject: [PATCH] Add m6809 to configure.in
+
+libgloss_dir=m6809
+---
+ configure.in | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/configure.in b/configure.in
+index 53ca32c..4582e7b 100644
+--- a/configure.in
++++ b/configure.in
+@@ -794,6 +794,10 @@ case "${target}" in
+     noconfigdirs="$noconfigdirs target-libiberty target-libstdc++-v3 ${libgcj}"
+     libgloss_dir=m68hc11
+     ;;
++  m6809-*-*)
++    noconfigdirs="$noconfigdirs target-libiberty target-libstdc++-v3 ${libgcj}"
++    libgloss_dir=m6809
++    ;;
+   m68k-*-elf*)
+     noconfigdirs="$noconfigdirs ${libgcj}"
+     ;;
+-- 
+2.19.1.windows.1
+
