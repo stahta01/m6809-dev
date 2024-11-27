@@ -1,0 +1,304 @@
+# Maintainer: Tim S <stahta01@gmail.com>
+
+### Major build options
+_BUGURL='https://github.com/stahta01/gcc4.6/issues'
+_BUILTBY='Built by stahta01'
+# If newlib is missing, enable _build_boot_gcc
+_build_boot_gcc=yes
+
+### build options not normally changed
+_basename=gcc
+_machine_suffix=6809
+_realname_suffix=lw
+_realname=${_basename}${_machine_suffix}${_realname_suffix}
+_machine=m${_machine_suffix}
+_target=${_machine}-unknown
+_assembler=lwtools
+
+pkgbase=gcc4.4_6809lw-git
+pkgver=4.4.0+d20080314.r9.c1.g3d45dd59c7fc
+_sourcedir=${_basename}-git
+pkgrel=1
+
+####
+# Running checks for newlib build bug (find_reloads, at reload.c)
+#_git_commit=086e1860db96ba057c26cf7e897c7f4322c83a21 # 4.4.7+d20120313.r40.c0      # Has bug
+#_git_commit=a6b2268416c7eb9069998c930cd0c5bff0a5bd79 # 4.4.0+d20080322.r0.c0 10509 # Has bug
+#_git_commit=45de3658e9b231f2e68e9240702ce274416ccae2 # 4.4.0+d20080315.r0.c0 10403 # Has bug
+#_git_commit=3d45dd59c7fcad07ddec7a45d91eb3b7d31897a8 # 4.4.0+d20080314.r9.c0 10397 # Has bug
+ _git_commit=3d45dd59c7fcad07ddec7a45d91eb3b7d31897a8 # 4.4.0+d20080314.r9.c1 P.901 # Has bug
+#_git_commit=c539732f969e784725ca51dd9ff66b32a2c198cd # 4.4.0+d20080314.r8.c0 10396 # NO Bug
+#_git_commit=edd3c31e3f34be73363c49267c92d56425249940 # 4.4.0+d20080314.r7.c0 10395 # NO Bug
+#_git_commit=b6a99560eeeec86869990364035ed0ce5657f3ba # 4.4.0+d20080314.r0.c0 10388 # NO Bug
+#_git_commit=e066eba77476b4a40cdfd232617c2397dedf0bb1 # 4.4.0+d20080313.r0.c0 10368 # NO Bug
+#_git_commit=216053e27b8f4566fc9a72dca9a90b0826c5d46c # 4.4.0+d20080305.r0.c0 10256 # NO Bug
+#_git_commit=8d855c3de1619284343036a4ee9fe2600c1fafe2 # 4.4.0+d20080218.r3.c0       # NO Bug
+####
+
+if [[ "${_build_boot_gcc}" == "yes" ]]; then
+  pkgname="boot-${_realname}"
+  pkgdesc="The GNU bootstrap C compiler for the ${_machine} microprocessor"
+else
+  pkgname="${_realname}"
+  pkgdesc="The GNU C++ compiler for the ${_machine} microprocessor"
+fi
+options=('!emptydirs') # '!strip' 'debug')
+arch=('i686' 'x86_64')
+url="https://github.com/stahta01/gcc4.6"
+license=('GPL3')
+groups=("${_target}-toolchain")
+depends=(lwtools)
+_makedepends=(
+  'bison' 'diffutils' 'gettext' 'gettext-devel'
+  'intltool' 'make' 'patch' 'perl' 'tar')
+if [[ "${_build_boot_gcc}" == "yes" ]]; then
+  makedepends=(${_makedepends[@]})
+  optdepends=("${_target}-newlib${_machine_suffix}${_realname_suffix}: Standard C library optimized for embedded systems")
+else
+  makedepends=(${_makedepends[@]} ${_target}-newlib${_machine_suffix}${_realname_suffix})
+fi
+replaces=(boot-${_realname})
+provides=(boot-${_realname})
+conflicts=(boot-${_realname})
+
+MPFR_VERSION=2.4.2
+GMP_VERSION=4.3.2
+MPC_VERSION=0.8.1
+noextract=("mpfr-${MPFR_VERSION}.tar.bz2"
+           "gmp-${GMP_VERSION}.tar.bz2"
+           "mpc-${MPC_VERSION}.tar.gz")
+source=(ftp://gcc.gnu.org/pub/gcc/infrastructure/mpfr-${MPFR_VERSION}.tar.bz2
+        ftp://gcc.gnu.org/pub/gcc/infrastructure/gmp-${GMP_VERSION}.tar.bz2
+        ftp://gcc.gnu.org/pub/gcc/infrastructure/mpc-${MPC_VERSION}.tar.gz
+       #"${_sourcedir}"::"git+https://github.com/gcc-mirror/gcc.git#branch=${_branch}"
+       "${_sourcedir}"::"git+https://github.com/gcc-mirror/gcc.git#commit=${_git_commit}"
+        001-gcc-4.3-fixed-compile-issue-with-gcc-5-in-gcc-toplev.patch
+        006-gcc-4.3-PR_54300_rtl-optimization.patch
+        011-gcc-4.3-suppress-makeinfo-warning.patch
+        013-gcc-4.3-Change-default-NATIVE_SYSTEM_HEADER_DIR.patch
+        021-gcc-4.3-edit-core-source-files.patch
+        022-gcc-4.3-add-m6809-source-files.patch
+        023-gcc-4.3-df-m6809-patch-to-prevent-naked-function-from-creat.patch
+        025-gcc-4.3-add-support-for-C-exception-handling.patch
+        031-gcc-4.4-d20080218-edit-config_sub.patch
+        031-gcc-4.4.0-edit-config_sub.patch
+        031-gcc-4.4-edit-config_sub.patch
+        032-gcc-4.3-bcd-modified-libgcc-config.host-file.patch
+        033-gcc-4.3-edit-config_gcc.patch
+        033-gcc-4.4-edit-config_gcc.patch
+        034-gcc-4.3-edit-configure_ac.patch
+        037-gcc-4.3-fix-error-with-pod2man-version-2.4.2-added-pod2man-f.patch
+        041-gcc-4.3-edit-configure.patch
+        171-gcc-4.4-add-DWARF2_UNWIND_INFO-guard.patch
+        705-gcc-4.3-texi2pod.pl-Escape-braces-in-regexp-involving-strong.patch
+        901-Revert-possible-newlib-ICE.patch)
+sha256sums=('c7e75a08a8d49d2082e4caee1591a05d11b9d5627514e678f02d66a124bcf2ba'
+            '936162c0312886c21581002b79932829aa048cfaf9937c6265aeaa14f1cd1775'
+            'e664603757251fd8a352848276497a4c79b7f8b21fd8aedd5cc0598a38fee3e4'
+            'SKIP'
+            '48e8df8fb5c2266f34ba96d159cc2a2aad5cb285403ec59e93408afccc9a100e'
+            '5ce48e53b2cd2e877454e15e2678eae1b4c7de49241ed993bb511068154d024b'
+            'dd174b790a13d43e527a3d5807cf415407bd0c67532495da139afd14a6265462'
+            'de101a8d3f7cbed56903b14c0270139ff5976f40a1a0199fda1733c070ff24da'
+            '306966ffd6c9d5671de0bc1b2b27725428849108075dd4e1c6a7b4e5316961b0'
+            'd89d04685205bf2783b0aca682152de92dc82984690958978297749aff816245'
+            '04a82f6fa7b84cf31c9046805d637af1ef40e40ea728ed8ce4e05fcec9b75f7d'
+            'e6b7b19ccfa1f8ac802596e9eea703957f68b07fdfa761046f2f26286af6b641'
+            '95d752cfef85047e50bcaf9be04dac0bf36bddf5b8c3d9fb99d1c2f1a1a9c428'
+            'ee731d547ca900c298a2dd37a3ce2527d1b15c48e0a31b2a4fd1105d351b4e81'
+            '586f58be5c2c8df52fc3f1f0d0b7232aa145e42b48023be92b3498a33e4e728c'
+            '9d6a7e02484ed194945d9606638f9d5375daad415fba698bdd9eef52109c8f60'
+            '2028c4544e5878e3b530d19b1e88012d885bb56d8f640c1efafadbd15c4f7606'
+            '557b7d43b1c029a3cf345a219677aec3b6e5d1d66635a6d7a900a5cb2668c40a'
+            'e54184b113fd47171f79b6e27aef3323fd7e9e08f78a12260ec34681f51f2cb0'
+            '1afb2022fb8a6390b26c24603007c8cf29435bc2c68a576898a2f45c3207cfee'
+            'SKIP')
+# =========================================== #
+_extract_to_gcc_folder() {
+    local tarfile="$1"
+    local subfolder="$(echo "$tarfile" | sed 's/-.*$//')"
+    if [ ! -d  "$_sourcedir/$subfolder" ]; then
+        echo "Extracting ${tarfile} to $_sourcedir/$subfolder"
+        mkdir -p "$_sourcedir/$subfolder"
+        tar -x --strip-components=1 -f "$tarfile" -C "$_sourcedir/$subfolder"
+    else
+        echo "Folder $_sourcedir/$subfolder already exists"
+    fi
+}
+# =========================================== #
+_git_base_commit=
+
+pkgver() {
+  cd ${srcdir}/${_sourcedir}
+  local _gcc_version=$(head -n 34 gcc/BASE-VER | sed -e 's/.* //' | tr -d '"\n')
+  local _gcc_date=$(head -n 34 gcc/DATESTAMP | sed -e 's/.* //' | tr -d '"\n')
+  if [[ -n "${_git_base_commit}" ]]; then
+    printf "%s+d%s.r%s.c%s.g%s" "$_gcc_version" "$_gcc_date" \
+      $(git rev-list --count $(git log -1 --format=%H -- gcc/DATESTAMP)..${_git_base_commit}) \
+      $(git rev-list --count ${_git_base_commit}..HEAD) \
+      $(git rev-parse --short=12 ${_git_base_commit})
+  else
+    printf "%s" ${pkgver}
+  fi
+}
+
+prepare() {
+  cd ${srcdir}/${_sourcedir}
+
+  git am --abort || true
+
+  git clean -fxd
+
+  _git_base_commit=$(git rev-parse HEAD)
+
+  cd ${srcdir}
+  _extract_to_gcc_folder            gmp-${GMP_VERSION}.tar.bz2
+  _extract_to_gcc_folder            mpfr-${MPFR_VERSION}.tar.bz2
+  _extract_to_gcc_folder            mpc-${MPC_VERSION}.tar.gz
+
+  cd ${srcdir}/${_sourcedir}
+  # Remove files added by patches below
+  rm -fr gcc/config/m6809
+  rm -f contrib/pod2man
+
+  GIT_AM="git am --committer-date-is-author-date"
+
+  local _gcc_version=$(head -n 34 gcc/BASE-VER | sed -e 's/.* //' | tr -d '"\n')
+  local _gcc_date=$(head -n 34 gcc/DATESTAMP | sed -e 's/.* //' | tr -d '"\n')
+  echo "_gcc_version := ${_gcc_version}"
+  echo "_gcc_date := ${_gcc_date}"
+
+  # Fixes for building with GCC version 5 or newer
+  patch --forward -p1 -i "$srcdir"/001-gcc-4.3-fixed-compile-issue-with-gcc-5-in-gcc-toplev.patch
+
+  # Backported Pull Requests or other changes from other branches
+  patch --forward -p1 -i "$srcdir"/006-gcc-4.3-PR_54300_rtl-optimization.patch
+
+  # Warning reduction changes
+  patch --forward -p1 -i "$srcdir"/011-gcc-4.3-suppress-makeinfo-warning.patch
+  patch --forward -p1 -i "$srcdir"/013-gcc-4.3-Change-default-NATIVE_SYSTEM_HEADER_DIR.patch
+
+  # GCC6809 source code changes
+  patch --forward -p1 -i "$srcdir"/021-gcc-4.3-edit-core-source-files.patch
+  patch --forward -p1 -i "$srcdir"/022-gcc-4.3-add-m6809-source-files.patch
+  patch --forward -p1 -i "$srcdir"/023-gcc-4.3-df-m6809-patch-to-prevent-naked-function-from-creat.patch
+  patch --forward -p1 -i "$srcdir"/025-gcc-4.3-add-support-for-C-exception-handling.patch
+
+  ${GIT_AM} "$srcdir"/901-Revert-possible-newlib-ICE.patch
+
+  ####
+  ## GCC6809 build code changes
+  if [[ ${_gcc_version:0:3} == "4.3" ]] ; then
+    echo "took 031 4.3"
+    patch --forward -p1 -i "$srcdir"/031-gcc-4.3-edit-config_sub.patch
+  elif [[ ${_gcc_version} == "4.4.2" ]] ; then
+    echo "took 031 4.4.2"
+    patch --forward -p1 -i "$srcdir"/031-gcc-4.4.0-edit-config_sub.patch
+  elif [[ ${_gcc_version} == "4.4.1" ]] ; then
+    echo "took 031 4.4.1"
+    patch --forward -p1 -i "$srcdir"/031-gcc-4.4.0-edit-config_sub.patch
+  elif [[ ${_gcc_version} == "4.4.0" ]] ; then
+    if [[ ${_gcc_date} < "20080323" ]] ; then
+      echo "took 031 4.4.0 < 20080323"
+      patch --forward -p1 -i "$srcdir"/031-gcc-4.4-d20080218-edit-config_sub.patch
+    else
+      echo "took 031 4.4.0 else"
+      patch --forward -p1 -i "$srcdir"/031-gcc-4.4.0-edit-config_sub.patch
+    fi
+  else
+    echo "took 031 else"
+    patch --forward -p1 -i "$srcdir"/031-gcc-4.4-edit-config_sub.patch
+  fi
+  patch --forward -p1 -i "$srcdir"/032-gcc-4.3-bcd-modified-libgcc-config.host-file.patch
+  if [[ ${_gcc_date} < "20080323" ]] ; then
+    patch --forward -p1 -i "$srcdir"/033-gcc-4.3-edit-config_gcc.patch
+  else
+    patch --forward -p1 -i "$srcdir"/033-gcc-4.4-edit-config_gcc.patch
+  fi
+  patch --forward -p1 -i "$srcdir"/034-gcc-4.3-edit-configure_ac.patch
+  patch --forward -p1 -i "$srcdir"/037-gcc-4.3-fix-error-with-pod2man-version-2.4.2-added-pod2man-f.patch
+
+  patch --forward -p1 -i "$srcdir"/041-gcc-4.3-edit-configure.patch
+  #patch --forward -p1 -i "$srcdir"/171-gcc-4.4-add-DWARF2_UNWIND_INFO-guard.patch
+  patch --forward -p1 -i "$srcdir"/705-gcc-4.3-texi2pod.pl-Escape-braces-in-regexp-involving-strong.patch
+}
+
+build() {
+  if [[ -d "build-gcc-${CARCH}" ]]; then
+    rm -rf build-gcc-${CARCH}
+  fi
+  mkdir build-gcc-${CARCH}
+  cd build-gcc-${CARCH}
+
+  local -a _gcc_pass_cfg_options
+  if [[ "${_build_boot_gcc}" == "yes" ]]; then
+    _gcc_pass_cfg_options+=("--without-headers")
+    _gcc_pass_cfg_options+=("--enable-languages=c")
+  else
+    _gcc_pass_cfg_options+=("--with-headers=${MSYSTEM_PREFIX}/${_target}/include")
+    _gcc_pass_cfg_options+=("--oldincludedir=${MSYSTEM_PREFIX}/${_target}/include")
+    _gcc_pass_cfg_options+=("--enable-languages=c,c++")
+    _gcc_pass_cfg_options+=("--with-sysroot=${MSYSTEM_PREFIX}/${_target}")
+  fi
+
+  echo "CC=${CC-gcc}"
+
+  local CYGWIN_CHOST="${CHOST/-msys/-cygwin}"
+
+  CPPFLAGS=""
+  CXXFLAGS="-g3 -Wno-error=format-security"
+  CFLAGS="-g3 -Wno-error=format-security"
+  MAKEINFO=false \
+  ../${_sourcedir}/configure \
+    "${_gcc_pass_cfg_options[@]}" \
+    --with-newlib \
+    --prefix=${MSYSTEM_PREFIX} \
+    --libexecdir=${MSYSTEM_PREFIX}/lib \
+    --infodir=${MSYSTEM_PREFIX}/share/info \
+    --mandir=${MSYSTEM_PREFIX}/share/man \
+    --build=${CYGWIN_CHOST} \
+    --host=${CYGWIN_CHOST} \
+    --with-pkgversion="${_realname} Rev${pkgrel}, ${_BUILTBY}" \
+    --with-bugurl="$_BUGURL" \
+    --target=${_target} \
+    --program-prefix="${_target}-" \
+    --disable-multilib \
+    --disable-werror \
+    --disable-nsl \
+    --disable-shared \
+    --disable-decimal-float \
+    --disable-lto \
+    --disable-threads \
+    --disable-tls \
+    --disable-libada \
+    --disable-libffi \
+    --disable-libgomp \
+    --disable-libmudflap \
+    --disable-libquadmath \
+    --disable-libsanitizer \
+    --disable-libssp \
+    --disable-libstdcxx-pch \
+    --with-as=${MSYSTEM_PREFIX}/bin/${_target}-as \
+    --with-ld=${MSYSTEM_PREFIX}/bin/${_target}-ld \
+    --with-ar=${MSYSTEM_PREFIX}/bin/${_target}-ar
+
+  make -j1 all-gcc
+}
+
+#check() {
+#  cd ${srcdir}/${_sourcedir}/build-gcc-${CARCH}
+#  make -k check-gcc
+#}
+
+package() {
+  CPPFLAGS=""
+  CFLAGS="-g3"
+  cd "build-gcc-${CARCH}"
+  make -j1 DESTDIR="$pkgdir/" install-gcc
+
+  # Remove files to avoid conflict
+  rm -fr $pkgdir${MSYSTEM_PREFIX}/share/locale
+  rm -fr $pkgdir${MSYSTEM_PREFIX}/share/man/man7
+}
+
+# vim:set ts=2 sw=2 et:
