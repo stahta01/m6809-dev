@@ -1,0 +1,28 @@
+From 4bc607b4dfc53726bd7117ca5a2195f2aaa6ef5e Mon Sep 17 00:00:00 2001
+From: Uros Bizjak <uros@gcc.gnu.org>
+Date: Tue, 4 Aug 2015 18:15:45 +0200
+Subject: texi2pod.pl: Escape braces in regexp involving @strong{...}.
+
+	* texi2pod.pl: Escape braces in regexp involving @strong{...}.
+
+From-SVN: r226585
+---
+ contrib/texi2pod.pl | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/contrib/texi2pod.pl b/contrib/texi2pod.pl
+index fcdc14550ba..c7485bc66af 100755
+--- a/contrib/texi2pod.pl
++++ b/contrib/texi2pod.pl
+@@ -314,7 +314,7 @@ while(<$inf>) {
+ 	@columns = ();
+ 	for $column (split (/\s*\@tab\s*/, $1)) {
+ 	    # @strong{...} is used a @headitem work-alike
+-	    $column =~ s/^\@strong{(.*)}$/$1/;
++	    $column =~ s/^\@strong\{(.*)\}$/$1/;
+ 	    push @columns, $column;
+ 	}
+ 	$_ = "\n=item ".join (" : ", @columns)."\n";
+-- 
+2.38.1.windows.1
+
