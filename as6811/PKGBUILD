@@ -1,0 +1,81 @@
+# Maintainer: Tim S <stahta01@gmail.com>
+
+_filename=asxs
+_foldername=asxv5pxx
+_realname=as6811
+_machine=m6811
+_target=${_machine}-unknown
+
+
+pkgbase=${_realname}
+pkgname=(
+  "${_realname}"
+  "asxxxx"
+)
+pkgver=5p50
+pkgrel=1
+pkgdesc="Cross Assembler for the Motorola 6811 and Hitachi 6812 microprocessors"
+arch=('i686' 'x86_64')
+url="http://shop-pdp.net"
+license=('GPL3')
+groups=("${_target}-toolchain")
+makedepends=('make')
+conflicts=()
+source=(
+  "http://shop-pdp.net/_ftp/asxxxx/${_filename}${pkgver}.zip"
+  '005-as-5p10-Add-binutils-scripts-from-gcc.patch'
+)
+sha256sums=('85af535eab207eeefe259833e562966bf0c4324753329e1385cf5651e513052e'
+            '969c6dc7edad86827a57612f2dabe75700f55525ff7a86f6d5de4ff5c506f37b')
+prepare() {
+  [[ -f "binutils/ar" ]] && rm binutils/ar
+  [[ -f "binutils/as" ]] && rm binutils/as
+  [[ -f "binutils/ld" ]] && rm binutils/ld
+
+  patch --forward -p1 -i ${srcdir}/005-as-5p10-Add-binutils-scripts-from-gcc.patch
+}
+
+build() {
+  cd ${_foldername}
+
+  make -C asxmak/cygwin/build clean
+  make -C asxmak/cygwin/build as6811
+  make -C asxmak/cygwin/build aslink
+}
+
+_package_as6811() {
+  optdepends=(asxxxx)
+
+  cd ${_foldername}
+
+  mkdir -p "$pkgdir${MSYSTEM_PREFIX}/${_target}/bin"
+  cp -f ${srcdir}/binutils/ar         "$pkgdir${MSYSTEM_PREFIX}/${_target}/bin/ar"
+  cp -f ${srcdir}/binutils/as         "$pkgdir${MSYSTEM_PREFIX}/${_target}/bin/as"
+  cp -f ${srcdir}/binutils/ld         "$pkgdir${MSYSTEM_PREFIX}/${_target}/bin/ld"
+  sed -i "s|@AS_PREFIX@|${MSYSTEM_PREFIX}|" "$pkgdir${MSYSTEM_PREFIX}/${_target}/bin/ar"
+  sed -i "s|@AS_PREFIX@|${MSYSTEM_PREFIX}|" "$pkgdir${MSYSTEM_PREFIX}/${_target}/bin/as"
+  sed -i "s|@AS_PREFIX@|${MSYSTEM_PREFIX}|" "$pkgdir${MSYSTEM_PREFIX}/${_target}/bin/ld"
+
+  mkdir -p "$pkgdir${MSYSTEM_PREFIX}/bin"
+  mv asxmak/cygwin/exe/as6811.exe     "$pkgdir${MSYSTEM_PREFIX}/bin/"
+
+  cp -f ${srcdir}/binutils/ar         "$pkgdir${MSYSTEM_PREFIX}/bin/${_target}-ar"
+  cp -f ${srcdir}/binutils/as         "$pkgdir${MSYSTEM_PREFIX}/bin/${_target}-as"
+  cp -f ${srcdir}/binutils/ld         "$pkgdir${MSYSTEM_PREFIX}/bin/${_target}-ld"
+  sed -i "s|@AS_PREFIX@|${MSYSTEM_PREFIX}|" "$pkgdir${MSYSTEM_PREFIX}/bin/${_target}-ar"
+  sed -i "s|@AS_PREFIX@|${MSYSTEM_PREFIX}|" "$pkgdir${MSYSTEM_PREFIX}/bin/${_target}-as"
+  sed -i "s|@AS_PREFIX@|${MSYSTEM_PREFIX}|" "$pkgdir${MSYSTEM_PREFIX}/bin/${_target}-ld"
+}
+
+_package_asxxxx() {
+  cd ${_foldername}
+
+  mkdir -p "$pkgdir${MSYSTEM_PREFIX}/bin"
+  #mv asxmak/cygwin/exe/aslib.exe "$pkgdir${MSYSTEM_PREFIX}/bin/"
+  mv asxmak/cygwin/exe/aslink.exe "$pkgdir${MSYSTEM_PREFIX}/bin/"
+}
+
+eval "package_${_realname}() { _package_${_realname}; }"
+eval "package_asxxxx() { _package_asxxxx; }"
+
+# vim:set ts=2 sw=2 et:
