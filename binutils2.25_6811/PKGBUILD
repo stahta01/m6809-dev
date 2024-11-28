@@ -1,0 +1,189 @@
+# Maintainer:  Tim Stahlhut
+# Contributor: Alexey Pavlov
+# Contributor: Ray Donnelly
+
+_basename=binutils
+_machine_suffix=6811
+_machine=m${_machine_suffix}
+_target=${_machine}-elf
+
+_realname=${_basename}${_machine_suffix}
+_sourcedir=${_basename}-git
+_base_ver=2.25
+pkgbase=${_basename}${_base_ver}_${_machine_suffix}
+pkgname=("${_realname}-git")
+provides=("${_realname}")
+conflicts=("${_realname}")
+pkgver=2.25+r82134.c0.g8f2db47d13b6
+pkgrel=1
+pkgdesc="A set of programs to assemble and manipulate binary and object files"
+arch=('i686' 'x86_64')
+url="https://www.gnu.org/software/binutils/"
+license=('GPL')
+depends=('libiconv'
+         'zlib'
+         'libiconv'
+         'gettext')
+
+#checkdepends=('dejagnu' 'bc')
+makedepends=( 'bison' 'flex' 'texinfo'
+  'gcc'
+  'autotools'
+  'git'
+)
+options=('staticlibs' '!distcc' '!ccache' 'debug' '!strip')
+#install=binutils.install
+ISL_VERSION=0.12.2
+noextract=("isl-${ISL_VERSION}.tar.bz2")
+source=("${_sourcedir}"::"git+https://sourceware.org/git/binutils-gdb.git#branch=${_basename}-${_base_ver//./_}-branch"
+        "https://gcc.gnu.org/pub/gcc/infrastructure/isl-0.12.2.tar.bz2")
+sha256sums=('SKIP'
+            'f4b3dbee9712850006e44f0db2103441ab3d13b406f77996d1df19ee89d11fb4')
+# =========================================== #
+_extract_to_binutils_folder() {
+    local tarfile="$1"
+    local subfolder="$(echo "$tarfile" | sed 's/-.*$//')"
+    if [ ! -d  "$_sourcedir/$subfolder" ]; then
+        echo "Extracting ${tarfile} to $_sourcedir/$subfolder"
+        mkdir -p "$_sourcedir/$subfolder"
+        tar -x --strip-components=1 -f "$tarfile" -C "$_sourcedir/$subfolder"
+    else
+        echo "Folder $_sourcedir/$subfolder already exists"
+    fi
+}
+# =========================================== #
+# Helper macros to help make tasks easier     #
+apply_patch_with_msg() {
+  for _patch in "$@"
+  do
+    if patch --dry-run -Rbp1 -i "${srcdir}/${_patch}" > /dev/null 2>&1 ; then
+      msg2 "Skipping ${_patch} because it likely was already applied"
+    else
+      msg2 "Applying ${_patch}"
+      patch -Nbp1 -i "${srcdir}/${_patch}"
+    fi
+  done
+}
+# =========================================== #
+_git_base_commit=
+
+pkgver() {
+  cd "$srcdir/$_sourcedir"
+  if [[ -n "${_git_base_commit}" ]]; then
+    printf "%s+r%s.c%s.g%s" "${_base_ver}" \
+      "$(git rev-list --count ${_git_base_commit})" \
+      "$(git rev-list --count ${_git_base_commit}..HEAD)" \
+      "$(git rev-parse --short=12 ${_git_base_commit})"
+  else
+    printf "%s" ${pkgver}
+  fi
+}
+
+prepare() {
+  cd ${srcdir}
+  _extract_to_binutils_folder       "isl-${ISL_VERSION}.tar.bz2"
+
+  cd ${srcdir}/${_sourcedir}
+
+  _git_base_commit=$(git rev-parse HEAD)
+  GIT_AM="git am --committer-date-is-author-date"
+  #apply_patch_with_msg \
+
+  #${GIT_AM} "${srcdir}"/
+
+  rm -rf gdb readline libdecnumber sim
+
+  #do not install libiberty
+  sed -i 's/install_to_$(INSTALL_DEST) //' libiberty/Makefile.in
+  # hack! - libiberty configure tests for header files using "$CPP $CPPFLAGS"
+  sed -i "/ac_cpp=/s/\$CPPFLAGS/\$CPPFLAGS -O2/" libiberty/configure
+}
+
+build() {
+  # Set good default FLAGS
+  export LDFLAGS="-pipe"
+  export CPPFLAGS=""
+  export CFLAGS="-pipe"
+  export CXXFLAGS="-pipe"
+
+  if [ "${CARCH}" = "x86_64" ]; then
+    CXXFLAGS+=" -march=nocona -msahf -mtune=generic"
+    CFLAGS+=" -march=nocona -msahf -mtune=generic"
+  else
+    CXXFLAGS+=" -mtune=generic"
+    CFLAGS+=" -mtune=generic"
+  fi
+
+  declare -a extra_config
+
+  if [ "${CARCH}" = "x86_64" ]; then
+    extra_config+=('--enable-64-bit-bfd')
+  #else
+    #LDFLAGS+=" -Wl,--large-address-aware"
+  fi
+
+  if check_option "debug" "y"; then
+    CFLAGS+=" -O0"
+  fi
+
+  extra_config+=(--with-build-sysroot=${MSYSTEM_PREFIX})
+  extra_config+=(--with-libiconv-prefix=${MSYSTEM_PREFIX})
+
+  # Try Using during GCC version change in building of Binutils or CRT.
+  # export LDFLAGS+=" -static-libgcc -static-libstdc++"
+
+  cd $srcdir
+  rm -rf build-${MSYSTEM}
+  mkdir -p build-${MSYSTEM} && cd build-${MSYSTEM}
+
+  #CFLAGS+=" -I${MSYSTEM_PREFIX}/include"
+  ../${_sourcedir}/configure \
+    --build=${MSYSTEM_CHOST} \
+    --host=${MSYSTEM_CHOST} \
+    --target=${_target} \
+    --prefix=${MSYSTEM_PREFIX} \
+    --disable-werror \
+    --enable-lto \
+    --with-sysroot=${MSYSTEM_PREFIX} \
+    "${extra_config[@]}" \
+    --disable-nls \
+    --disable-rpath \
+    --disable-multilib \
+    --enable-install-libiberty \
+    --enable-plugins \
+    --enable-gold \
+    --disable-shared
+
+  make
+}
+
+#check() {
+  #cd ${srcdir}/build-${MSYSTEM}
+
+  ## unset LDFLAGS as testsuite makes assumptions about which ones are active
+  ## do not abort on errors - manually check log files
+  #make LDFLAGS="" -k check || true
+#}
+
+package() {
+  cd ${srcdir}/build-${MSYSTEM}
+
+  make DESTDIR=${pkgdir} install
+
+  #mkdir -p ${pkgdir}${MSYSTEM_PREFIX}/{lib,include}/${_realname}
+  #mkdir -p ${pkgdir}${MSYSTEM_PREFIX}/${MSYSTEM_CHOST}/include
+  #cp ${pkgdir}${MSYSTEM_PREFIX}/include/ansidecl.h ${pkgdir}${MSYSTEM_PREFIX}/${MSYSTEM_CHOST}/include/
+  #mv ${pkgdir}${MSYSTEM_PREFIX}/include/*.h ${pkgdir}${MSYSTEM_PREFIX}/include/${_realname}
+  #mv ${pkgdir}${MSYSTEM_PREFIX}/lib/*.a ${pkgdir}${MSYSTEM_PREFIX}/lib/${_realname}
+
+  # Remove unwanted files
+  find ${pkgdir}${MSYSTEM_PREFIX}/share/locale -type f -iname "bfd.*" -o -iname "opcodes.*" | xargs -rtl1 rm
+  # rm -rf ${pkgdir}${MSYSTEM_PREFIX}/share
+  rm -fr ${pkgdir}${MSYSTEM_PREFIX}/share/info
+
+  # Add some useful headers
+  #install -m644 ${srcdir}/${_realname}-${pkgver}/include/libiberty.h ${pkgdir}${MSYSTEM_PREFIX}/include
+  #install -m644 ${srcdir}/${_realname}-${pkgver}/include/demangle.h ${pkgdir}${MSYSTEM_PREFIX}/include
+
+  find  ${pkgdir}${MSYSTEM_PREFIX}/share -type f -iname "opcodes.mo" -o -iname "bfd.mo" | xargs -rtl1 rm
+}
