@@ -203,6 +203,9 @@ build() {
   mkdir -p $srcdir/build-${CARCH}
   cd $srcdir/build-${CARCH}
 
+  gcc --version
+  m6809-unknown-gcc --version
+
   local CYGWIN_CHOST="${CHOST/-msys/-cygwin}"
 
   CCAS="${MSYSTEM_PREFIX}/bin/${_target}-gcc" \
