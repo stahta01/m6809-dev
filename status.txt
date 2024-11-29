@@ -31,7 +31,7 @@ toolshed-hg         Built with GCC 13.3.0 under MSYS environment
 vasm                Built with GCC 13.3.0 under MSYS environment
 
 m6809 emulator packages listed in normal build order 
-xroar               Built with GCC 13.3.0 under MSYS environment
+xroar               Built with GCC 13.3.0 under MSYS environment (Newer 32 bit installation needed to build)
 mingw-w64-xroar     Built with GCC 14.2.0
 mame-tools          Built with GCC 14.2.0 # after add jobs=1 likely makefile issue
 mame-coco3          Built with GCC 14.2.0 under MINGW64 and UCRT64 environment(s)
