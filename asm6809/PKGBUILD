@@ -4,8 +4,8 @@ _realname=asm6809
 
 pkgbase=${_realname}
 pkgname="${_realname}"
-pkgver=2.13
-pkgrel=3
+pkgver=2.14
+pkgrel=1
 pkgdesc="Cross Assembler for the Motorola 6809 and Hitachi 6309 microprocessors"
 arch=('i686' 'x86_64')
 makedepends=('gcc')
@@ -13,7 +13,7 @@ url="https://www.6809.org.uk/asm6809/"
 license=('GPL3')
 groups=('m6809-toolchain')
 source=("https://www.6809.org.uk/asm6809/dl/${_realname}-${pkgver}.tar.gz")
-sha256sums=('1a5caa2ab411d6f0bdcb97004f7aa2b7f3ade0b7a281a2322380ff9fe116c6cb')
+sha256sums=('c7b5c8a17f329a88c8ec466ebf000047879bab3716f7df2ed2579e2623f22c0c')
 prepare() {
   cd ${_realname}-$pkgver
 
