@@ -1,0 +1,47 @@
+From 08729aa7c81d02280550b9b2de25d3fba9d0e87a Mon Sep 17 00:00:00 2001
+From: Tim S <tim.stahlhut@gmail.com>
+Date: Sun, 3 Feb 2019 21:06:15 -0500
+Subject: edit config.sub
+
+This patch is based on the work of
+Brian Dominy https://github.com/bcd/gcc
+---
+ config.sub | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/config.sub b/config.sub
+index 17c91458a8a..3c7c2551f21 100755
+--- a/config.sub
++++ b/config.sub
+@@ -289,7 +289,7 @@ case $basic_machine in
+ 	| z8k | z80)
+ 		basic_machine=$basic_machine-unknown
+ 		;;
+-	m6811 | m68hc11 | m6812 | m68hc12)
++	m6809 | m6811 | m68hc11 | m6812 | m68hc12)
+ 		# Motorola 68HC11/12.
+ 		basic_machine=$basic_machine-unknown
+ 		os=-none
+@@ -343,7 +343,7 @@ case $basic_machine in
+ 	| i*86-* | i860-* | i960-* | ia64-* \
+ 	| ip2k-* | iq2000-* \
+ 	| lm32-* \
+-	| m32c-* | m32r-* | m32rle-* \
++	| m32c-* | m32r-* | m32rle-* | m6809-* \
+ 	| m68000-* | m680[012346]0-* | m68360-* | m683?2-* | m68k-* \
+ 	| m88110-* | m88k-* | maxq-* | mcore-* | metag-* | microblaze-* \
+ 	| mips-* | mipsbe-* | mipseb-* | mipsel-* | mipsle-* \
+@@ -488,6 +488,10 @@ case $basic_machine in
+ 		basic_machine=arm-unknown
+ 		os=-cegcc
+ 		;;
++	coco)
++		basic_machine=coco
++		os=-none
++		;;
+ 	convex-c1)
+ 		basic_machine=c1-convex
+ 		os=-bsd
+-- 
+2.19.1.windows.1
+
