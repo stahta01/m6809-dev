@@ -1,0 +1,46 @@
+From ff5f61234584d9968af6a81396bb6b64eb1b8de7 Mon Sep 17 00:00:00 2001
+From: Tim S <tim.stahlhut@gmail.com>
+Date: Sun, 3 Feb 2019 20:58:30 -0500
+Subject: build: edit gcc/config.gcc
+
+This patch is based on the work of 
+Brian Dominy https://github.com/bcd/gcc and
+David Flamand https://gitlab.com/dfffffff/gcc6809
+
+---
+ gcc/config.gcc | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+diff --git a/gcc/config.gcc b/gcc/config.gcc
+index cc34a591d85..d89ca5b1c60 100644
+--- a/gcc/config.gcc
++++ b/gcc/config.gcc
+@@ -323,6 +323,9 @@ hppa*-*-*)
+ m32r*-*-*)
+         cpu_type=m32r
+         ;;
++m6809-*-*)
++	cpu_type=m6809
++	;;
+ m68k-*-*)
+ 	extra_headers=math-68881.h
+ 	;;
+@@ -1408,6 +1411,15 @@ m32rle-*-linux*)
+ 		thread_file='posix'
+ 	fi
+ 	;;
++m6809-coco-*)
++	tmake_file="${tmake_file} m6809/t-m6809 m6809/t-coco"
++	;;
++m6809-sim-*)
++	tmake_file="${tmake_file} m6809/t-m6809 m6809/t-sim"
++	;;
++m6809-*-*)
++	tmake_file="${tmake_file} m6809/t-m6809"
++	;;
+ # m68hc11 and m68hc12 share the same machine description.
+ m68hc11-*-*|m6811-*-*)
+ 	tm_file="dbxelf.h elfos.h usegas.h m68hc11/m68hc11.h"
+-- 
+2.19.1.windows.1
+
