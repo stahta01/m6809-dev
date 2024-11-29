@@ -1,0 +1,167 @@
+# Maintainer: Tim S <stahta01@gmail.com>
+
+# See https://www.eevblog.com/forum/microcontrollers/m68hc11-gcc-3-3-6-on-modern-linux/
+#     Possible fixes are
+# Use gcc gcc-4.1.2 and edit glibc which likely does not apply to me.
+# They were building gcc-core-3.3.6 and binutils-2.25; I might try building binutils 2.25 and see if that works
+#
+# From https://github.com/mikpe/buildcross/blob/master/buildcross
+    #"m68hc11")
+    #TARGET_TRIPLE="${TARGET_ARCH}-unknown-elf"
+    #BINUTILS_VSN=2.26.1 # later version cannot assemble m68hc11-gcc's libgcc .asm files
+    #GCC_VSN=4.2.4 # later versions ICE, removed in 4.7
+    #NEWLIB_VSN=2.2.0-1 # later versions cannot be built by the 4.2-based m68hc11-gcc
+    ## PATH must select an older gcc suitable for building the above (4.2 is known to work)
+    #SKIP_HOST_GCC=1
+    #;;
+
+_basename=gcc
+_machine_suffix=6811
+_realname_suffix=
+_realname=${_basename}${_machine_suffix}${_realname_suffix}
+_filename=${_basename}
+_foldername=${_basename}
+_machine=m${_machine_suffix}
+_target=${_machine}-elf
+_assembler=binutils6811
+_patch_version=
+
+_base_ver=4.2
+pkgbase=${_basename}${_base_ver}_${_machine_suffix}
+# If newlib is missing, enable _build_boot_gcc
+_build_boot_gcc=yes
+if [[ "${_build_boot_gcc}" == "yes" ]]; then
+  pkgname="boot-${_realname}"
+  pkgdesc="The GNU bootstrap C compiler for the ${_machine} microprocessor"
+else
+  pkgname="${_realname}"
+  pkgdesc="The GNU C++ compiler for the ${_machine} microprocessor"
+fi
+pkgver=4.2.4
+_sourcedir=${_basename}-${pkgver}
+pkgrel=1
+options=('!emptydirs') # '!strip' 'debug')
+arch=('i686' 'x86_64')
+url="https://github.com/stahta01/gcc4.3"
+license=('GPL3')
+groups=("${_target}-toolchain")
+replaces=(-boot-${_realname})
+provides=(boot-${_basename}${_machine_suffix})
+conflicts=(boot-${_basename}${_machine_suffix})
+depends=(mpc ${_assembler})
+_makedepends=(gettext
+  'bison' 'diffutils' 'gettext' 'gettext-devel'
+  'intltool' 'make' 'patch' 'perl' 'tar') # 'texinfo')
+if [[ "${_build_boot_gcc}" == "yes" ]]; then
+  makedepends=(${_makedepends[@]})
+else
+  makedepends=(${_makedepends[@]} ${_target}-newlib${_machine_suffix})
+fi
+optdepends=("${_target}-newlib${_machine_suffix}: Standard C library optimized for embedded systems")
+
+MPFR_VERSION=2.4.2
+GMP_VERSION=4.3.2
+noextract=("mpfr-${MPFR_VERSION}.tar.bz2"
+           "gmp-${GMP_VERSION}.tar.bz2"
+           ${_filename}-${pkgver}.tar.bz2)
+source=(ftp://gcc.gnu.org/pub/gcc/infrastructure/mpfr-${MPFR_VERSION}.tar.bz2
+        ftp://gcc.gnu.org/pub/gcc/infrastructure/gmp-${GMP_VERSION}.tar.bz2
+        "https://ftp.gnu.org/gnu/gcc/gcc-${pkgver}/${_filename}-${pkgver}.tar.bz2")
+sha256sums=('c7e75a08a8d49d2082e4caee1591a05d11b9d5627514e678f02d66a124bcf2ba'
+            '936162c0312886c21581002b79932829aa048cfaf9937c6265aeaa14f1cd1775'
+            'afba845e2d38547a63bd3976e90245c81ea176786f9e6966339c6d3761f1133a')
+# =========================================== #
+_extract_to_gcc_folder() {
+    local tarfile="$1"
+    local subfolder="$(echo "$tarfile" | sed 's/-.*$//')"
+    if [ ! -d  "$_sourcedir/$subfolder" ]; then
+        echo "Extracting ${tarfile} to $_sourcedir/$subfolder"
+        mkdir -p "$_sourcedir/$subfolder"
+        tar -x --strip-components=1 -f "$tarfile" -C "$_sourcedir/$subfolder"
+    else
+        echo "Folder $_sourcedir/$subfolder already exists"
+    fi
+}
+# =========================================== #
+prepare() {
+  tar --overwrite -xjf ${_filename}-${pkgver}.tar.bz2 -C ${srcdir} --checkpoint=100 \
+    --exclude=${_foldername}-${pkgver}/{INSTALL,libjava,libgo,libgfortran} \
+    --exclude=${_foldername}-${pkgver}/gcc/{ada,fortran,java,po}
+
+  cd ${srcdir}
+  _extract_to_gcc_folder            gmp-${GMP_VERSION}.tar.bz2
+  _extract_to_gcc_folder            mpfr-${MPFR_VERSION}.tar.bz2
+}
+
+build() {
+  if [[ -d "build-gcc-${CARCH}" ]]; then
+    rm -rf build-gcc-${CARCH}
+  fi
+  mkdir build-gcc-${CARCH}
+  cd build-gcc-${CARCH}
+
+  local -a _gcc_pass_cfg_options
+  if [[ "${_build_boot_gcc}" == "yes" ]]; then
+    _gcc_pass_cfg_options+=("--without-headers")
+    _gcc_pass_cfg_options+=("--enable-languages=c")
+  else
+    _gcc_pass_cfg_options+=("--with-headers=${MSYSTEM_PREFIX}/${_target}/include")
+    _gcc_pass_cfg_options+=("--oldincludedir=${MSYSTEM_PREFIX}/${_target}/include")
+    _gcc_pass_cfg_options+=("--enable-languages=c,c++")
+    _gcc_pass_cfg_options+=("--with-sysroot=${MSYSTEM_PREFIX}/${_target}")
+  fi
+
+  CPPFLAGS=""
+  CXXFLAGS="-O2 -Wno-error=format-security"
+  CFLAGS="-O2 -Wno-error=format-security"
+  MAKEINFO=false \
+  ../${_foldername}-$pkgver/configure \
+    "${_gcc_pass_cfg_options[@]}" \
+    --with-newlib \
+    --prefix=${MSYSTEM_PREFIX} \
+    --libexecdir=${MSYSTEM_PREFIX}/lib \
+    --infodir=${MSYSTEM_PREFIX}/share/info \
+    --mandir=${MSYSTEM_PREFIX}/share/man \
+    --build=x86_64-pc-cygwin \
+    --host=x86_64-pc-cygwin \
+    --with-pkgversion="${_realname}${_patch_version}" \
+    --with-bugurl="${url}/issues" \
+    --target=${_target} \
+    --program-prefix="${_target}-" \
+    --disable-multilib \
+    --disable-werror \
+    --disable-nsl \
+    --disable-shared \
+    --disable-decimal-float \
+    --disable-long-long \
+    --disable-lto \
+    --disable-threads \
+    --disable-tls \
+    --disable-libada \
+    --disable-libffi \
+    --disable-libgomp \
+    --disable-libmudflap \
+    --disable-libquadmath \
+    --disable-libsanitizer \
+    --disable-libssp \
+    --disable-libstdcxx-pch
+
+  make -j1 all-gcc
+}
+
+#check() {
+#  cd "${_realname}-$pkgver/build-gcc-${CARCH}"
+#  make -k check-gcc
+#}
+
+package() {
+  CPPFLAGS=""
+  CFLAGS="-O2"
+  cd "build-gcc-${CARCH}"
+  make -j1 DESTDIR="$pkgdir/" install-gcc
+
+  # Remove man7 files to avoid conflict
+  rm -fr $pkgdir${MSYSTEM_PREFIX}/share/man/man7
+}
+
+# vim:set ts=2 sw=2 et:
