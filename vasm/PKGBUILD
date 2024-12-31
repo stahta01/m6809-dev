@@ -13,8 +13,8 @@ pkgname=(
   "${_realname}${_cpu1}"
   "${_realname}${_cpu2}"
 )
-pkgver=2_0
-pkgrel=2
+pkgver=2_0a
+pkgrel=1
 pkgdesc="Assembler for microprocessors"
 arch=('i686' 'x86_64')
 url="http://sun.hasenbraten.de/vasm/"
@@ -27,7 +27,7 @@ source=(
   '001-fix-for-6809-LBEQ-out-of-range-error.patch'
   'LICENSE'
 )
-sha256sums=('210334b0326d54dfd21fe6c065ceca990a6b5da762d59c6c0f9d8c3e5f6a6093'
+sha256sums=('413181dae18f7d566c4aeee669039ea20083817c412a402eed5ec8490f7b9d76'
             'b9676fb57241c9e55c3405720ff167b57dca76470852cef3597e7e8389458e9d'
             '63b3e08e9a45ce5284263fb2a36cf6880c910b789ceda42781eb298ce8175dca')
 
