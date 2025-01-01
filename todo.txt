@@ -3,3 +3,4 @@ Under CygWin get first vbcc0_9hP2 and then vbcc0_9hP3 to build; next under msys2
 Upgrade vbcc; likely requires source code changes
 Convert mame-tools into msys2 package; wait till it builds under Cygwin
 Test gcc6809lw works with hello world code
+Figure out where mame coco3 roms need to be for run-time testing
