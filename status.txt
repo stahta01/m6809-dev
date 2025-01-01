@@ -30,7 +30,8 @@ gcc6809lw           Built with GCC 13.3.0 under MSYS environment
 newlib6809lw        Built with GCC 13.3.0 under MSYS environment
 toolshed-hg         Built with GCC 13.3.0 under MSYS environment
 vasm                Built with GCC 13.3.0 under MSYS environment
-vlink               Built with GCC 13.3.0 under MSYS environment
+vlink               Built with GCC 13.3.0 under MSYS environment; Never tested run-time
+vbcc                Built with GCC 13.3.0 under MSYS environment; Never tested run-time
 
 m6809 emulator packages listed in normal build order 
 xroar               Built with GCC 13.3.0 under MSYS environment (Newer 32 bit installation needed to build)
@@ -39,7 +40,6 @@ mame-tools          Built with GCC 14.2.0 # after add jobs=1 likely makefile iss
 mame-coco3          Built with GCC 14.2.0 under MINGW64 and UCRT64 environment(s)
 
 other packages listed in normal build order (not normally built)
-vbcc                Built with GCC 13.3.0 under MSYS environment
 as6809              Built with GCC 13.3.0 under MSYS environment
 gcc6809as           Built with GCC 13.3.0 under MSYS environment
 newlib6809as        Built with GCC 13.3.0 under MSYS environment
