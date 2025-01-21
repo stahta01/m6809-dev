@@ -15,3 +15,4 @@ Used https://github.com/stahta01/xroar_coco_examples to test:
 
 Used https://github.com/stahta01/nitros9 to test: 
   toolshed's os9
+  lwtools's lwasm
