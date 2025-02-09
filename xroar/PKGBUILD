@@ -4,7 +4,7 @@
 _realname=xroar
 pkgbase=${_realname}
 pkgname=(${_realname})
-pkgver=1.7.3
+pkgver=1.8.1
 pkgrel=1
 _sourcedir=${_realname}-${pkgver}
 pkgdesc="Color Computer 1/2/3 emulator"
@@ -24,7 +24,7 @@ checkdepends=()
 options=('!strip')
 source=("https://www.6809.org.uk/xroar/dl/xroar-${pkgver}.tar.gz"
         '002-Disable-OPENGL-files.patch')
-sha256sums=('f88f4ebf852be4262935020f350d9ce55e2b054172f9851ba47fe34e10940dea'
+sha256sums=('ae3f3a320cba097598e1ded1cc5abbafab022ec4d59ddb4a7376f557d92b49b9'
             '5d2f6b1d09346331eeffdde3edbeda05203cff7ac714fb482eda045d136231f0')
 prepare() {
   cd "${srcdir}/${_sourcedir}"
