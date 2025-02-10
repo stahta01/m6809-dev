@@ -4,7 +4,7 @@ _realname=vlink
 
 pkgbase=${_realname}
 pkgname=("${_realname}")
-pkgver=0_17a
+pkgver=0_18
 pkgrel=1
 pkgdesc="Linker for the vasm assembler"
 arch=('i686' 'x86_64')
@@ -17,7 +17,7 @@ source=(
   "http://phoenix.owl.de/tags/vlink${pkgver}.tar.gz"
   'LICENSE'
 )
-sha256sums=('f6754913d47bc97cf4771cc0aa7c51de368a04894be35b8dc5e4beac527f5b82'
+sha256sums=('a40c3313ef5b0956cad8f140557b70ee88a9e96cf14bbc3276cca565fa0fdf01'
             'be4bf5a88dcdf5c19d221e921875dafebc642adafff4806b16a43c2a79c4f305')
 
 prepare() {
