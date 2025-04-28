@@ -6,8 +6,8 @@ _machine=m6809
 _target=${_machine}-unknown
 
 pkgname=${_realname}
-pkgver=4.23
-pkgrel=2
+pkgver=4.24
+pkgrel=1
 pkgdesc="Cross-development tools for the Motorola 6809 and Hitachi 6309 microprocessors"
 arch=('i686' 'x86_64')
 url="http://lwtools.projects.l-w.ca"
@@ -20,7 +20,7 @@ source=(
   "$url/releases/${_realname}/${_realname}-$pkgver.tar.gz"
   'm6809-unknown-ar'
 )
-sha256sums=('f05255516783ea5b118e7e32e8e4d420b6835864c2833ecde3477b4be19db038'
+sha256sums=('e18c01841be3b149b79df38a67b59c51247ec40df0740b972eb724a3a3c72869'
             '3b373858678985016c2abccceb99819ac4532eed192d0dd225c86ea3efb9e088')
 
 prepare() {
