@@ -1,4 +1,5 @@
 See https://github.com/stahta01/MSYS2-gcc6-packages for gcc6, cc65, and gcc6502 work.
+See https://github.com/stahta01/MSYS2-extra-packages for packages needed by xroar MSys2 work.
 
   package                           status
 as6809              builds for MSYS
@@ -9,6 +10,7 @@ gcc6809as           builds for MSYS
 gcc6809lw           builds for MSYS
 gcc4.6_6809lw       builds for MSYS; fails to build newlib6809lw
 lwtools             builds for MSYS
+mame-coco3          builds for MINGW64 and UCRT64
 mame-tools          builds for MINGW32, MINGW64, and UCRT64
 newlib6809as        builds for MSYS
 newlib6809lw        builds for MSYS
@@ -28,16 +30,16 @@ cmoc                Built with GCC 13.3.0 under MSYS environment
 cmoc-os9            Built with GCC 13.3.0 under MSYS environment; after floating point code was disabled
 gcc6809lw           Built with GCC 13.3.0 under MSYS environment
 newlib6809lw        Built with GCC 13.3.0 under MSYS environment
-toolshed-hg         Built with GCC 13.3.0 under MSYS environment
+toolshed            Built with GCC 13.3.0 under MSYS environment
 vasm                Built with GCC 13.3.0 under MSYS environment
 vlink               Built with GCC 13.3.0 under MSYS environment; Never tested run-time
 vbcc                Built with GCC 13.3.0 under MSYS environment; Never tested run-time
 
 m6809 emulator packages listed in normal build order 
-xroar               Built with GCC 13.3.0 under MSYS environment (Newer 32 bit installation needed to build)
-mingw-w64-xroar     Built with GCC 14.2.0
-mame-tools          Built with GCC 14.2.0 # after add jobs=1 likely makefile issue
-mame-coco3          Built with GCC 14.2.0 under MINGW64 and UCRT64 environment(s)
+xroar               Built with GCC 13.3.0 under MSYS environment (Newer 32 bit build packages needed to build)
+mingw-w64-xroar     Built with GCC 15.1.0
+mame-tools          Built with GCC 15.1.0
+mame-coco3          Built with GCC 15.1.0 under MINGW64 and UCRT64 environment(s)
 
 other packages listed in normal build order (not normally built)
 as6809              Built with GCC 13.3.0 under MSYS environment
