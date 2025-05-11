@@ -9,10 +9,11 @@ Used 6809_ide_xroar from https://github.com/n6il/eou_ide/releases to test:
   xroar
 
 Used https://github.com/stahta01/xroar_coco_examples to test:
-  cmoc
-  toolshed's decb
-  xroar
+  cmoc                  Tested 2025-06-03
+  toolshed's decb       Tested 2025-06-03
+  xroar                 Tested 2025-06-03
 
 Used https://github.com/stahta01/nitros9 to test: 
-  toolshed's os9
-  lwtools's lwasm
+  toolshed's os9        Tested 2025-06-03 
+  lwtools's lwasm       Tested 2025-06-03
+  xroar                 Tested 2025-06-03
