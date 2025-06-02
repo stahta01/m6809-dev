@@ -6,25 +6,28 @@ _machine=m6809
 _target=${_machine}-unknown
 _basepkgver=2.2
 
-pkgname=${_realname}-hg
-pkgver=2.2+r819.221d493c19f8
+pkgname=${_realname}
+conflicts=(${_realname}-hg)
+pkgver=2.2+r868.g874bcb7
 pkgrel=1
 pkgdesc="Utilities for Tandy Color Computer and Dragon microcomputers cross-development"
 arch=('i686' 'x86_64')
 url="http://toolshed.sourceforge.net"
 license=('PerlArtistic')
 groups=("${_target}-toolchain")
-makedepends=('gcc' 'make' 'mercurial' 'patch')
-source=("${_realname}::hg+http://hg.code.sf.net/p/toolshed/code")
+makedepends=('gcc' 'make' 'git' 'patch')
+source=("${_realname}::git+https://github.com/nitros9project/toolshed.git")
 sha256sums=('SKIP')
 
 pkgver() {
-  cd "${_realname}"
-  printf "${_basepkgver}+r%s.%s" "$(hg identify -n)" "$(hg identify -i)"
+  cd "$srcdir/${_realname}"
+  printf "${_basepkgver}+r%s.g%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
 }
 
 prepare() {
   cd "${_realname}"
+  sed -i 's|$(DIRS) cocofuse|$(DIRS)|' build/unix/makefile
+  sed -i 's|$(APPS) cocofuse|$(APPS)|' build/unix/makefile
 }
 
 build() {
