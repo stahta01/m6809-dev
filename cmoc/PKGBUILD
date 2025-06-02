@@ -6,7 +6,7 @@ _machine=m6809
 _target=${_machine}-unknown
 
 pkgname=${_realname}
-pkgver=0.1.90
+pkgver=0.1.91
 pkgrel=1
 pkgdesc="6809-generating cross-compiler for a subset of the C language"
 arch=('i686' 'x86_64')
@@ -18,8 +18,8 @@ depends=('perl' 'lwtools' 'markdown'
          'gcc' # provides cpp
         )
 makedepends=('bison' 'flex')
-source=("http://perso.b2b2c.ca/~sarrazip/dev/$_realname-$pkgver.tar.gz")
-sha256sums=('396f3eef99292d524471d4e2f8baeaa799608ae23ffde985f156ad023112f64c')
+source=("http://gvlsywt.cluster051.hosting.ovh.net/dev/$_realname-$pkgver.tar.gz")
+sha256sums=('ace2727d16da8b098ab986413fe9f54261ad0027cf51b3696569e78094545d34')
 
 prepare() {
   cd "$_realname-$pkgver"
