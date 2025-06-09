@@ -28,12 +28,12 @@ dasmfw              Built with GCC 13.3.0 under MSYS environment
 lwtools             Built with GCC 13.3.0 under MSYS environment
 cmoc                Built with GCC 13.3.0 under MSYS environment
 cmoc-os9            Built with GCC 13.3.0 under MSYS environment; after floating point code was disabled
-gcc6809lw           Built with GCC 13.3.0 under MSYS environment
-newlib6809lw        Built with GCC 13.3.0 under MSYS environment
 toolshed            Built with GCC 13.3.0 under MSYS environment
 vasm                Built with GCC 13.3.0 under MSYS environment
 vlink               Built with GCC 13.3.0 under MSYS environment; Never tested run-time
 vbcc                Built with GCC 13.3.0 under MSYS environment; Never tested run-time
+gcc6809lw           Built with GCC 13.3.0 under MSYS environment
+newlib6809lw        Built with GCC 13.3.0 under MSYS environment; Never tested run-time
 
 m6809 emulator packages listed in normal build order 
 xroar               Built with GCC 13.3.0 under MSYS environment (Newer 32 bit build packages needed to build)
