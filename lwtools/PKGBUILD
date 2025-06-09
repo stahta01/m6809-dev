@@ -20,7 +20,7 @@ source=(
   "$url/releases/${_realname}/${_realname}-$pkgver.tar.gz"
   'm6809-unknown-ar'
 )
-sha256sums=('e18c01841be3b149b79df38a67b59c51247ec40df0740b972eb724a3a3c72869'
+sha256sums=('b38a2baad15c017bb7cd8144218e7af61abccf21fd25f7b1a35e6529acd7b3dd'
             '3b373858678985016c2abccceb99819ac4532eed192d0dd225c86ea3efb9e088')
 
 prepare() {
