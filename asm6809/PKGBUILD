@@ -4,16 +4,16 @@ _realname=asm6809
 
 pkgbase=${_realname}
 pkgname="${_realname}"
-pkgver=2.16
+pkgver=2.17
 pkgrel=1
 pkgdesc="Cross Assembler for the Motorola 6809 and Hitachi 6309 microprocessors"
 arch=('i686' 'x86_64')
-makedepends=('gcc')
+makedepends=('opt-gcc')
 url="https://www.6809.org.uk/asm6809/"
 license=('GPL3')
 groups=('m6809-toolchain')
 source=("https://www.6809.org.uk/asm6809/dl/${_realname}-${pkgver}.tar.gz")
-sha256sums=('6051624597d94d69a68a08e194cfe18cbdb12f829c80d92b84f641794b8b09bb')
+sha256sums=('a6d36dd29cb3b26505c46595c1f0f1c4d7e66d3838f6347ce33ce27f4b35cffa')
 prepare() {
   cd ${_realname}-$pkgver
 
@@ -21,6 +21,13 @@ prepare() {
 }
 
 build() {
+  export PATH="/opt/usr/bin:$PATH"
+
+  echo ""
+  echo "CC [gcc] := ${CC-gcc}"
+  ${CC-gcc} --version | head -1
+  echo ""
+
   if [[ -d "build-${_realname}-${MSYSTEM}" ]]; then
     rm -rf build-${_realname}-${MSYSTEM}
   fi
