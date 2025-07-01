@@ -1,0 +1,88 @@
+# Contributor: Alexey Pavlov <alexpux@gmail.com>
+
+_install_prefix="/opt${MSYSTEM_PREFIX}"
+
+_realname=binutils
+pkgbase=opt-${_realname}
+pkgname=opt-${_realname}
+pkgver=2.44
+pkgrel=1
+pkgdesc="A set of programs to assemble and manipulate binary and object files"
+arch=('i686' 'x86_64')
+url="https://www.gnu.org/software/binutils/"
+msys2_references=(
+  "cpe: cpe:/a:gnu:binutils"
+)
+license=('GPL')
+depends=('libiconv' 'libintl' 'opt-zlib')
+checkdepends=('dejagnu' 'bc')
+makedepends=('libiconv-devel' 'gettext-devel' 'opt-zlib-devel' 'autotools' 'opt-gcc')
+options=('staticlibs' '!distcc' '!ccache')
+source=(https://ftp.gnu.org/gnu/binutils/binutils-${pkgver}.tar.xz{,.sig}
+        0050-bfd-Increase-_bfd_coff_max_nscns-to-65279.patch
+        0100-binutils-2.37-msys2.patch
+        2002-Allow-spaces-in-the-name-of-the-external-preprocesso.patch)
+sha256sums=('ce2017e059d63e67ddb9240e9d4ec49c2893605035cd60e92ad53177f4377237'
+            'SKIP'
+            '4e8ac055df61b1b5d6ae29dc87e1154737c2e87c7b244b44866702cabf1a5d18'
+            '4a457d6ec33c5040a4d6a897c32e0a1743aa5052f24a989c86609de508d53bdf'
+            '699be1b01abec4bbb5a6fc649bee4da33048899c58e28d53ee9c97ba6b741114')
+validpgpkeys=('EAF1C276A747E9ED86210CBAC3126D3B4AE55E93'
+              '3A24BC1E8FB409FA9F14371813FCEF89DD9E3C4F')
+
+prepare() {
+  cd "${srcdir}"/binutils-${pkgver}
+  patch -p1 -i "${srcdir}"/0050-bfd-Increase-_bfd_coff_max_nscns-to-65279.patch
+  patch -p1 -i "${srcdir}"/0100-binutils-2.37-msys2.patch
+
+  # https://github.com/msys2/MSYS2-packages/issues/2379
+  patch -R -p1 -i "${srcdir}"/2002-Allow-spaces-in-the-name-of-the-external-preprocesso.patch
+
+  # hack! - libiberty configure tests for header files using "$CPP $CPPFLAGS"
+  sed -i "/ac_cpp=/s/\$CPPFLAGS/\$CPPFLAGS -O2/" libiberty/configure
+
+  mkdir "${srcdir}"/binutils-${CARCH}
+}
+
+build() {
+  export MSYSTEM=CYGWIN
+
+  export PATH="/opt/usr/bin:$PATH"
+
+  echo ""
+  echo "CC [gcc] := ${CC-gcc}"
+  ${CC-gcc} --version | head -1
+  echo ""
+
+  cd "${srcdir}"/binutils-${CARCH}
+  ../binutils-${pkgver}/configure \
+    --prefix=${_install_prefix} \
+    --{build,host,target}=${CHOST} \
+    --disable-werror \
+    --disable-sim \
+    --enable-64-bit-bfd \
+    --enable-install-libiberty \
+    --without-libiconv-prefix \
+    --without-libintl-prefix \
+    --with-system-zlib
+
+  make
+}
+
+check() {
+  # cd "${srcdir}"/binutils-${CARCH}
+
+  # unset LDFLAGS as testsuite makes assumptions about which ones are active
+  # do not abort on errors - manually check log files
+  # make LDFLAGS="" -k check || true
+  return 0
+}
+
+package() {
+  cd "${srcdir}"/binutils-${CARCH}
+  make DESTDIR=${pkgdir} install
+  cp libiberty/libiberty.a ${pkgdir}${_install_prefix}/lib
+
+  # Remove files that conflicts with opt-gcc
+  rm -f ${pkgdir}${_install_prefix}/share/info/dir
+}

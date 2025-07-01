@@ -1,0 +1,274 @@
+diff -Nur binutils-2.44.orig/bfd/configure binutils-2.44/bfd/configure
+--- binutils-2.44.orig/bfd/configure	2025-06-09 13:35:13.565758500 +0200
++++ binutils-2.44/bfd/configure	2025-06-09 13:46:22.053170800 +0200
+@@ -10234,7 +10234,7 @@
+     case $host_os in
+     cygwin*)
+       # Cygwin DLLs use 'cyg' prefix rather than 'lib'
+-      soname_spec='`echo ${libname} | sed -e 's/^lib/cyg/'``echo ${release} | $SED -e 's/[.]/-/g'`${versuffix}${shared_ext}'
++      soname_spec='`echo ${libname} | sed -e 's/^lib/msys-/'``echo ${release} | $SED -e 's/[.]/-/g'`${versuffix}${shared_ext}'
+ 
+       sys_lib_search_path_spec="$sys_lib_search_path_spec /usr/lib/w32api"
+       ;;
+@@ -15700,7 +15700,7 @@
+   # More hacks to build DLLs on Windows.
+   *-*-cygwin*)
+     SHARED_LDFLAGS="-no-undefined"
+-    SHARED_LIBADD="-L`pwd`/../libiberty -liberty $SHARED_LIBADD -lcygwin -lkernel32"
++    SHARED_LIBADD="-L`pwd`/../libiberty -liberty $SHARED_LIBADD -lmsys-2.0 -lkernel32"
+   ;;
+   esac
+ 
+diff -Nur binutils-2.44.orig/bfd/configure.ac binutils-2.44/bfd/configure.ac
+--- binutils-2.44.orig/bfd/configure.ac	2025-06-09 13:35:13.581585800 +0200
++++ binutils-2.44/bfd/configure.ac	2025-06-09 13:46:26.560489500 +0200
+@@ -286,7 +286,7 @@
+   # More hacks to build DLLs on Windows.
+   *-*-cygwin*)
+     SHARED_LDFLAGS="-no-undefined"
+-    SHARED_LIBADD="-L`pwd`/../libiberty -liberty $SHARED_LIBADD -lcygwin -lkernel32"
++    SHARED_LIBADD="-L`pwd`/../libiberty -liberty $SHARED_LIBADD -lmsys-2.0 -lkernel32"
+   ;;
+   esac
+ 
+diff -Nur binutils-2.44.orig/binutils/configure binutils-2.44/binutils/configure
+--- binutils-2.44.orig/binutils/configure	2025-06-09 13:35:13.900221500 +0200
++++ binutils-2.44/binutils/configure	2025-06-09 13:36:24.856983300 +0200
+@@ -10160,7 +10160,7 @@
+     case $host_os in
+     cygwin*)
+       # Cygwin DLLs use 'cyg' prefix rather than 'lib'
+-      soname_spec='`echo ${libname} | sed -e 's/^lib/cyg/'``echo ${release} | $SED -e 's/[.]/-/g'`${versuffix}${shared_ext}'
++      soname_spec='`echo ${libname} | sed -e 's/^lib/msys-/'``echo ${release} | $SED -e 's/[.]/-/g'`${versuffix}${shared_ext}'
+ 
+       sys_lib_search_path_spec="$sys_lib_search_path_spec /usr/lib/w32api"
+       ;;
+diff -Nur binutils-2.44.orig/binutils/dllwrap.c binutils-2.44/binutils/dllwrap.c
+--- binutils-2.44.orig/binutils/dllwrap.c	2025-06-09 13:35:13.913981400 +0200
++++ binutils-2.44/binutils/dllwrap.c	2025-06-09 13:45:33.943156000 +0200
+@@ -914,7 +914,7 @@
+       switch (which_target)
+ 	{
+ 	case CYGWIN_TARGET:
+-	  name_entry = "_cygwin_dll_entry";
++	  name_entry = "_msys_dll_entry";
+ 	  break;
+ 
+ 	case MINGW_TARGET:
+@@ -980,7 +980,7 @@
+ 	{
+ 	  dyn_string_append_cstr (step_pre1, " --export-all --exclude-symbol=");
+ 	  dyn_string_append_cstr (step_pre1,
+-	  "_cygwin_dll_entry@12,DllMainCRTStartup@12,DllMain@12,DllEntryPoint@12");
++	  "_cygwin_dll_entry@12,_msys_dll_entry@12,DllMainCRTStartup@12,DllMain@12,DllEntryPoint@12");
+ 	}
+       dyn_string_append_cstr (step_pre1, " --output-def ");
+       dyn_string_append_cstr (step_pre1, def_file_name);
+diff -Nur binutils-2.44.orig/gas/configure binutils-2.44/gas/configure
+--- binutils-2.44.orig/gas/configure	2025-06-09 13:35:09.650029700 +0200
++++ binutils-2.44/gas/configure	2025-06-09 13:36:24.866861000 +0200
+@@ -9856,7 +9856,7 @@
+     case $host_os in
+     cygwin*)
+       # Cygwin DLLs use 'cyg' prefix rather than 'lib'
+-      soname_spec='`echo ${libname} | sed -e 's/^lib/cyg/'``echo ${release} | $SED -e 's/[.]/-/g'`${versuffix}${shared_ext}'
++      soname_spec='`echo ${libname} | sed -e 's/^lib/msys-/'``echo ${release} | $SED -e 's/[.]/-/g'`${versuffix}${shared_ext}'
+ 
+       sys_lib_search_path_spec="$sys_lib_search_path_spec /usr/lib/w32api"
+       ;;
+diff -Nur binutils-2.44.orig/gprof/configure binutils-2.44/gprof/configure
+--- binutils-2.44.orig/gprof/configure	2025-06-09 13:35:06.783368800 +0200
++++ binutils-2.44/gprof/configure	2025-06-09 13:36:24.866861000 +0200
+@@ -9732,7 +9732,7 @@
+     case $host_os in
+     cygwin*)
+       # Cygwin DLLs use 'cyg' prefix rather than 'lib'
+-      soname_spec='`echo ${libname} | sed -e 's/^lib/cyg/'``echo ${release} | $SED -e 's/[.]/-/g'`${versuffix}${shared_ext}'
++      soname_spec='`echo ${libname} | sed -e 's/^lib/msys-/'``echo ${release} | $SED -e 's/[.]/-/g'`${versuffix}${shared_ext}'
+ 
+       sys_lib_search_path_spec="$sys_lib_search_path_spec /usr/lib/w32api"
+       ;;
+diff -Nur binutils-2.44.orig/gprofng/configure binutils-2.44/gprofng/configure
+--- binutils-2.44.orig/gprofng/configure	2025-06-09 13:35:06.893513300 +0200
++++ binutils-2.44/gprofng/configure	2025-06-09 13:36:25.007392200 +0200
+@@ -11328,7 +11328,7 @@
+     case $host_os in
+     cygwin*)
+       # Cygwin DLLs use 'cyg' prefix rather than 'lib'
+-      soname_spec='`echo ${libname} | sed -e 's/^lib/cyg/'``echo ${release} | $SED -e 's/[.]/-/g'`${versuffix}${shared_ext}'
++      soname_spec='`echo ${libname} | sed -e 's/^lib/msys-/'``echo ${release} | $SED -e 's/[.]/-/g'`${versuffix}${shared_ext}'
+ 
+       sys_lib_search_path_spec="$sys_lib_search_path_spec /usr/lib/w32api"
+       ;;
+@@ -15005,7 +15005,7 @@
+     case $host_os in
+     cygwin*)
+       # Cygwin DLLs use 'cyg' prefix rather than 'lib'
+-      soname_spec='`echo ${libname} | sed -e 's/^lib/cyg/'``echo ${release} | $SED -e 's/[.]/-/g'`${versuffix}${shared_ext}'
++      soname_spec='`echo ${libname} | sed -e 's/^lib/msys-/'``echo ${release} | $SED -e 's/[.]/-/g'`${versuffix}${shared_ext}'
+ 
+       ;;
+     mingw* | cegcc*)
+diff -Nur binutils-2.44.orig/gprofng/libcollector/configure binutils-2.44/gprofng/libcollector/configure
+--- binutils-2.44.orig/gprofng/libcollector/configure	2025-06-09 13:35:06.893513300 +0200
++++ binutils-2.44/gprofng/libcollector/configure	2025-06-09 13:36:25.007392200 +0200
+@@ -11173,7 +11173,7 @@
+     case $host_os in
+     cygwin*)
+       # Cygwin DLLs use 'cyg' prefix rather than 'lib'
+-      soname_spec='`echo ${libname} | sed -e 's/^lib/cyg/'``echo ${release} | $SED -e 's/[.]/-/g'`${versuffix}${shared_ext}'
++      soname_spec='`echo ${libname} | sed -e 's/^lib/msys-/'``echo ${release} | $SED -e 's/[.]/-/g'`${versuffix}${shared_ext}'
+ 
+       sys_lib_search_path_spec="$sys_lib_search_path_spec /usr/lib/w32api"
+       ;;
+@@ -14850,7 +14850,7 @@
+     case $host_os in
+     cygwin*)
+       # Cygwin DLLs use 'cyg' prefix rather than 'lib'
+-      soname_spec='`echo ${libname} | sed -e 's/^lib/cyg/'``echo ${release} | $SED -e 's/[.]/-/g'`${versuffix}${shared_ext}'
++      soname_spec='`echo ${libname} | sed -e 's/^lib/msys-/'``echo ${release} | $SED -e 's/[.]/-/g'`${versuffix}${shared_ext}'
+ 
+       ;;
+     mingw* | cegcc*)
+diff -Nur binutils-2.44.orig/ld/configure binutils-2.44/ld/configure
+--- binutils-2.44.orig/ld/configure	2025-06-09 13:35:06.940525900 +0200
++++ binutils-2.44/ld/configure	2025-06-09 13:36:24.863300800 +0200
+@@ -10767,7 +10767,7 @@
+     case $host_os in
+     cygwin*)
+       # Cygwin DLLs use 'cyg' prefix rather than 'lib'
+-      soname_spec='`echo ${libname} | sed -e 's/^lib/cyg/'``echo ${release} | $SED -e 's/[.]/-/g'`${versuffix}${shared_ext}'
++      soname_spec='`echo ${libname} | sed -e 's/^lib/msys-/'``echo ${release} | $SED -e 's/[.]/-/g'`${versuffix}${shared_ext}'
+ 
+       sys_lib_search_path_spec="$sys_lib_search_path_spec /usr/lib/w32api"
+       ;;
+@@ -14444,7 +14444,7 @@
+     case $host_os in
+     cygwin*)
+       # Cygwin DLLs use 'cyg' prefix rather than 'lib'
+-      soname_spec='`echo ${libname} | sed -e 's/^lib/cyg/'``echo ${release} | $SED -e 's/[.]/-/g'`${versuffix}${shared_ext}'
++      soname_spec='`echo ${libname} | sed -e 's/^lib/msys-/'``echo ${release} | $SED -e 's/[.]/-/g'`${versuffix}${shared_ext}'
+ 
+       ;;
+     mingw* | cegcc*)
+diff -Nur binutils-2.44.orig/ld/pe-dll.c binutils-2.44/ld/pe-dll.c
+--- binutils-2.44.orig/ld/pe-dll.c	2025-06-09 13:35:06.940525900 +0200
++++ binutils-2.44/ld/pe-dll.c	2025-06-09 13:41:54.892543600 +0200
+@@ -213,6 +213,7 @@
+   { STRING_COMMA_LEN ("_NULL_IMPORT_DESCRIPTOR") },
+   /* Entry point symbols, and entry hooks.  */
+   { STRING_COMMA_LEN ("cygwin_crt0") },
++  { STRING_COMMA_LEN ("msys_crt0") },
+ #ifdef pe_use_plus
+   { STRING_COMMA_LEN ("DllMain") },
+   { STRING_COMMA_LEN ("DllEntryPoint") },
+@@ -220,6 +221,9 @@
+   { STRING_COMMA_LEN ("_cygwin_dll_entry") },
+   { STRING_COMMA_LEN ("_cygwin_crt0_common") },
+   { STRING_COMMA_LEN ("_cygwin_noncygwin_dll_entry") },
++  { STRING_COMMA_LEN ("_msys_dll_entry") },
++  { STRING_COMMA_LEN ("_msys_crt0_common") },
++  { STRING_COMMA_LEN ("_msys_nonmsys_dll_entry") },
+ #else
+   { STRING_COMMA_LEN ("DllMain@12") },
+   { STRING_COMMA_LEN ("DllEntryPoint@0") },
+@@ -228,6 +232,10 @@
+   { STRING_COMMA_LEN ("_cygwin_crt0_common@8") },
+   { STRING_COMMA_LEN ("_cygwin_noncygwin_dll_entry@12") },
+   { STRING_COMMA_LEN ("cygwin_attach_dll") },
++  { STRING_COMMA_LEN ("_msys_dll_entry@12") },
++  { STRING_COMMA_LEN ("_msys_crt0_common@8") },
++  { STRING_COMMA_LEN ("_msys_nonmsys_dll_entry@12") },
++  { STRING_COMMA_LEN ("msys_attach_dll") },
+ #endif
+   { STRING_COMMA_LEN ("cygwin_premain0") },
+   { STRING_COMMA_LEN ("cygwin_premain1") },
+@@ -369,6 +377,7 @@
+ {
+   { STRING_COMMA_LEN ("libcegcc") },
+   { STRING_COMMA_LEN ("libcygwin") },
++  { STRING_COMMA_LEN ("libmsys-2.0") },
+   { STRING_COMMA_LEN ("libgcc") },
+   { STRING_COMMA_LEN ("libgcc_s") },
+   { STRING_COMMA_LEN ("libstdc++") },
+diff -Nur binutils-2.44.orig/libctf/configure binutils-2.44/libctf/configure
+--- binutils-2.44.orig/libctf/configure	2025-06-09 13:35:06.614011200 +0200
++++ binutils-2.44/libctf/configure	2025-06-09 13:40:37.911010000 +0200
+@@ -12675,7 +12675,7 @@
+     case $host_os in
+     cygwin*)
+       # Cygwin DLLs use 'cyg' prefix rather than 'lib'
+-      soname_spec='`echo ${libname} | sed -e 's/^lib/cyg/'``echo ${release} | $SED -e 's/[.]/-/g'`${versuffix}${shared_ext}'
++      soname_spec='`echo ${libname} | sed -e 's/^lib/msys-/'``echo ${release} | $SED -e 's/[.]/-/g'`${versuffix}${shared_ext}'
+ 
+       sys_lib_search_path_spec="$sys_lib_search_path_spec /usr/lib/w32api"
+       ;;
+@@ -16884,7 +16884,7 @@
+   # More hacks to build DLLs on Windows.
+     *-*-cygwin*)
+       SHARED_LDFLAGS="-no-undefined"
+-      CTF_LIBADD="$CTF_LIBADD -lcygwin"
++      CTF_LIBADD="$CTF_LIBADD -lmsys-2.0"
+       ;;
+   esac
+ fi
+diff -Nur binutils-2.44.orig/libctf/configure.ac binutils-2.44/libctf/configure.ac
+--- binutils-2.44.orig/libctf/configure.ac	2025-06-09 13:35:06.594992200 +0200
++++ binutils-2.44/libctf/configure.ac	2025-06-09 13:40:42.132217100 +0200
+@@ -227,7 +227,7 @@
+   # More hacks to build DLLs on Windows.
+     *-*-cygwin*)
+       SHARED_LDFLAGS="-no-undefined"
+-      CTF_LIBADD="$CTF_LIBADD -lcygwin"
++      CTF_LIBADD="$CTF_LIBADD -lmsys-2.0"
+       ;;
+   esac
+ fi
+diff -Nur binutils-2.44.orig/libsframe/configure binutils-2.44/libsframe/configure
+--- binutils-2.44.orig/libsframe/configure	2025-06-09 13:35:06.485091300 +0200
++++ binutils-2.44/libsframe/configure	2025-06-09 13:36:24.856983300 +0200
+@@ -10642,7 +10642,7 @@
+     case $host_os in
+     cygwin*)
+       # Cygwin DLLs use 'cyg' prefix rather than 'lib'
+-      soname_spec='`echo ${libname} | sed -e 's/^lib/cyg/'``echo ${release} | $SED -e 's/[.]/-/g'`${versuffix}${shared_ext}'
++      soname_spec='`echo ${libname} | sed -e 's/^lib/msys-/'``echo ${release} | $SED -e 's/[.]/-/g'`${versuffix}${shared_ext}'
+ 
+       sys_lib_search_path_spec="$sys_lib_search_path_spec /usr/lib/w32api"
+       ;;
+diff -Nur binutils-2.44.orig/libtool.m4 binutils-2.44/libtool.m4
+--- binutils-2.44.orig/libtool.m4	2025-06-09 13:35:06.485091300 +0200
++++ binutils-2.44/libtool.m4	2025-06-09 13:36:25.574875100 +0200
+@@ -2263,7 +2263,7 @@
+     case $host_os in
+     cygwin*)
+       # Cygwin DLLs use 'cyg' prefix rather than 'lib'
+-      soname_spec='`echo ${libname} | sed -e 's/^lib/cyg/'``echo ${release} | $SED -e 's/[[.]]/-/g'`${versuffix}${shared_ext}'
++      soname_spec='`echo ${libname} | sed -e 's/^lib/msys-/'``echo ${release} | $SED -e 's/[[.]]/-/g'`${versuffix}${shared_ext}'
+ m4_if([$1], [],[
+       sys_lib_search_path_spec="$sys_lib_search_path_spec /usr/lib/w32api"])
+       ;;
+diff -Nur binutils-2.44.orig/opcodes/configure binutils-2.44/opcodes/configure
+--- binutils-2.44.orig/opcodes/configure	2025-06-09 13:35:06.720535500 +0200
++++ binutils-2.44/opcodes/configure	2025-06-09 13:36:24.864414100 +0200
+@@ -10169,7 +10169,7 @@
+     case $host_os in
+     cygwin*)
+       # Cygwin DLLs use 'cyg' prefix rather than 'lib'
+-      soname_spec='`echo ${libname} | sed -e 's/^lib/cyg/'``echo ${release} | $SED -e 's/[.]/-/g'`${versuffix}${shared_ext}'
++      soname_spec='`echo ${libname} | sed -e 's/^lib/msys-/'``echo ${release} | $SED -e 's/[.]/-/g'`${versuffix}${shared_ext}'
+ 
+       sys_lib_search_path_spec="$sys_lib_search_path_spec /usr/lib/w32api"
+       ;;
+diff -Nur binutils-2.44.orig/zlib/configure binutils-2.44/zlib/configure
+--- binutils-2.44.orig/zlib/configure	2025-06-09 13:35:06.500766500 +0200
++++ binutils-2.44/zlib/configure	2025-06-09 13:36:24.856983300 +0200
+@@ -9806,7 +9806,7 @@
+     case $host_os in
+     cygwin*)
+       # Cygwin DLLs use 'cyg' prefix rather than 'lib'
+-      soname_spec='`echo ${libname} | sed -e 's/^lib/cyg/'``echo ${release} | $SED -e 's/[.]/-/g'`${versuffix}${shared_ext}'
++      soname_spec='`echo ${libname} | sed -e 's/^lib/msys-/'``echo ${release} | $SED -e 's/[.]/-/g'`${versuffix}${shared_ext}'
+ 
+       sys_lib_search_path_spec="$sys_lib_search_path_spec /usr/lib/w32api"
+       ;;
