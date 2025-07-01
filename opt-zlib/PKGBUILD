@@ -1,0 +1,88 @@
+# Contributor: Alexey Pavlov <Alexpux@gmail.com>
+
+_install_prefix="/opt${MSYSTEM_PREFIX}"
+
+_realname=zlib
+pkgbase=opt-${_realname}
+pkgname=('opt-zlib' 'opt-zlib-devel')
+pkgver=1.3.1
+pkgrel=1
+pkgdesc='Compression library implementing the deflate compression method found in gzip and PKZIP'
+arch=('i686' 'x86_64')
+groups=('libraries')
+license=('custom')
+url="https://www.zlib.net/"
+msys2_repository_url="https://github.com/madler/zlib"
+msys2_references=(
+  "cpe: cpe:/a:gnu:zlib"
+  "cpe: cpe:/a:zlib:zlib"
+)
+makedepends=('gcc' 'make' 'autotools')
+source=("https://github.com/madler/zlib/releases/download/v${pkgver}/zlib-${pkgver}.tar.xz"{,.asc}
+        zlib-1.2.13-configure.patch
+        zlib-1.2.13-gzopen_w.patch
+        zlib-1.2.13-minizip-fixuncrypt.patch)
+sha256sums=('38ef96b8dfe510d42707d9c781877914792541133e1870841463bfa73f883e32'
+            'SKIP'
+            '43726a2170b298059391c0faec0c893aa7ca59b1201afd9f807c49d39ce25527'
+            '3c5186940741cf380ab598362c564c792965e9d25906ef75087e9e7389becbc5'
+            '3022d46bd933076cff754d8247eb12125cf72e4dbecdb8e90805cbe5393bd0b7')
+validpgpkeys=('5ED46A6721D365587791E2AA783FCD8E58BCAFBA')
+
+prepare() {
+  cd ${srcdir}/${_realname}-${pkgver}
+
+  patch -p2 -i ${srcdir}/zlib-1.2.13-configure.patch
+  patch -p2 -i ${srcdir}/zlib-1.2.13-gzopen_w.patch
+  patch -p2 -i ${srcdir}/zlib-1.2.13-minizip-fixuncrypt.patch
+}
+
+build() {
+  cd ${srcdir}/${_realname}-${pkgver}
+
+  # configure doesn't really work.. but leave it here in case things improve
+  export MSYSTEM=CYGWIN
+  ./configure --prefix=${_install_prefix}
+
+  # Instead we use some "other" makefile
+  make -j1 -f win32/Makefile.gcc \
+    CFLAGS="${CFLAGS}" \
+    SHAREDLIB=msys-z.dll
+
+  make -f win32/Makefile.gcc install \
+    DESTDIR="${srcdir}/dest" \
+    SHAREDLIB=msys-z.dll \
+    BINARY_PATH=${_install_prefix}/bin \
+    INCLUDE_PATH=${_install_prefix}/include \
+    LIBRARY_PATH=${_install_prefix}/lib \
+    prefix=${_install_prefix} \
+    SHARED_MODE=1
+
+  install -D zlib.3 "${srcdir}/dest${_install_prefix}/share/man/man3/zlib.3"
+}
+
+check() {
+  cd ${srcdir}/${_realname}-${pkgver}
+  make test
+}
+
+package_opt-zlib() {
+  depends=('gcc-libs')
+
+  mkdir -p ${pkgdir}/${_install_prefix}
+  cp -rf ${srcdir}/dest${_install_prefix}/bin ${pkgdir}/${_install_prefix}/
+  cp -rf ${srcdir}/dest${_install_prefix}/share ${pkgdir}/${_install_prefix}/
+  install -D -m644 ${srcdir}/${_realname}-${pkgver}/LICENSE ${pkgdir}/${_install_prefix}/share/licenses/zlib/LICENSE
+}
+
+package_opt-zlib-devel() {
+  pkgdesc="zlib headers and libraries"
+  groups=('development')
+  options=('staticlibs')  # needed by binutils testsuite
+  depends=("zlib=${pkgver}")
+
+  mkdir -p ${pkgdir}/${_install_prefix}
+  cp -rf ${srcdir}/dest${_install_prefix}/include ${pkgdir}/${_install_prefix}/
+  cp -rf ${srcdir}/dest${_install_prefix}/lib ${pkgdir}/${_install_prefix}/
+  sed -e "s| -L\${sharedlibdir}||g" -i ${pkgdir}/${_install_prefix}/lib/pkgconfig/zlib.pc
+}
