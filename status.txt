@@ -23,17 +23,22 @@ xroar               builds for MSYS, MINGW32, MINGW64, and UCRT64
 
 GCC        with posix threads needed to build cmoc
 m6809 toolchain packages listed in normal build order
-asm6809             Built with GCC 13.3.0 under MSYS environment
-dasmfw              Built with GCC 13.3.0 under MSYS environment
-lwtools             Built with GCC 13.3.0 under MSYS environment
-cmoc                Built with GCC 13.3.0 under MSYS environment
-cmoc-os9            Built with GCC 13.3.0 under MSYS environment; after floating point code was disabled
-toolshed            Built with GCC 13.3.0 under MSYS environment
-vasm                Built with GCC 13.3.0 under MSYS environment
-vlink               Built with GCC 13.3.0 under MSYS environment; Never tested run-time
-vbcc                Built with GCC 13.3.0 under MSYS environment; Never tested run-time
-gcc6809lw           Built with GCC 13.3.0 under MSYS environment
-newlib6809lw        Built with GCC 13.3.0 under MSYS environment; Never tested run-time
+dasmfw              Built with GCC 15.1.0 under MSYS environment
+lwtools             Built with GCC 15.1.0 under MSYS environment
+cmoc                Built with GCC 15.1.0 under MSYS environment
+cmoc-os9            Built with GCC 15.1.0 under MSYS environment
+toolshed            Built with GCC 15.1.0 under MSYS environment
+vasm                Built with GCC 15.1.0 under MSYS environment
+vlink               Built with GCC 15.1.0 under MSYS environment; Never tested run-time
+vbcc                Built with GCC 15.1.0 under MSYS environment; Never tested run-time
+
+packages that can be built using opt-gcc13 under 64 bit; GCC 15.1.0 version give build errors
+asm6809             Built with GCC 13.3/13.4+ under MSYS environment
+
+packages needing msys2 gcc13 under 64 bit to build; GCC 15.1.0 version give build errors
+ONLY add GPL packages to this sub-list; the GCC used is static libgcc (GPL Lic. only)
+gcc6809lw           Built with GCC 13.3/13.4+ under MSYS environment
+newlib6809lw        Built with GCC 13.3/13.4+ under MSYS environment; Never tested run-time
 
 m6809 emulator packages listed in normal build order 
 xroar               Built with GCC 13.3.0 under MSYS environment (Newer 32 bit build packages needed to build)
@@ -42,6 +47,6 @@ mame-tools          Built with GCC 15.1.0
 mame-coco3          Built with GCC 15.1.0 under MINGW64 and UCRT64 environment(s)
 
 other packages listed in normal build order (not normally built)
-as6809              Built with GCC 13.3.0 under MSYS environment
+as6809              Built with GCC 13.4.0 under MSYS environment
 gcc6809as           Built with GCC 13.3.0 under MSYS environment
 newlib6809as        Built with GCC 13.3.0 under MSYS environment
