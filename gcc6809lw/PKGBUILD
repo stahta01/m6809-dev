@@ -28,14 +28,14 @@ else
 fi
 pkgver=4.3.6
 _sourcedir=${_foldername}-${pkgver}
-pkgrel=4
+pkgrel=5
 options=('!emptydirs') # '!strip' 'debug')
 arch=('i686' 'x86_64')
 url="https://github.com/stahta01/gcc4.3"
 license=('GPL3')
 groups=("${_target}-toolchain")
 depends=(lwtools)
-_makedepends=(
+_makedepends=( 'opt-gcc'
   'bison' 'diffutils' 'gettext' 'gettext-devel' 
   'intltool' 'make' 'patch' 'perl' 'tar')
 if [[ "${_build_boot_gcc}" == "yes" ]]; then
@@ -162,6 +162,13 @@ prepare() {
 }
 
 build() {
+  export PATH="/opt/usr/bin:$PATH"
+
+  echo ""
+  echo "CC [gcc] := ${CC-gcc}"
+  ${CC-gcc} --version | head -1
+  echo ""
+
   if [[ -d "build-gcc-${CARCH}" ]]; then
     rm -rf build-gcc-${CARCH}
   fi
