@@ -28,7 +28,7 @@ _enable_jit=no
 # build options not normally changed
 #_threads="posix"            # Use posix for production
 _enable_libquadmath=no      # Use no for production
-_enable_libgomp=no         # Use yes for production; gives undefined reference to `_pei386_runtime_relocator'
+_enable_libgomp=no         # Use yes for production; gives undefined reference to `_pei386_runtime_relocator' maybe in msys2-runtime-devel
 _enable_graphite=yes        # Use yes for production
 _enable_static_libgcc=no    # Use no for production
 _enable_lto=yes             # Use yes for production
