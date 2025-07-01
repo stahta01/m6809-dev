@@ -28,7 +28,7 @@ else
 fi
 pkgver=4.3.6
 _sourcedir=${_foldername}-${pkgver}
-pkgrel=4
+pkgrel=5
 options=('!emptydirs') # '!strip' 'debug')
 arch=('i686' 'x86_64')
 url="https://github.com/stahta01/gcc4.3"
@@ -38,6 +38,11 @@ depends=(lwtools)
 _makedepends=(
   'bison' 'diffutils' 'gettext' 'gettext-devel' 
   'intltool' 'make' 'patch' 'perl' 'tar')
+if [[ $MSYSTEM_CARCH == "i686" ]] ; then
+  _makedepends+=('gcc')
+else
+  _makedepends+=('gcc13')
+fi
 if [[ "${_build_boot_gcc}" == "yes" ]]; then
   makedepends=(${_makedepends[@]})
   optdepends=("${_target}-newlib${_machine_suffix}${_realname_suffix}: Standard C library optimized for embedded systems")
@@ -162,6 +167,11 @@ prepare() {
 }
 
 build() {
+  echo ""
+  echo "CC [gcc] := ${CC-gcc}"
+  ${CC-gcc} --version | head -1
+  echo ""
+
   if [[ -d "build-gcc-${CARCH}" ]]; then
     rm -rf build-gcc-${CARCH}
   fi
