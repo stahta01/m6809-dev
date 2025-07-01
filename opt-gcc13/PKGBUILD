@@ -1,0 +1,456 @@
+####
+# Forked from https://github.com/msys2/MSYS2-packages gcc package
+# with patches from https://www.cygwin.com/ gcc packages
+#
+# Contributor: Alexey Pavlov <alexpux@gmail.com>
+# Contributor: Martell Malone <martellmalone@gmail.com>
+# Contributor: Ray Donnelly <mingw.android@gmail.com>
+# Contributor: Tim Stahlhut <stahta01@gmail.com>
+#
+##
+# toolchain build order: win32-api-headers->msys2-runtime->binutils->gcc->binutils->msys2-runtime
+
+# NOTE: gdb must be rebuilt with each new gcc version.
+# NOTE: libtool must be rebuilt with each new gcc version.
+
+_install_prefix="/opt${MSYSTEM_PREFIX}"
+
+### Major build options
+_enable_bootstrap=no       # Use yes for production
+options=('staticlibs' '!emptydirs' '!strip' '!debug')
+#options=('!emptydirs') # '!strip' 'debug')
+### Language build options
+_enable_ada=no
+_enable_fortran=no
+_enable_objc=no
+_enable_jit=no
+# build options not normally changed
+#_threads="posix"            # Use posix for production
+_enable_libquadmath=no      # Use no for production
+_enable_libgomp=yes         # Use yes for production
+_enable_graphite=yes        # Use yes for production
+_enable_static_libgcc=yes   # Use yes for production until opt install is written
+_enable_lto=yes             # Use yes for production
+_enable_system_zlib=no      # Use no for production until opt zlib package is written
+# =========================================== #
+if [[ "$_enable_fortran" == "yes" && "$_enable_libquadmath" != "yes" ]]; then
+  warning "when building FORTRAN; libquadmath is enabled"
+  _enable_libquadmath=yes
+fi
+if [[ "$_enable_static_libgcc" == "yes" && "$_enable_lto" != "no" ]]; then
+  warning "when building static GCC; LTO is disabled"
+  _enable_lto=no
+fi
+if [[ "$_enable_static_libgcc" == "yes" && "$_enable_libgomp" != "no" ]]; then
+  warning "when building static GCC; libgomp is disabled"
+  _enable_libgomp=no
+fi
+# =========================================== #
+
+_realname=gcc
+_sourcedir=${_realname}-git
+_basever=13 # git branch uses this
+pkgbase=opt-${_realname}${_basever}
+pkgname=('opt-gcc')
+if [[ "$_enable_static_libgcc" != "yes" ]]; then
+  pkgname+=('opt-gcc-libs')
+fi
+pkgver=13.4.1+d20250630.r0.c0.g5a615fb45c04
+pkgrel=1
+pkgdesc="The GNU Compiler Collection"
+arch=('i686' 'x86_64')
+license=('spdx:GPL-3.0-or-later AND GPL-2.0-or-later AND LGPL-2.1-or-later AND LGPL-3.0-or-later AND GCC-exception-3.1 AND GFDL-1.3-or-later')
+url="https://gcc.gnu.org/"
+msys2_references=(
+  "cpe: cpe:/a:gnu:gcc"
+)
+makedepends=('gcc' 'binutils' 'autotools' 'git'
+             'windows-default-manifest' 'gperf')
+MPFR_VERSION=4.1.0
+GMP_VERSION=6.2.1
+MPC_VERSION=1.2.1
+ISL_VERSION=0.24
+noextract=("mpfr-${MPFR_VERSION}.tar.bz2"
+           "gmp-${GMP_VERSION}.tar.bz2"
+           "mpc-${MPC_VERSION}.tar.gz"
+           "isl-${ISL_VERSION}.tar.bz2")
+source=(ftp://gcc.gnu.org/pub/gcc/infrastructure/mpfr-${MPFR_VERSION}.tar.bz2
+        ftp://gcc.gnu.org/pub/gcc/infrastructure/gmp-${GMP_VERSION}.tar.bz2
+        ftp://gcc.gnu.org/pub/gcc/infrastructure/mpc-${MPC_VERSION}.tar.gz
+        ftp://gcc.gnu.org/pub/gcc/infrastructure/isl-${ISL_VERSION}.tar.bz2
+        ${_sourcedir}::"git+https://github.com/gcc-mirror/gcc.git#branch=releases/gcc-${_basever}"
+        0001-Cygwin-use-SysV-ABI-on-x86_64.patch
+        0002-Cygwin-add-dummy-pthread-tsaware-and-large-address-a.patch
+        0003-Cygwin-handle-dllimport-properly-in-medium-model-V2.patch
+        0004-Cygwin-MinGW-skip-test.patch
+        0005-Cygwin-define-RTS_CONTROL_ENABLE-and-DTR_CONTROL_ENA.patch
+        0006-Cygwin-fix-some-implicit-declaration-warnings-and-re.patch
+        0007-Cygwin-__cxa-atexit.patch
+        0008-Cygwin-libgomp-soname.patch
+        0009-Cygwin-g-time.patch
+        0010-Cygwin-newlib-ftm.patch
+        0011-Cygwin-define-STD_UNIX.patch
+        0101-Cygwin-enable-libgccjit-not-just-for-MingW.patch
+        0102-Cygwin-testsuite-fixes-for-libgccjit.patch
+        0950-11.2.0-configure-msys2.patch
+        0951-11.2.0-msys2-spec.patch
+        0953-11.2.0-testsuite-msys2.patch)
+sha256sums=('feced2d430dd5a97805fa289fed3fc8ff2b094c02d05287fd6133e7f1f0ec926'
+            'eae9326beb4158c386e39a356818031bd28f3124cf915f8c5b1dc4c7a36b4d7c'
+            '17503d2c395dfcf106b622dc142683c1199431d095367c6aacba6eec30340459'
+            'fcf78dd9656c10eb8cf9fbd5f59a0b6b01386205fe1934b3b287a0a1898145c0'
+            'SKIP'
+            'bc788aa466a83184d285cc2f6c1ffc40c6ed416dd08c6999015262a53f1ab1b5'
+            '704acfaeb11d24d3fe5aab34bc883c184ca93aff03d752016c9a50fdd82c5655'
+            'c5676fd62d5f7f69be26062b95d42ef47f28151af83b83efa3998ecd8e939e19'
+            '03ecf29419119286ebcef35864f9bd26d3bf3eaa355945856953204ed727e173'
+            '06214859ae4030ce30bb68aa35aa4a9ac92d1e79e34133089dcbfeb7cc8066e8'
+            'a843c038042811265d6ce5917b0c76b709e2591822e5cab53a32b7e9c806da29'
+            'e27f82af1eb7a4aad955ec36d5fd7d9a4c24575845bcf718372df9bc2b099eb6'
+            'de5692673731f90b888bf301a547481ab8e3cc0029713b6fd5abaabd860250f0'
+            'a40e7025507130a2a5d2eb2eea8ba4b053398c307cd55b3c9421a8507bd315ed'
+            '2658eb376f7829179963978b69a048ed105a41508adc55d0fc0d607c14181926'
+            '83b6aea4a462ae80121fd68d42c6234d02e20865132197a10575bbf95fd33b7e'
+            '9813ca6ab518d744dc36ab2e808804fcfedf1a5d7faa876e1a6fb06afb7a793a'
+            '3707b0aab99b203cbd9e513be46c7d4600de06e6c8344160b7fb1779061d08da'
+            '8a29a40ee426ee786da97656c35d2e9c17838b12c1b750cecf857760da273381'
+            'eeb167fe5f12d122038cbc5d7f79f093ab40ace1f0973dd109aad2e1168cb8a8'
+            'adb8baaa35dcfbea9ab60694262d0958e090495146d50df1a0844a977832aef9')
+
+# Helper macros to help make tasks easier #
+apply_patch_with_msg() {
+  for _patch in "$@"
+  do
+    if patch --dry-run -Rbp1 -i "${srcdir}/${_patch}" > /dev/null 2>&1 ; then
+      msg2 "Skipping ${_patch} because it likely was already applied"
+    else
+      msg2 "Applying ${_patch}"
+      patch -Nbp1 -i "${srcdir}/${_patch}"
+    fi
+  done
+}
+
+del_file_exists() {
+  for _fname in "$@"
+  do
+    if [ -f $_fname ] || [ -d $_fname ]; then
+      rm -rf $_fname
+    fi
+  done
+}
+_extract_to_gcc_folder() {
+    local tarfile="$1"
+    local subfolder="$(echo "$tarfile" | sed 's/-.*$//')"
+    if [ ! -d  "$_sourcedir/$subfolder" ]; then
+        echo "Extracting ${tarfile} to $_sourcedir/$subfolder"
+        mkdir -p "$_sourcedir/$subfolder"
+        tar -x --strip-components=1 -f "$tarfile" -C "$_sourcedir/$subfolder"
+    else
+        echo "Folder $_sourcedir/$subfolder already exists"
+    fi
+}
+# =========================================== #
+
+pkgver() {
+  cd ${srcdir}/${_sourcedir}
+  local _gcc_version=$(head -n 34 gcc/BASE-VER | sed -e 's/.* //' | tr -d '"\n')
+  local _gcc_date=$(head -n 34 gcc/DATESTAMP | sed -e 's/.* //' | tr -d '"\n')
+  if [[ -n "${_git_base_commit}" ]]; then
+    printf "%s+d%s.r%s.c%s.g%s" "$_gcc_version" "$_gcc_date" \
+      $(git rev-list --count $(git log -1 --format=%H -- gcc/DATESTAMP)..${_git_base_commit}) \
+      $(git rev-list --count ${_git_base_commit}..HEAD) \
+      $(git rev-parse --short=12 ${_git_base_commit})
+  else
+    printf "%s" ${pkgver}
+  fi
+}
+
+prepare() {
+  cd ${srcdir}/${_sourcedir}
+
+  _git_base_commit=$(git rev-parse HEAD)
+  #GIT_AM="git am --committer-date-is-author-date"
+
+  msg "Before git restore"
+  time git restore .
+  msg "Before git clean"
+  time git clean -fdx
+
+  cd ${srcdir}
+  _extract_to_gcc_folder            gmp-${GMP_VERSION}.tar.bz2
+  _extract_to_gcc_folder            mpfr-${MPFR_VERSION}.tar.bz2
+  _extract_to_gcc_folder            mpc-${MPC_VERSION}.tar.gz
+  if [[ "$_enable_graphite" == "yes" ]]; then
+    _extract_to_gcc_folder          isl-${ISL_VERSION}.tar.bz2
+  else
+    rm -fr ${srcdir}/${_sourcedir}/isl
+  fi
+  cd ${srcdir}/${_sourcedir}
+
+  # Remove files created by patches
+  rm -f config/mt-cygwin \
+        gcc/ada/system-cygwin-x86_64.ads \
+        libgomp/config/cygwin/plugin-suffix.h \
+        libgcc/config/i386/t-msys \
+        gcc/config/i386/msys.h \
+        gcc/config/i386/msys-w64.h \
+        gcc/config/i386/t-msys-w64 > /dev/null 2>&1 | true
+
+  # Cygwin patches
+  apply_patch_with_msg \
+    0001-Cygwin-use-SysV-ABI-on-x86_64.patch \
+    0002-Cygwin-add-dummy-pthread-tsaware-and-large-address-a.patch \
+    0003-Cygwin-handle-dllimport-properly-in-medium-model-V2.patch \
+    0004-Cygwin-MinGW-skip-test.patch \
+    0005-Cygwin-define-RTS_CONTROL_ENABLE-and-DTR_CONTROL_ENA.patch \
+    0006-Cygwin-fix-some-implicit-declaration-warnings-and-re.patch \
+    0007-Cygwin-__cxa-atexit.patch \
+    0008-Cygwin-libgomp-soname.patch \
+    0009-Cygwin-g-time.patch \
+    0010-Cygwin-newlib-ftm.patch \
+    0011-Cygwin-define-STD_UNIX.patch \
+    0101-Cygwin-enable-libgccjit-not-just-for-MingW.patch \
+    0102-Cygwin-testsuite-fixes-for-libgccjit.patch
+
+  # MSYS2 Patches
+  apply_patch_with_msg \
+    0950-11.2.0-configure-msys2.patch \
+    0951-11.2.0-msys2-spec.patch \
+    0953-11.2.0-testsuite-msys2.patch
+
+  # Do not run fixincludes
+  #sed -i 's@\./fixinc\.sh@-c true@' gcc/Makefile.in
+  # hack! - some configure tests for header files using "$CPP $CPPFLAGS"
+  sed -i "/ac_cpp=/s/\$CPPFLAGS/\$CPPFLAGS -O2/" {libiberty,gcc}/configure
+}
+
+build() {
+  [[ -d ${srcdir}/build-${MSYSTEM_CARCH} ]] && rm -rf ${srcdir}/build-${MSYSTEM_CARCH}
+  mkdir -p ${srcdir}/build-${MSYSTEM_CARCH} && cd ${srcdir}/build-${MSYSTEM_CARCH}
+
+  declare -a extra_config
+  if check_option "debug" "n"; then
+    extra_config+=("--disable-libstdcxx-debug")
+  else
+    extra_config+=("--enable-libstdcxx-debug")
+  fi
+
+  case ${CARCH} in
+    i686)
+      _arch=pentium4
+      _arch_conf="--disable-sjlj-exceptions"
+    ;;
+    x86_64)
+      _arch=nocona
+      _arch_conf=
+    ;;
+  esac
+
+  # libgcc is built with -g0, but INHIBIT_LIBC_CFLAGS can
+  # be used to undo that.
+  if check_option "debug" "y"; then
+    export INHIBIT_LIBC_CFLAGS="-g2"
+  fi
+
+  # using -pipe causes spurious test-suite failures
+  # https://gcc.gnu.org/bugzilla/show_bug.cgi?id=48565
+  CFLAGS=${CFLAGS/-pipe/}
+  CXXFLAGS=${CXXFLAGS/-pipe/}
+
+  export lt_cv_deplibs_check_method='pass_all'
+
+  local _languages="c,c++"
+  if [ "$_enable_lto" == "yes" ]; then
+    _languages+=",lto"
+  fi
+  if [ "$_enable_fortran" == "yes" ]; then
+    _languages+=",fortran"
+  fi
+  if [ "$_enable_ada" == "yes" ]; then
+    _languages+=",ada"
+  fi
+  if [ "$_enable_objc" == "yes" ]; then
+    _languages+=",objc,obj-c++"
+  fi
+  if [ "$_enable_jit" == "yes" ]; then
+    _languages+=",jit"
+  fi
+
+  if [[ "$_enable_static_libgcc" == "yes" ]]; then
+    extra_config+=('--disable-shared')
+    extra_config+=('--disable-shared-libgcc')
+    extra_config+=('--disable-lto')
+  else
+    extra_config+=('--enable-shared')
+    extra_config+=('--enable-shared-libgcc')
+  fi
+  if [[ "$_enable_libquadmath" != "yes" ]]; then
+    extra_config+=('--disable-libquadmath')
+  else
+    extra_config+=('--enable-libquadmath-support')
+  fi
+  #
+  if [[ "$_enable_libgomp" == "yes" ]]; then
+    extra_config+=("--enable-libgomp")
+  elif [[ "$_enable_libgomp" == "no" ]]; then
+    extra_config+=("--disable-libgomp")
+  fi
+  #
+  if [[ "$_enable_bootstrap" == "yes" ]]; then
+    extra_config+=("--enable-bootstrap")
+  elif [[ "$_enable_bootstrap" == "no" ]]; then
+    extra_config+=("--disable-bootstrap")
+  fi
+  #
+  if [ "$_enable_graphite" == "yes" ]; then
+    extra_config+=('--disable-isl-version-check')
+    extra_config+=('--enable-graphite')
+  else
+    extra_config+=('--without-isl')
+    extra_config+=('--disable-graphite')
+  fi
+  #
+  if [ "$_enable_system_zlib" == "yes" ]; then
+    extra_config+=('--with-system-zlib')
+  else
+    extra_config+=('--without-system-zlib')
+  fi
+
+  echo ""
+  echo "CC [gcc] := ${CC-gcc}"
+  ${CC-gcc} --version | head -1
+  ${CC-gcc} --help | tail -1
+  pacman -Q msys2-w32api-headers
+  pacman -Q msys2-w32api-runtime
+  echo ""
+
+  ${srcdir}/${_sourcedir}/configure \
+    --build=${CHOST} \
+    --prefix=${_install_prefix} \
+    --libexecdir=${_install_prefix}/lib \
+    --enable-static \
+    --enable-version-specific-runtime-libs \
+    --with-arch=${_arch} \
+    --with-tune=generic \
+    --disable-multilib \
+    ${_arch_conf} \
+    --enable-__cxa_atexit \
+    --with-dwarf2 \
+    --enable-languages=${_languages} \
+    --enable-threads=posix \
+    --enable-libatomic \
+    --disable-libitm \
+    --disable-libssp \
+    --disable-win32-registry \
+    --disable-symvers \
+    --with-gnu-ld \
+    --with-gnu-as \
+    --enable-checking=release \
+    --without-libiconv-prefix \
+    --without-libintl-prefix \
+    --with-system-zlib \
+    --enable-linker-build-id \
+    --enable-libstdcxx-filesystem-ts \
+    --with-pkgversion="Rev${pkgrel} ${MSYSTEM} ${MSYSTEM_CARCH}, Built by m6809-dev project" \
+    --with-bugurl="https://github.com/stahta01/m6809-dev/issues" \
+    "${extra_config[@]}"
+
+  make
+
+  # make documentation
+  #cd $CHOST/libstdc++-v3
+  #make doc-man-doxygen
+}
+
+#check() {
+#  cd ${srcdir}/build-${MSYSTEM_CARCH}
+
+#  # do not abort on error as some are "expected"
+#  make -k check || true
+#  ${srcdir}/${_sourcedir}/contrib/test_summary
+#}
+
+package_opt-gcc-libs()
+{
+  pkgdesc="Runtime libraries shipped by GCC"
+
+  cd ${srcdir}/build-${MSYSTEM_CARCH}
+  make -j1 -C $CHOST/libgcc DESTDIR=${pkgdir} install-shared
+  if [[ "$_enable_libgomp" == "yes" ]]; then
+    make -j1 -C $CHOST/libgomp DESTDIR=${pkgdir} install-toolexeclibLTLIBRARIES
+  fi
+  make -j1 -C $CHOST/libstdc++-v3/src DESTDIR=${pkgdir} install-toolexeclibLTLIBRARIES
+
+  make -j1 -C $CHOST/libstdc++-v3/po DESTDIR=${pkgdir} install
+  if [[ "$_enable_libgomp" == "yes" ]]; then
+    make -j1 -C $CHOST/libgomp DESTDIR=${pkgdir} install-info
+  fi
+  if [[ "$_enable_libquadmath" == "yes" ]]; then
+    make -j1 -C $CHOST/libquadmath DESTDIR=${pkgdir} install-info
+  fi
+
+  if [[ "$_enable_libquadmath" == "yes" ]]; then
+    make -j1 DESTDIR=${pkgdir} install-target-libquadmath
+  fi
+  #make -j1 DESTDIR=${pkgdir} install-target-libssp
+  make -j1 DESTDIR=${pkgdir} install-target-libatomic
+  #make -j1 DESTDIR=${pkgdir} install-target-libcilkrts
+  make -j1 DESTDIR=${pkgdir} install-target-libvtv
+
+  rm -f ${pkgdir}/*.dll
+  rm -rf ${pkgdir}${_install_prefix}/lib/
+  rm -rf ${pkgdir}${_install_prefix}/share/gcc-${pkgver%%+*}
+
+  # remove static libraries
+  #find ${pkgdir} -name *.a -delete
+
+  # Install Runtime Library Exception
+  install -Dm644 ${srcdir}/${_sourcedir}/COPYING.RUNTIME \
+    ${pkgdir}${_install_prefix}/share/licenses/gcc-libs/RUNTIME.LIBRARY.EXCEPTION
+}
+
+package_opt-gcc()
+{
+  pkgdesc="The GNU Compiler Collection - C and C++ frontends"
+  depends=('binutils' 'msys2-runtime-devel' 'msys2-w32api-headers' 'msys2-w32api-runtime' 'windows-default-manifest')
+  if [[ "$_enable_static_libgcc" != "yes" ]]; then
+    depends+=("gcc-libs=${pkgver}-${pkgrel}")
+  fi
+  #options=("!strip")
+  provides=('msys2-devel')
+  conflicts=('gcc-fortran<=11.3.0-4')
+
+  cd ${srcdir}/build-${MSYSTEM_CARCH}
+
+  if check_option "strip" "n"; then
+    export STRIP=true
+  fi
+
+  make -j1 DESTDIR=${pkgdir} install
+
+  # unfortunately it is much, much easier to install the lot and clean-up the mess...
+
+  # remove all DLLs
+  rm -f ${pkgdir}${_install_prefix}/bin/*.dll
+
+  rm -f ${pkgdir}${_install_prefix}/lib/libiberty.a
+  # rm -f ${pkgdir}${_install_prefix}/lib/gcc/${CHOST}/${pkgver}/libatomic{.dll,}.a
+  rm -f ${pkgdir}${_install_prefix}/share/info/{libgomp,libquadmath}.info
+  rm -f ${pkgdir}${_install_prefix}/share/locale/{de,fr}/LC_MESSAGES/libstdc++.mo
+
+  # remove static libraries - note libstdc++.a is needed for the binutils and glibc testsuite
+  #rm ${pkgdir}${_install_prefix}/lib/gcc/${CHOST}/${pkgver}/lib{gomp,quadmath}{.dll,}.a
+
+  # many packages expect this symlinks
+  ln -s gcc ${pkgdir}${_install_prefix}/bin/cc
+  cp -f ${pkgdir}${_install_prefix}/bin/cpp.exe ${pkgdir}${_install_prefix}/lib/cpp
+
+  # install the libstdc++ man pages
+  # install -dm755 ${pkgdir}${_install_prefix}/share/man/man3
+  # install -m644 -t ${pkgdir}${_install_prefix}/share/man/man3 \
+  #  ${CHOST}/libstdc++-v3/doc/doxygen/man/man3/*.3
+
+  # Install Runtime Library Exception
+  install -Dm644 ${srcdir}/${_sourcedir}/COPYING.RUNTIME \
+    ${pkgdir}${_install_prefix}/share/licenses/gcc/RUNTIME.LIBRARY.EXCEPTION
+}
