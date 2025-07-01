@@ -48,9 +48,12 @@ build() {
   export MSYSTEM=CYGWIN
 
   export PATH="/opt/usr/bin:$PATH"
+  export CC=/opt/usr/bin/gcc.exe
+  export CXX=/opt/usr/bin/g++.exe
 
   echo ""
   echo "CC [gcc] := ${CC-gcc}"
+  echo "CXX [g++] := ${CXX-g++}"
   ${CC-gcc} --version | head -1
   echo ""
 
