@@ -1,0 +1,2313 @@
+diff -Nur archive-orig/gettext-0.11/config.rpath archive/gettext-0.11/config.rpath
+--- archive-orig/gettext-0.11/config.rpath	2002-05-01 19:56:22.000000000 +0200
++++ archive/gettext-0.11/config.rpath	2022-01-02 18:33:56.831130700 +0100
+@@ -95,7 +95,7 @@
+ hardcode_minus_L=no
+ 
+ case "$host_os" in
+-  cygwin* | mingw* | pw32* )
++  cygwin* | msys* | mingw* | pw32* )
+     # FIXME: the MSVC++ port hasn't been tested in a loooong time
+     # When not using gcc, we currently assume that we are using
+     # Microsoft Visual C++.
+@@ -130,7 +130,7 @@
+         ld_shlibs=no
+       fi
+       ;;
+-    cygwin* | mingw* | pw32*)
++    cygwin* | msys* | mingw* | pw32*)
+       # hardcode_libdir_flag_spec is actually meaningless, as there is
+       # no search path for DLLs.
+       hardcode_libdir_flag_spec='-L$libdir'
+@@ -220,7 +220,7 @@
+       # see comment about different semantics on the GNU ld section
+       ld_shlibs=no
+       ;;
+-    cygwin* | mingw* | pw32*)
++    cygwin* | msys* | mingw* | pw32*)
+       # When not using gcc, we currently assume that we are using
+       # Microsoft Visual C++.
+       # hardcode_libdir_flag_spec is actually meaningless, as there is
+@@ -354,9 +354,9 @@
+     sys_lib_search_path_spec="/shlib /usr/lib /usr/X11/lib /usr/contrib/lib /lib /usr/local/lib"
+     sys_lib_dlsearch_path_spec="/shlib /usr/lib /usr/local/lib"
+     ;;
+-  cygwin* | mingw* | pw32*)
++  cygwin* | msys* | mingw* | pw32*)
+     case $GCC,$host_os in
+-      yes,cygwin*)
++      yes,cygwin* | yes,msys*)
+         shlibext=dll.a
+         ;;
+       yes,mingw*)
+diff -Nur archive-orig/gettext-0.11.1/config.rpath archive/gettext-0.11.1/config.rpath
+--- archive-orig/gettext-0.11.1/config.rpath	2002-05-01 20:02:35.000000000 +0200
++++ archive/gettext-0.11.1/config.rpath	2022-01-02 18:33:56.834132100 +0100
+@@ -93,7 +93,7 @@
+ hardcode_minus_L=no
+ 
+ case "$host_os" in
+-  cygwin* | mingw* | pw32*)
++  cygwin* | msys* | mingw* | pw32*)
+     # FIXME: the MSVC++ port hasn't been tested in a loooong time
+     # When not using gcc, we currently assume that we are using
+     # Microsoft Visual C++.
+@@ -131,7 +131,7 @@
+         ld_shlibs=no
+       fi
+       ;;
+-    cygwin* | mingw* | pw32*)
++    cygwin* | msys* | mingw* | pw32*)
+       # hardcode_libdir_flag_spec is actually meaningless, as there is
+       # no search path for DLLs.
+       hardcode_libdir_flag_spec='-L$libdir'
+@@ -225,7 +225,7 @@
+       # see comment about different semantics on the GNU ld section
+       ld_shlibs=no
+       ;;
+-    cygwin* | mingw* | pw32*)
++    cygwin* | msys* | mingw* | pw32*)
+       # When not using gcc, we currently assume that we are using
+       # Microsoft Visual C++.
+       # hardcode_libdir_flag_spec is actually meaningless, as there is
+@@ -370,9 +370,9 @@
+     sys_lib_search_path_spec="/shlib /usr/lib /usr/X11/lib /usr/contrib/lib /lib /usr/local/lib"
+     sys_lib_dlsearch_path_spec="/shlib /usr/lib /usr/local/lib"
+     ;;
+-  cygwin* | mingw* | pw32*)
++  cygwin* | msys* | mingw* | pw32*)
+     case $GCC,$host_os in
+-      yes,cygwin*)
++      yes,cygwin* | yes,msys*)
+         shlibext=dll.a
+         ;;
+       yes,mingw*)
+diff -Nur archive-orig/gettext-0.11.2/config.rpath archive/gettext-0.11.2/config.rpath
+--- archive-orig/gettext-0.11.2/config.rpath	2002-05-01 20:02:35.000000000 +0200
++++ archive/gettext-0.11.2/config.rpath	2022-01-02 18:33:56.836134200 +0100
+@@ -93,7 +93,7 @@
+ hardcode_minus_L=no
+ 
+ case "$host_os" in
+-  cygwin* | mingw* | pw32*)
++  cygwin* | msys* | mingw* | pw32*)
+     # FIXME: the MSVC++ port hasn't been tested in a loooong time
+     # When not using gcc, we currently assume that we are using
+     # Microsoft Visual C++.
+@@ -131,7 +131,7 @@
+         ld_shlibs=no
+       fi
+       ;;
+-    cygwin* | mingw* | pw32*)
++    cygwin* | msys* | mingw* | pw32*)
+       # hardcode_libdir_flag_spec is actually meaningless, as there is
+       # no search path for DLLs.
+       hardcode_libdir_flag_spec='-L$libdir'
+@@ -225,7 +225,7 @@
+       # see comment about different semantics on the GNU ld section
+       ld_shlibs=no
+       ;;
+-    cygwin* | mingw* | pw32*)
++    cygwin* | msys* | mingw* | pw32*)
+       # When not using gcc, we currently assume that we are using
+       # Microsoft Visual C++.
+       # hardcode_libdir_flag_spec is actually meaningless, as there is
+@@ -370,9 +370,9 @@
+     sys_lib_search_path_spec="/shlib /usr/lib /usr/X11/lib /usr/contrib/lib /lib /usr/local/lib"
+     sys_lib_dlsearch_path_spec="/shlib /usr/lib /usr/local/lib"
+     ;;
+-  cygwin* | mingw* | pw32*)
++  cygwin* | msys* | mingw* | pw32*)
+     case $GCC,$host_os in
+-      yes,cygwin*)
++      yes,cygwin* | yes,msys*)
+         shlibext=dll.a
+         ;;
+       yes,mingw*)
+diff -Nur archive-orig/gettext-0.11.3/config.rpath archive/gettext-0.11.3/config.rpath
+--- archive-orig/gettext-0.11.3/config.rpath	2002-05-01 20:02:35.000000000 +0200
++++ archive/gettext-0.11.3/config.rpath	2022-01-02 18:33:56.838128400 +0100
+@@ -93,7 +93,7 @@
+ hardcode_minus_L=no
+ 
+ case "$host_os" in
+-  cygwin* | mingw* | pw32*)
++  cygwin* | msys* | mingw* | pw32*)
+     # FIXME: the MSVC++ port hasn't been tested in a loooong time
+     # When not using gcc, we currently assume that we are using
+     # Microsoft Visual C++.
+@@ -131,7 +131,7 @@
+         ld_shlibs=no
+       fi
+       ;;
+-    cygwin* | mingw* | pw32*)
++    cygwin* | msys* | mingw* | pw32*)
+       # hardcode_libdir_flag_spec is actually meaningless, as there is
+       # no search path for DLLs.
+       hardcode_libdir_flag_spec='-L$libdir'
+@@ -225,7 +225,7 @@
+       # see comment about different semantics on the GNU ld section
+       ld_shlibs=no
+       ;;
+-    cygwin* | mingw* | pw32*)
++    cygwin* | msys* | mingw* | pw32*)
+       # When not using gcc, we currently assume that we are using
+       # Microsoft Visual C++.
+       # hardcode_libdir_flag_spec is actually meaningless, as there is
+@@ -370,9 +370,9 @@
+     sys_lib_search_path_spec="/shlib /usr/lib /usr/X11/lib /usr/contrib/lib /lib /usr/local/lib"
+     sys_lib_dlsearch_path_spec="/shlib /usr/lib /usr/local/lib"
+     ;;
+-  cygwin* | mingw* | pw32*)
++  cygwin* | msys* | mingw* | pw32*)
+     case $GCC,$host_os in
+-      yes,cygwin*)
++      yes,cygwin* | yes,msys*)
+         shlibext=dll.a
+         ;;
+       yes,mingw*)
+diff -Nur archive-orig/gettext-0.11.4/config.rpath archive/gettext-0.11.4/config.rpath
+--- archive-orig/gettext-0.11.4/config.rpath	2002-05-01 20:02:35.000000000 +0200
++++ archive/gettext-0.11.4/config.rpath	2022-01-02 18:33:56.839572700 +0100
+@@ -93,7 +93,7 @@
+ hardcode_minus_L=no
+ 
+ case "$host_os" in
+-  cygwin* | mingw* | pw32*)
++  cygwin* | msys* | mingw* | pw32*)
+     # FIXME: the MSVC++ port hasn't been tested in a loooong time
+     # When not using gcc, we currently assume that we are using
+     # Microsoft Visual C++.
+@@ -131,7 +131,7 @@
+         ld_shlibs=no
+       fi
+       ;;
+-    cygwin* | mingw* | pw32*)
++    cygwin* | msys* | mingw* | pw32*)
+       # hardcode_libdir_flag_spec is actually meaningless, as there is
+       # no search path for DLLs.
+       hardcode_libdir_flag_spec='-L$libdir'
+@@ -225,7 +225,7 @@
+       # see comment about different semantics on the GNU ld section
+       ld_shlibs=no
+       ;;
+-    cygwin* | mingw* | pw32*)
++    cygwin* | msys* | mingw* | pw32*)
+       # When not using gcc, we currently assume that we are using
+       # Microsoft Visual C++.
+       # hardcode_libdir_flag_spec is actually meaningless, as there is
+@@ -370,9 +370,9 @@
+     sys_lib_search_path_spec="/shlib /usr/lib /usr/X11/lib /usr/contrib/lib /lib /usr/local/lib"
+     sys_lib_dlsearch_path_spec="/shlib /usr/lib /usr/local/lib"
+     ;;
+-  cygwin* | mingw* | pw32*)
++  cygwin* | msys* | mingw* | pw32*)
+     case $GCC,$host_os in
+-      yes,cygwin*)
++      yes,cygwin* | yes,msys*)
+         shlibext=dll.a
+         ;;
+       yes,mingw*)
+diff -Nur archive-orig/gettext-0.11.5/config.rpath archive/gettext-0.11.5/config.rpath
+--- archive-orig/gettext-0.11.5/config.rpath	2002-05-01 20:02:35.000000000 +0200
++++ archive/gettext-0.11.5/config.rpath	2022-01-02 18:33:56.841309800 +0100
+@@ -93,7 +93,7 @@
+ hardcode_minus_L=no
+ 
+ case "$host_os" in
+-  cygwin* | mingw* | pw32*)
++  cygwin* | msys* | mingw* | pw32*)
+     # FIXME: the MSVC++ port hasn't been tested in a loooong time
+     # When not using gcc, we currently assume that we are using
+     # Microsoft Visual C++.
+@@ -131,7 +131,7 @@
+         ld_shlibs=no
+       fi
+       ;;
+-    cygwin* | mingw* | pw32*)
++    cygwin* | msys* | mingw* | pw32*)
+       # hardcode_libdir_flag_spec is actually meaningless, as there is
+       # no search path for DLLs.
+       hardcode_libdir_flag_spec='-L$libdir'
+@@ -225,7 +225,7 @@
+       # see comment about different semantics on the GNU ld section
+       ld_shlibs=no
+       ;;
+-    cygwin* | mingw* | pw32*)
++    cygwin* | msys* | mingw* | pw32*)
+       # When not using gcc, we currently assume that we are using
+       # Microsoft Visual C++.
+       # hardcode_libdir_flag_spec is actually meaningless, as there is
+@@ -370,9 +370,9 @@
+     sys_lib_search_path_spec="/shlib /usr/lib /usr/X11/lib /usr/contrib/lib /lib /usr/local/lib"
+     sys_lib_dlsearch_path_spec="/shlib /usr/lib /usr/local/lib"
+     ;;
+-  cygwin* | mingw* | pw32*)
++  cygwin* | msys* | mingw* | pw32*)
+     case $GCC,$host_os in
+-      yes,cygwin*)
++      yes,cygwin* | yes,msys*)
+         shlibext=dll.a
+         ;;
+       yes,mingw*)
+diff -Nur archive-orig/gettext-0.12/config.rpath archive/gettext-0.12/config.rpath
+--- archive-orig/gettext-0.12/config.rpath	2003-05-17 17:34:29.000000000 +0200
++++ archive/gettext-0.12/config.rpath	2022-01-02 18:33:56.843033300 +0100
+@@ -109,7 +109,7 @@
+ hardcode_minus_L=no
+ 
+ case "$host_os" in
+-  cygwin* | mingw* | pw32*)
++  cygwin* | msys* | mingw* | pw32*)
+     # FIXME: the MSVC++ port hasn't been tested in a loooong time
+     # When not using gcc, we currently assume that we are using
+     # Microsoft Visual C++.
+@@ -149,7 +149,7 @@
+         ld_shlibs=no
+       fi
+       ;;
+-    cygwin* | mingw* | pw32*)
++    cygwin* | msys* | mingw* | pw32*)
+       # hardcode_libdir_flag_spec is actually meaningless, as there is
+       # no search path for DLLs.
+       hardcode_libdir_flag_spec='-L$libdir'
+@@ -268,7 +268,7 @@
+       ;;
+     bsdi4*)
+       ;;
+-    cygwin* | mingw* | pw32*)
++    cygwin* | msys* | mingw* | pw32*)
+       # When not using gcc, we currently assume that we are using
+       # Microsoft Visual C++.
+       # hardcode_libdir_flag_spec is actually meaningless, as there is
+@@ -440,7 +440,7 @@
+     ;;
+   bsdi4*)
+     ;;
+-  cygwin* | mingw* | pw32*)
++  cygwin* | msys* | mingw* | pw32*)
+     shrext=.dll
+     ;;
+   darwin* | rhapsody*)
+diff -Nur archive-orig/gettext-0.12.1/config.rpath archive/gettext-0.12.1/config.rpath
+--- archive-orig/gettext-0.12.1/config.rpath	2003-05-17 17:34:29.000000000 +0200
++++ archive/gettext-0.12.1/config.rpath	2022-01-02 18:33:56.844747700 +0100
+@@ -109,7 +109,7 @@
+ hardcode_minus_L=no
+ 
+ case "$host_os" in
+-  cygwin* | mingw* | pw32*)
++  cygwin* | msys* | mingw* | pw32*)
+     # FIXME: the MSVC++ port hasn't been tested in a loooong time
+     # When not using gcc, we currently assume that we are using
+     # Microsoft Visual C++.
+@@ -149,7 +149,7 @@
+         ld_shlibs=no
+       fi
+       ;;
+-    cygwin* | mingw* | pw32*)
++    cygwin* | msys* | mingw* | pw32*)
+       # hardcode_libdir_flag_spec is actually meaningless, as there is
+       # no search path for DLLs.
+       hardcode_libdir_flag_spec='-L$libdir'
+@@ -268,7 +268,7 @@
+       ;;
+     bsdi4*)
+       ;;
+-    cygwin* | mingw* | pw32*)
++    cygwin* | msys* | mingw* | pw32*)
+       # When not using gcc, we currently assume that we are using
+       # Microsoft Visual C++.
+       # hardcode_libdir_flag_spec is actually meaningless, as there is
+@@ -440,7 +440,7 @@
+     ;;
+   bsdi4*)
+     ;;
+-  cygwin* | mingw* | pw32*)
++  cygwin* | msys* | mingw* | pw32*)
+     shrext=.dll
+     ;;
+   darwin* | rhapsody*)
+diff -Nur archive-orig/gettext-0.13/config.rpath archive/gettext-0.13/config.rpath
+--- archive-orig/gettext-0.13/config.rpath	2003-11-30 15:31:21.000000000 +0100
++++ archive/gettext-0.13/config.rpath	2022-01-02 18:33:56.846749300 +0100
+@@ -109,7 +109,7 @@
+ hardcode_minus_L=no
+ 
+ case "$host_os" in
+-  cygwin* | mingw* | pw32*)
++  cygwin* | msys* | mingw* | pw32*)
+     # FIXME: the MSVC++ port hasn't been tested in a loooong time
+     # When not using gcc, we currently assume that we are using
+     # Microsoft Visual C++.
+@@ -149,7 +149,7 @@
+         ld_shlibs=no
+       fi
+       ;;
+-    cygwin* | mingw* | pw32*)
++    cygwin* | msys* | mingw* | pw32*)
+       # hardcode_libdir_flag_spec is actually meaningless, as there is
+       # no search path for DLLs.
+       hardcode_libdir_flag_spec='-L$libdir'
+@@ -268,7 +268,7 @@
+       ;;
+     bsdi4*)
+       ;;
+-    cygwin* | mingw* | pw32*)
++    cygwin* | msys* | mingw* | pw32*)
+       # When not using gcc, we currently assume that we are using
+       # Microsoft Visual C++.
+       # hardcode_libdir_flag_spec is actually meaningless, as there is
+@@ -440,7 +440,7 @@
+     ;;
+   bsdi4*)
+     ;;
+-  cygwin* | mingw* | pw32*)
++  cygwin* | msys* | mingw* | pw32*)
+     shrext=.dll
+     ;;
+   darwin* | rhapsody*)
+diff -Nur archive-orig/gettext-0.13.1/config.rpath archive/gettext-0.13.1/config.rpath
+--- archive-orig/gettext-0.13.1/config.rpath	2003-11-30 15:31:21.000000000 +0100
++++ archive/gettext-0.13.1/config.rpath	2022-01-02 18:33:56.848291800 +0100
+@@ -109,7 +109,7 @@
+ hardcode_minus_L=no
+ 
+ case "$host_os" in
+-  cygwin* | mingw* | pw32*)
++  cygwin* | msys* | mingw* | pw32*)
+     # FIXME: the MSVC++ port hasn't been tested in a loooong time
+     # When not using gcc, we currently assume that we are using
+     # Microsoft Visual C++.
+@@ -149,7 +149,7 @@
+         ld_shlibs=no
+       fi
+       ;;
+-    cygwin* | mingw* | pw32*)
++    cygwin* | msys* | mingw* | pw32*)
+       # hardcode_libdir_flag_spec is actually meaningless, as there is
+       # no search path for DLLs.
+       hardcode_libdir_flag_spec='-L$libdir'
+@@ -268,7 +268,7 @@
+       ;;
+     bsdi4*)
+       ;;
+-    cygwin* | mingw* | pw32*)
++    cygwin* | msys* | mingw* | pw32*)
+       # When not using gcc, we currently assume that we are using
+       # Microsoft Visual C++.
+       # hardcode_libdir_flag_spec is actually meaningless, as there is
+@@ -440,7 +440,7 @@
+     ;;
+   bsdi4*)
+     ;;
+-  cygwin* | mingw* | pw32*)
++  cygwin* | msys* | mingw* | pw32*)
+     shrext=.dll
+     ;;
+   darwin* | rhapsody*)
+diff -Nur archive-orig/gettext-0.14/config.rpath archive/gettext-0.14/config.rpath
+--- archive-orig/gettext-0.14/config.rpath	2003-11-30 15:31:21.000000000 +0100
++++ archive/gettext-0.14/config.rpath	2022-01-02 18:33:56.850293400 +0100
+@@ -109,7 +109,7 @@
+ hardcode_minus_L=no
+ 
+ case "$host_os" in
+-  cygwin* | mingw* | pw32*)
++  cygwin* | msys* | mingw* | pw32*)
+     # FIXME: the MSVC++ port hasn't been tested in a loooong time
+     # When not using gcc, we currently assume that we are using
+     # Microsoft Visual C++.
+@@ -149,7 +149,7 @@
+         ld_shlibs=no
+       fi
+       ;;
+-    cygwin* | mingw* | pw32*)
++    cygwin* | msys* | mingw* | pw32*)
+       # hardcode_libdir_flag_spec is actually meaningless, as there is
+       # no search path for DLLs.
+       hardcode_libdir_flag_spec='-L$libdir'
+@@ -268,7 +268,7 @@
+       ;;
+     bsdi4*)
+       ;;
+-    cygwin* | mingw* | pw32*)
++    cygwin* | msys* | mingw* | pw32*)
+       # When not using gcc, we currently assume that we are using
+       # Microsoft Visual C++.
+       # hardcode_libdir_flag_spec is actually meaningless, as there is
+@@ -440,7 +440,7 @@
+     ;;
+   bsdi4*)
+     ;;
+-  cygwin* | mingw* | pw32*)
++  cygwin* | msys* | mingw* | pw32*)
+     shrext=.dll
+     ;;
+   darwin* | rhapsody*)
+diff -Nur archive-orig/gettext-0.14.1/config.rpath archive/gettext-0.14.1/config.rpath
+--- archive-orig/gettext-0.14.1/config.rpath	2003-11-30 15:31:21.000000000 +0100
++++ archive/gettext-0.14.1/config.rpath	2022-01-02 18:33:56.851294300 +0100
+@@ -109,7 +109,7 @@
+ hardcode_minus_L=no
+ 
+ case "$host_os" in
+-  cygwin* | mingw* | pw32*)
++  cygwin* | msys* | mingw* | pw32*)
+     # FIXME: the MSVC++ port hasn't been tested in a loooong time
+     # When not using gcc, we currently assume that we are using
+     # Microsoft Visual C++.
+@@ -149,7 +149,7 @@
+         ld_shlibs=no
+       fi
+       ;;
+-    cygwin* | mingw* | pw32*)
++    cygwin* | msys* | mingw* | pw32*)
+       # hardcode_libdir_flag_spec is actually meaningless, as there is
+       # no search path for DLLs.
+       hardcode_libdir_flag_spec='-L$libdir'
+@@ -268,7 +268,7 @@
+       ;;
+     bsdi4*)
+       ;;
+-    cygwin* | mingw* | pw32*)
++    cygwin* | msys* | mingw* | pw32*)
+       # When not using gcc, we currently assume that we are using
+       # Microsoft Visual C++.
+       # hardcode_libdir_flag_spec is actually meaningless, as there is
+@@ -440,7 +440,7 @@
+     ;;
+   bsdi4*)
+     ;;
+-  cygwin* | mingw* | pw32*)
++  cygwin* | msys* | mingw* | pw32*)
+     shrext=.dll
+     ;;
+   darwin* | rhapsody*)
+diff -Nur archive-orig/gettext-0.14.2/config.rpath archive/gettext-0.14.2/config.rpath
+--- archive-orig/gettext-0.14.2/config.rpath	2005-02-24 15:21:47.000000000 +0100
++++ archive/gettext-0.14.2/config.rpath	2022-01-02 18:33:56.853296100 +0100
+@@ -112,7 +112,7 @@
+ hardcode_minus_L=no
+ 
+ case "$host_os" in
+-  cygwin* | mingw* | pw32*)
++  cygwin* | msys* | mingw* | pw32*)
+     # FIXME: the MSVC++ port hasn't been tested in a loooong time
+     # When not using gcc, we currently assume that we are using
+     # Microsoft Visual C++.
+@@ -152,7 +152,7 @@
+         ld_shlibs=no
+       fi
+       ;;
+-    cygwin* | mingw* | pw32*)
++    cygwin* | msys* | mingw* | pw32*)
+       # hardcode_libdir_flag_spec is actually meaningless, as there is
+       # no search path for DLLs.
+       hardcode_libdir_flag_spec='-L$libdir'
+@@ -278,7 +278,7 @@
+       ;;
+     bsdi[45]*)
+       ;;
+-    cygwin* | mingw* | pw32*)
++    cygwin* | msys* | mingw* | pw32*)
+       # When not using gcc, we currently assume that we are using
+       # Microsoft Visual C++.
+       # hardcode_libdir_flag_spec is actually meaningless, as there is
+@@ -459,7 +459,7 @@
+     ;;
+   bsdi[45]*)
+     ;;
+-  cygwin* | mingw* | pw32*)
++  cygwin* | msys* | mingw* | pw32*)
+     shrext=.dll
+     ;;
+   darwin* | rhapsody*)
+diff -Nur archive-orig/gettext-0.14.3/config.rpath archive/gettext-0.14.3/config.rpath
+--- archive-orig/gettext-0.14.3/config.rpath	2005-02-24 15:21:47.000000000 +0100
++++ archive/gettext-0.14.3/config.rpath	2022-01-02 18:33:56.855297900 +0100
+@@ -112,7 +112,7 @@
+ hardcode_minus_L=no
+ 
+ case "$host_os" in
+-  cygwin* | mingw* | pw32*)
++  cygwin* | msys* | mingw* | pw32*)
+     # FIXME: the MSVC++ port hasn't been tested in a loooong time
+     # When not using gcc, we currently assume that we are using
+     # Microsoft Visual C++.
+@@ -152,7 +152,7 @@
+         ld_shlibs=no
+       fi
+       ;;
+-    cygwin* | mingw* | pw32*)
++    cygwin* | msys* | mingw* | pw32*)
+       # hardcode_libdir_flag_spec is actually meaningless, as there is
+       # no search path for DLLs.
+       hardcode_libdir_flag_spec='-L$libdir'
+@@ -278,7 +278,7 @@
+       ;;
+     bsdi[45]*)
+       ;;
+-    cygwin* | mingw* | pw32*)
++    cygwin* | msys* | mingw* | pw32*)
+       # When not using gcc, we currently assume that we are using
+       # Microsoft Visual C++.
+       # hardcode_libdir_flag_spec is actually meaningless, as there is
+@@ -459,7 +459,7 @@
+     ;;
+   bsdi[45]*)
+     ;;
+-  cygwin* | mingw* | pw32*)
++  cygwin* | msys* | mingw* | pw32*)
+     shrext=.dll
+     ;;
+   darwin* | rhapsody*)
+diff -Nur archive-orig/gettext-0.14.4/config.rpath archive/gettext-0.14.4/config.rpath
+--- archive-orig/gettext-0.14.4/config.rpath	2005-02-24 15:21:47.000000000 +0100
++++ archive/gettext-0.14.4/config.rpath	2022-01-02 18:33:56.857299900 +0100
+@@ -112,7 +112,7 @@
+ hardcode_minus_L=no
+ 
+ case "$host_os" in
+-  cygwin* | mingw* | pw32*)
++  cygwin* | msys* | mingw* | pw32*)
+     # FIXME: the MSVC++ port hasn't been tested in a loooong time
+     # When not using gcc, we currently assume that we are using
+     # Microsoft Visual C++.
+@@ -152,7 +152,7 @@
+         ld_shlibs=no
+       fi
+       ;;
+-    cygwin* | mingw* | pw32*)
++    cygwin* | msys* | mingw* | pw32*)
+       # hardcode_libdir_flag_spec is actually meaningless, as there is
+       # no search path for DLLs.
+       hardcode_libdir_flag_spec='-L$libdir'
+@@ -278,7 +278,7 @@
+       ;;
+     bsdi[45]*)
+       ;;
+-    cygwin* | mingw* | pw32*)
++    cygwin* | msys* | mingw* | pw32*)
+       # When not using gcc, we currently assume that we are using
+       # Microsoft Visual C++.
+       # hardcode_libdir_flag_spec is actually meaningless, as there is
+@@ -459,7 +459,7 @@
+     ;;
+   bsdi[45]*)
+     ;;
+-  cygwin* | mingw* | pw32*)
++  cygwin* | msys* | mingw* | pw32*)
+     shrext=.dll
+     ;;
+   darwin* | rhapsody*)
+diff -Nur archive-orig/gettext-0.14.5/config.rpath archive/gettext-0.14.5/config.rpath
+--- archive-orig/gettext-0.14.5/config.rpath	2005-02-24 15:21:47.000000000 +0100
++++ archive/gettext-0.14.5/config.rpath	2022-01-02 18:33:56.858839000 +0100
+@@ -112,7 +112,7 @@
+ hardcode_minus_L=no
+ 
+ case "$host_os" in
+-  cygwin* | mingw* | pw32*)
++  cygwin* | msys* | mingw* | pw32*)
+     # FIXME: the MSVC++ port hasn't been tested in a loooong time
+     # When not using gcc, we currently assume that we are using
+     # Microsoft Visual C++.
+@@ -152,7 +152,7 @@
+         ld_shlibs=no
+       fi
+       ;;
+-    cygwin* | mingw* | pw32*)
++    cygwin* | msys* | mingw* | pw32*)
+       # hardcode_libdir_flag_spec is actually meaningless, as there is
+       # no search path for DLLs.
+       hardcode_libdir_flag_spec='-L$libdir'
+@@ -278,7 +278,7 @@
+       ;;
+     bsdi[45]*)
+       ;;
+-    cygwin* | mingw* | pw32*)
++    cygwin* | msys* | mingw* | pw32*)
+       # When not using gcc, we currently assume that we are using
+       # Microsoft Visual C++.
+       # hardcode_libdir_flag_spec is actually meaningless, as there is
+@@ -459,7 +459,7 @@
+     ;;
+   bsdi[45]*)
+     ;;
+-  cygwin* | mingw* | pw32*)
++  cygwin* | msys* | mingw* | pw32*)
+     shrext=.dll
+     ;;
+   darwin* | rhapsody*)
+diff -Nur archive-orig/gettext-0.14.6/config.rpath archive/gettext-0.14.6/config.rpath
+--- archive-orig/gettext-0.14.6/config.rpath	2005-02-24 15:21:47.000000000 +0100
++++ archive/gettext-0.14.6/config.rpath	2022-01-02 18:33:56.860562800 +0100
+@@ -112,7 +112,7 @@
+ hardcode_minus_L=no
+ 
+ case "$host_os" in
+-  cygwin* | mingw* | pw32*)
++  cygwin* | msys* | mingw* | pw32*)
+     # FIXME: the MSVC++ port hasn't been tested in a loooong time
+     # When not using gcc, we currently assume that we are using
+     # Microsoft Visual C++.
+@@ -152,7 +152,7 @@
+         ld_shlibs=no
+       fi
+       ;;
+-    cygwin* | mingw* | pw32*)
++    cygwin* | msys* | mingw* | pw32*)
+       # hardcode_libdir_flag_spec is actually meaningless, as there is
+       # no search path for DLLs.
+       hardcode_libdir_flag_spec='-L$libdir'
+@@ -278,7 +278,7 @@
+       ;;
+     bsdi[45]*)
+       ;;
+-    cygwin* | mingw* | pw32*)
++    cygwin* | msys* | mingw* | pw32*)
+       # When not using gcc, we currently assume that we are using
+       # Microsoft Visual C++.
+       # hardcode_libdir_flag_spec is actually meaningless, as there is
+@@ -459,7 +459,7 @@
+     ;;
+   bsdi[45]*)
+     ;;
+-  cygwin* | mingw* | pw32*)
++  cygwin* | msys* | mingw* | pw32*)
+     shrext=.dll
+     ;;
+   darwin* | rhapsody*)
+diff -Nur archive-orig/gettext-0.15/config.rpath archive/gettext-0.15/config.rpath
+--- archive-orig/gettext-0.15/config.rpath	2006-07-21 15:36:21.000000000 +0200
++++ archive/gettext-0.15/config.rpath	2022-01-02 18:33:56.862261300 +0100
+@@ -129,7 +129,7 @@
+ hardcode_minus_L=no
+ 
+ case "$host_os" in
+-  cygwin* | mingw* | pw32*)
++  cygwin* | msys* | mingw* | pw32*)
+     # FIXME: the MSVC++ port hasn't been tested in a loooong time
+     # When not using gcc, we currently assume that we are using
+     # Microsoft Visual C++.
+@@ -179,7 +179,7 @@
+         ld_shlibs=no
+       fi
+       ;;
+-    cygwin* | mingw* | pw32*)
++    cygwin* | msys* | mingw* | pw32*)
+       # hardcode_libdir_flag_spec is actually meaningless, as there is
+       # no search path for DLLs.
+       hardcode_libdir_flag_spec='-L$libdir'
+@@ -323,7 +323,7 @@
+       ;;
+     bsdi[45]*)
+       ;;
+-    cygwin* | mingw* | pw32*)
++    cygwin* | msys* | mingw* | pw32*)
+       # When not using gcc, we currently assume that we are using
+       # Microsoft Visual C++.
+       # hardcode_libdir_flag_spec is actually meaningless, as there is
+@@ -500,7 +500,7 @@
+     ;;
+   bsdi[45]*)
+     ;;
+-  cygwin* | mingw* | pw32*)
++  cygwin* | msys* | mingw* | pw32*)
+     shrext=.dll
+     ;;
+   darwin* | rhapsody*)
+diff -Nur archive-orig/gettext-0.16/config.rpath archive/gettext-0.16/config.rpath
+--- archive-orig/gettext-0.16/config.rpath	2006-07-21 15:36:21.000000000 +0200
++++ archive/gettext-0.16/config.rpath	2022-01-02 18:33:56.864263100 +0100
+@@ -129,7 +129,7 @@
+ hardcode_minus_L=no
+ 
+ case "$host_os" in
+-  cygwin* | mingw* | pw32*)
++  cygwin* | msys* | mingw* | pw32*)
+     # FIXME: the MSVC++ port hasn't been tested in a loooong time
+     # When not using gcc, we currently assume that we are using
+     # Microsoft Visual C++.
+@@ -179,7 +179,7 @@
+         ld_shlibs=no
+       fi
+       ;;
+-    cygwin* | mingw* | pw32*)
++    cygwin* | msys* | mingw* | pw32*)
+       # hardcode_libdir_flag_spec is actually meaningless, as there is
+       # no search path for DLLs.
+       hardcode_libdir_flag_spec='-L$libdir'
+@@ -323,7 +323,7 @@
+       ;;
+     bsdi[45]*)
+       ;;
+-    cygwin* | mingw* | pw32*)
++    cygwin* | msys* | mingw* | pw32*)
+       # When not using gcc, we currently assume that we are using
+       # Microsoft Visual C++.
+       # hardcode_libdir_flag_spec is actually meaningless, as there is
+@@ -500,7 +500,7 @@
+     ;;
+   bsdi[45]*)
+     ;;
+-  cygwin* | mingw* | pw32*)
++  cygwin* | msys* | mingw* | pw32*)
+     shrext=.dll
+     ;;
+   darwin* | rhapsody*)
+diff -Nur archive-orig/gettext-0.16/m4/intl.m4 archive/gettext-0.16/m4/intl.m4
+--- archive-orig/gettext-0.16/m4/intl.m4	2006-10-26 15:24:50.000000000 +0200
++++ archive/gettext-0.16/m4/intl.m4	2022-01-02 18:33:56.866264300 +0100
+@@ -98,7 +98,7 @@
+   dnl    exported variables _also_ in the static library.
+   if test "$enable_shared" = yes; then
+     case "$host_os" in
+-      cygwin*) is_woe32dll=yes ;;
++      cygwin* | msys*) is_woe32dll=yes ;;
+       *) is_woe32dll=no ;;
+     esac
+   else
+diff -Nur archive-orig/gettext-0.16.1/config.rpath archive/gettext-0.16.1/config.rpath
+--- archive-orig/gettext-0.16.1/config.rpath	2006-07-21 15:36:21.000000000 +0200
++++ archive/gettext-0.16.1/config.rpath	2022-01-02 18:33:56.868220400 +0100
+@@ -129,7 +129,7 @@
+ hardcode_minus_L=no
+ 
+ case "$host_os" in
+-  cygwin* | mingw* | pw32*)
++  cygwin* | msys* | mingw* | pw32*)
+     # FIXME: the MSVC++ port hasn't been tested in a loooong time
+     # When not using gcc, we currently assume that we are using
+     # Microsoft Visual C++.
+@@ -179,7 +179,7 @@
+         ld_shlibs=no
+       fi
+       ;;
+-    cygwin* | mingw* | pw32*)
++    cygwin* | msys* | mingw* | pw32*)
+       # hardcode_libdir_flag_spec is actually meaningless, as there is
+       # no search path for DLLs.
+       hardcode_libdir_flag_spec='-L$libdir'
+@@ -323,7 +323,7 @@
+       ;;
+     bsdi[45]*)
+       ;;
+-    cygwin* | mingw* | pw32*)
++    cygwin* | msys* | mingw* | pw32*)
+       # When not using gcc, we currently assume that we are using
+       # Microsoft Visual C++.
+       # hardcode_libdir_flag_spec is actually meaningless, as there is
+@@ -500,7 +500,7 @@
+     ;;
+   bsdi[45]*)
+     ;;
+-  cygwin* | mingw* | pw32*)
++  cygwin* | msys* | mingw* | pw32*)
+     shrext=.dll
+     ;;
+   darwin* | rhapsody*)
+diff -Nur archive-orig/gettext-0.16.1/m4/intl.m4 archive/gettext-0.16.1/m4/intl.m4
+--- archive-orig/gettext-0.16.1/m4/intl.m4	2006-10-26 15:24:50.000000000 +0200
++++ archive/gettext-0.16.1/m4/intl.m4	2022-01-02 18:33:56.869956100 +0100
+@@ -98,7 +98,7 @@
+   dnl    exported variables _also_ in the static library.
+   if test "$enable_shared" = yes; then
+     case "$host_os" in
+-      cygwin*) is_woe32dll=yes ;;
++      cygwin* | msys*) is_woe32dll=yes ;;
+       *) is_woe32dll=no ;;
+     esac
+   else
+diff -Nur archive-orig/gettext-0.17/config.rpath archive/gettext-0.17/config.rpath
+--- archive-orig/gettext-0.17/config.rpath	2007-11-07 03:50:28.000000000 +0100
++++ archive/gettext-0.17/config.rpath	2022-01-02 18:33:56.871601700 +0100
+@@ -64,7 +64,7 @@
+           ;;
+       esac
+       ;;
+-    mingw* | cygwin* | pw32* | os2*)
++    mingw* | cygwin* | msys* | pw32* | os2*)
+       ;;
+     hpux9* | hpux10* | hpux11*)
+       wl='-Wl,'
+@@ -132,7 +132,7 @@
+ hardcode_minus_L=no
+ 
+ case "$host_os" in
+-  cygwin* | mingw* | pw32*)
++  cygwin* | msys* | mingw* | pw32*)
+     # FIXME: the MSVC++ port hasn't been tested in a loooong time
+     # When not using gcc, we currently assume that we are using
+     # Microsoft Visual C++.
+@@ -182,7 +182,7 @@
+         ld_shlibs=no
+       fi
+       ;;
+-    cygwin* | mingw* | pw32*)
++    cygwin* | msys* | mingw* | pw32*)
+       # hardcode_libdir_flag_spec is actually meaningless, as there is
+       # no search path for DLLs.
+       hardcode_libdir_flag_spec='-L$libdir'
+@@ -326,7 +326,7 @@
+       ;;
+     bsdi[45]*)
+       ;;
+-    cygwin* | mingw* | pw32*)
++    cygwin* | msys* | mingw* | pw32*)
+       # When not using gcc, we currently assume that we are using
+       # Microsoft Visual C++.
+       # hardcode_libdir_flag_spec is actually meaningless, as there is
+@@ -517,7 +517,7 @@
+   bsdi[45]*)
+     library_names_spec='$libname$shrext'
+     ;;
+-  cygwin* | mingw* | pw32*)
++  cygwin* | msys* | mingw* | pw32*)
+     shrext=.dll
+     library_names_spec='$libname.dll.a $libname.lib'
+     ;;
+diff -Nur archive-orig/gettext-0.17/m4/intl.m4 archive/gettext-0.17/m4/intl.m4
+--- archive-orig/gettext-0.17/m4/intl.m4	2007-11-07 03:50:28.000000000 +0100
++++ archive/gettext-0.17/m4/intl.m4	2022-01-02 18:33:56.873376400 +0100
+@@ -97,7 +97,7 @@
+   dnl    exported variables _also_ in the static library.
+   if test "$enable_shared" = yes; then
+     case "$host_os" in
+-      mingw* | cygwin*) is_woe32dll=yes ;;
++      mingw* | cygwin* | msys*) is_woe32dll=yes ;;
+       *) is_woe32dll=no ;;
+     esac
+   else
+@@ -109,7 +109,7 @@
+   dnl On mingw and Cygwin, we can activate special Makefile rules which add
+   dnl version information to the shared libraries and executables.
+   case "$host_os" in
+-    mingw* | cygwin*) is_woe32=yes ;;
++    mingw* | cygwin* | msys*) is_woe32=yes ;;
+     *) is_woe32=no ;;
+   esac
+   WOE32=$is_woe32
+diff -Nur archive-orig/gettext-0.18/config.rpath archive/gettext-0.18/config.rpath
+--- archive-orig/gettext-0.18/config.rpath	2010-05-09 21:42:50.000000000 +0200
++++ archive/gettext-0.18/config.rpath	2022-01-02 18:33:56.875097800 +0100
+@@ -64,7 +64,7 @@
+           ;;
+       esac
+       ;;
+-    mingw* | cygwin* | pw32* | os2* | cegcc*)
++    mingw* | cygwin* | msys* | pw32* | os2* | cegcc*)
+       ;;
+     hpux9* | hpux10* | hpux11*)
+       wl='-Wl,'
+@@ -138,7 +138,7 @@
+ hardcode_minus_L=no
+ 
+ case "$host_os" in
+-  cygwin* | mingw* | pw32* | cegcc*)
++  cygwin* | msys* | mingw* | pw32* | cegcc*)
+     # FIXME: the MSVC++ port hasn't been tested in a loooong time
+     # When not using gcc, we currently assume that we are using
+     # Microsoft Visual C++.
+@@ -188,7 +188,7 @@
+         ld_shlibs=no
+       fi
+       ;;
+-    cygwin* | mingw* | pw32* | cegcc*)
++    cygwin* | msys* | mingw* | pw32* | cegcc*)
+       # hardcode_libdir_flag_spec is actually meaningless, as there is
+       # no search path for DLLs.
+       hardcode_libdir_flag_spec='-L$libdir'
+@@ -332,7 +332,7 @@
+       ;;
+     bsdi[45]*)
+       ;;
+-    cygwin* | mingw* | pw32* | cegcc*)
++    cygwin* | msys* | mingw* | pw32* | cegcc*)
+       # When not using gcc, we currently assume that we are using
+       # Microsoft Visual C++.
+       # hardcode_libdir_flag_spec is actually meaningless, as there is
+@@ -523,7 +523,7 @@
+   bsdi[45]*)
+     library_names_spec='$libname$shrext'
+     ;;
+-  cygwin* | mingw* | pw32* | cegcc*)
++  cygwin* | msys* | mingw* | pw32* | cegcc*)
+     shrext=.dll
+     library_names_spec='$libname.dll.a $libname.lib'
+     ;;
+diff -Nur archive-orig/gettext-0.18/intl/Makefile.in archive/gettext-0.18/intl/Makefile.in
+--- archive-orig/gettext-0.18/intl/Makefile.in	2010-05-09 21:42:55.000000000 +0200
++++ archive/gettext-0.18/intl/Makefile.in	2022-01-02 18:33:56.876977200 +0100
+@@ -414,7 +414,7 @@
+ 	    case '@host_os@' in \
+ 	      darwin[56]*) \
+ 	        need_charset_alias=true ;; \
+-	      darwin* | cygwin* | mingw* | pw32* | cegcc*) \
++	      darwin* | cygwin* | msys* | mingw* | pw32* | cegcc*) \
+ 	        need_charset_alias=false ;; \
+ 	      *) \
+ 	        need_charset_alias=true ;; \
+@@ -500,7 +500,7 @@
+ 	    case '@host_os@' in \
+ 	      darwin[56]*) \
+ 	        need_charset_alias=true ;; \
+-	      darwin* | cygwin* | mingw* | pw32* | cegcc*) \
++	      darwin* | cygwin* | msys* | mingw* | pw32* | cegcc*) \
+ 	        need_charset_alias=false ;; \
+ 	      *) \
+ 	        need_charset_alias=true ;; \
+diff -Nur archive-orig/gettext-0.18/m4/intl.m4 archive/gettext-0.18/m4/intl.m4
+--- archive-orig/gettext-0.18/m4/intl.m4	2010-05-09 21:42:58.000000000 +0200
++++ archive/gettext-0.18/m4/intl.m4	2022-01-02 18:33:56.878723300 +0100
+@@ -113,7 +113,7 @@
+   dnl    exported variables _also_ in the static library.
+   if test "$enable_shared" = yes; then
+     case "$host_os" in
+-      mingw* | cygwin*) is_woe32dll=yes ;;
++      mingw* | cygwin* | msys*) is_woe32dll=yes ;;
+       *) is_woe32dll=no ;;
+     esac
+   else
+@@ -125,7 +125,7 @@
+   dnl On mingw and Cygwin, we can activate special Makefile rules which add
+   dnl version information to the shared libraries and executables.
+   case "$host_os" in
+-    mingw* | cygwin*) is_woe32=yes ;;
++    mingw* | cygwin* | msys*) is_woe32=yes ;;
+     *) is_woe32=no ;;
+   esac
+   WOE32=$is_woe32
+diff -Nur archive-orig/gettext-0.18.1/config.rpath archive/gettext-0.18.1/config.rpath
+--- archive-orig/gettext-0.18.1/config.rpath	2010-06-04 02:07:46.000000000 +0200
++++ archive/gettext-0.18.1/config.rpath	2022-01-02 18:33:56.880725100 +0100
+@@ -64,7 +64,7 @@
+           ;;
+       esac
+       ;;
+-    mingw* | cygwin* | pw32* | os2* | cegcc*)
++    mingw* | cygwin* | msys* | pw32* | os2* | cegcc*)
+       ;;
+     hpux9* | hpux10* | hpux11*)
+       wl='-Wl,'
+@@ -138,7 +138,7 @@
+ hardcode_minus_L=no
+ 
+ case "$host_os" in
+-  cygwin* | mingw* | pw32* | cegcc*)
++  cygwin* | msys* | mingw* | pw32* | cegcc*)
+     # FIXME: the MSVC++ port hasn't been tested in a loooong time
+     # When not using gcc, we currently assume that we are using
+     # Microsoft Visual C++.
+@@ -188,7 +188,7 @@
+         ld_shlibs=no
+       fi
+       ;;
+-    cygwin* | mingw* | pw32* | cegcc*)
++    cygwin* | msys* | mingw* | pw32* | cegcc*)
+       # hardcode_libdir_flag_spec is actually meaningless, as there is
+       # no search path for DLLs.
+       hardcode_libdir_flag_spec='-L$libdir'
+@@ -332,7 +332,7 @@
+       ;;
+     bsdi[45]*)
+       ;;
+-    cygwin* | mingw* | pw32* | cegcc*)
++    cygwin* | msys* | mingw* | pw32* | cegcc*)
+       # When not using gcc, we currently assume that we are using
+       # Microsoft Visual C++.
+       # hardcode_libdir_flag_spec is actually meaningless, as there is
+@@ -523,7 +523,7 @@
+   bsdi[45]*)
+     library_names_spec='$libname$shrext'
+     ;;
+-  cygwin* | mingw* | pw32* | cegcc*)
++  cygwin* | msys* | mingw* | pw32* | cegcc*)
+     shrext=.dll
+     library_names_spec='$libname.dll.a $libname.lib'
+     ;;
+diff -Nur archive-orig/gettext-0.18.1/intl/Makefile.in archive/gettext-0.18.1/intl/Makefile.in
+--- archive-orig/gettext-0.18.1/intl/Makefile.in	2010-06-04 02:07:28.000000000 +0200
++++ archive/gettext-0.18.1/intl/Makefile.in	2022-01-02 18:33:56.882726400 +0100
+@@ -414,7 +414,7 @@
+ 	    case '@host_os@' in \
+ 	      darwin[56]*) \
+ 	        need_charset_alias=true ;; \
+-	      darwin* | cygwin* | mingw* | pw32* | cegcc*) \
++	      darwin* | cygwin* | msys* | mingw* | pw32* | cegcc*) \
+ 	        need_charset_alias=false ;; \
+ 	      *) \
+ 	        need_charset_alias=true ;; \
+@@ -500,7 +500,7 @@
+ 	    case '@host_os@' in \
+ 	      darwin[56]*) \
+ 	        need_charset_alias=true ;; \
+-	      darwin* | cygwin* | mingw* | pw32* | cegcc*) \
++	      darwin* | cygwin* | msys* | mingw* | pw32* | cegcc*) \
+ 	        need_charset_alias=false ;; \
+ 	      *) \
+ 	        need_charset_alias=true ;; \
+diff -Nur archive-orig/gettext-0.18.1/m4/intl.m4 archive/gettext-0.18.1/m4/intl.m4
+--- archive-orig/gettext-0.18.1/m4/intl.m4	2010-06-04 02:07:30.000000000 +0200
++++ archive/gettext-0.18.1/m4/intl.m4	2022-01-02 18:33:56.883727400 +0100
+@@ -113,7 +113,7 @@
+   dnl    exported variables _also_ in the static library.
+   if test "$enable_shared" = yes; then
+     case "$host_os" in
+-      mingw* | cygwin*) is_woe32dll=yes ;;
++      mingw* | cygwin* | msys*) is_woe32dll=yes ;;
+       *) is_woe32dll=no ;;
+     esac
+   else
+@@ -125,7 +125,7 @@
+   dnl On mingw and Cygwin, we can activate special Makefile rules which add
+   dnl version information to the shared libraries and executables.
+   case "$host_os" in
+-    mingw* | cygwin*) is_woe32=yes ;;
++    mingw* | cygwin* | msys*) is_woe32=yes ;;
+     *) is_woe32=no ;;
+   esac
+   WOE32=$is_woe32
+diff -Nur archive-orig/gettext-0.18.2/config.rpath archive/gettext-0.18.2/config.rpath
+--- archive-orig/gettext-0.18.2/config.rpath	2013-03-05 10:08:30.000000000 +0100
++++ archive/gettext-0.18.2/config.rpath	2022-01-02 18:33:56.885729100 +0100
+@@ -57,7 +57,7 @@
+     aix*)
+       wl='-Wl,'
+       ;;
+-    mingw* | cygwin* | pw32* | os2* | cegcc*)
++    mingw* | cygwin* | msys* | pw32* | os2* | cegcc*)
+       ;;
+     hpux9* | hpux10* | hpux11*)
+       wl='-Wl,'
+@@ -149,7 +149,7 @@
+ hardcode_minus_L=no
+ 
+ case "$host_os" in
+-  cygwin* | mingw* | pw32* | cegcc*)
++  cygwin* | msys* | mingw* | pw32* | cegcc*)
+     # FIXME: the MSVC++ port hasn't been tested in a loooong time
+     # When not using gcc, we currently assume that we are using
+     # Microsoft Visual C++.
+@@ -198,7 +198,7 @@
+         ld_shlibs=no
+       fi
+       ;;
+-    cygwin* | mingw* | pw32* | cegcc*)
++    cygwin* | msys* | mingw* | pw32* | cegcc*)
+       # hardcode_libdir_flag_spec is actually meaningless, as there is
+       # no search path for DLLs.
+       hardcode_libdir_flag_spec='-L$libdir'
+@@ -348,7 +348,7 @@
+       ;;
+     bsdi[45]*)
+       ;;
+-    cygwin* | mingw* | pw32* | cegcc*)
++    cygwin* | msys* | mingw* | pw32* | cegcc*)
+       # When not using gcc, we currently assume that we are using
+       # Microsoft Visual C++.
+       # hardcode_libdir_flag_spec is actually meaningless, as there is
+@@ -537,7 +537,7 @@
+   bsdi[45]*)
+     library_names_spec='$libname$shrext'
+     ;;
+-  cygwin* | mingw* | pw32* | cegcc*)
++  cygwin* | msys* | mingw* | pw32* | cegcc*)
+     shrext=.dll
+     library_names_spec='$libname.dll.a $libname.lib'
+     ;;
+diff -Nur archive-orig/gettext-0.18.2/intl/Makefile.in archive/gettext-0.18.2/intl/Makefile.in
+--- archive-orig/gettext-0.18.2/intl/Makefile.in	2013-03-05 10:08:24.000000000 +0100
++++ archive/gettext-0.18.2/intl/Makefile.in	2022-01-02 18:33:56.887731500 +0100
+@@ -418,7 +418,7 @@
+ 	    case '@host_os@' in \
+ 	      darwin[56]*) \
+ 	        need_charset_alias=true ;; \
+-	      darwin* | cygwin* | mingw* | pw32* | cegcc*) \
++	      darwin* | cygwin* | msys* | mingw* | pw32* | cegcc*) \
+ 	        need_charset_alias=false ;; \
+ 	      *) \
+ 	        need_charset_alias=true ;; \
+@@ -504,7 +504,7 @@
+ 	    case '@host_os@' in \
+ 	      darwin[56]*) \
+ 	        need_charset_alias=true ;; \
+-	      darwin* | cygwin* | mingw* | pw32* | cegcc*) \
++	      darwin* | cygwin* | msys* | mingw* | pw32* | cegcc*) \
+ 	        need_charset_alias=false ;; \
+ 	      *) \
+ 	        need_charset_alias=true ;; \
+diff -Nur archive-orig/gettext-0.18.2/m4/intl.m4 archive/gettext-0.18.2/m4/intl.m4
+--- archive-orig/gettext-0.18.2/m4/intl.m4	2013-03-05 10:08:25.000000000 +0100
++++ archive/gettext-0.18.2/m4/intl.m4	2022-01-02 18:33:56.889518700 +0100
+@@ -113,7 +113,7 @@
+   dnl    exported variables _also_ in the static library.
+   if test "$enable_shared" = yes; then
+     case "$host_os" in
+-      mingw* | cygwin*) is_woe32dll=yes ;;
++      mingw* | cygwin* | msys*) is_woe32dll=yes ;;
+       *) is_woe32dll=no ;;
+     esac
+   else
+@@ -125,7 +125,7 @@
+   dnl On mingw and Cygwin, we can activate special Makefile rules which add
+   dnl version information to the shared libraries and executables.
+   case "$host_os" in
+-    mingw* | cygwin*) is_woe32=yes ;;
++    mingw* | cygwin* | msys*) is_woe32=yes ;;
+     *) is_woe32=no ;;
+   esac
+   WOE32=$is_woe32
+diff -Nur archive-orig/gettext-0.18.3/config.rpath archive/gettext-0.18.3/config.rpath
+--- archive-orig/gettext-0.18.3/config.rpath	2014-01-07 07:32:23.000000000 +0100
++++ archive/gettext-0.18.3/config.rpath	2022-01-02 18:33:56.891187000 +0100
+@@ -57,7 +57,7 @@
+     aix*)
+       wl='-Wl,'
+       ;;
+-    mingw* | cygwin* | pw32* | os2* | cegcc*)
++    mingw* | cygwin* | msys* | pw32* | os2* | cegcc*)
+       ;;
+     hpux9* | hpux10* | hpux11*)
+       wl='-Wl,'
+@@ -149,7 +149,7 @@
+ hardcode_minus_L=no
+ 
+ case "$host_os" in
+-  cygwin* | mingw* | pw32* | cegcc*)
++  cygwin* | msys* | mingw* | pw32* | cegcc*)
+     # FIXME: the MSVC++ port hasn't been tested in a loooong time
+     # When not using gcc, we currently assume that we are using
+     # Microsoft Visual C++.
+@@ -198,7 +198,7 @@
+         ld_shlibs=no
+       fi
+       ;;
+-    cygwin* | mingw* | pw32* | cegcc*)
++    cygwin* | msys* | mingw* | pw32* | cegcc*)
+       # hardcode_libdir_flag_spec is actually meaningless, as there is
+       # no search path for DLLs.
+       hardcode_libdir_flag_spec='-L$libdir'
+@@ -348,7 +348,7 @@
+       ;;
+     bsdi[45]*)
+       ;;
+-    cygwin* | mingw* | pw32* | cegcc*)
++    cygwin* | msys* | mingw* | pw32* | cegcc*)
+       # When not using gcc, we currently assume that we are using
+       # Microsoft Visual C++.
+       # hardcode_libdir_flag_spec is actually meaningless, as there is
+@@ -537,7 +537,7 @@
+   bsdi[45]*)
+     library_names_spec='$libname$shrext'
+     ;;
+-  cygwin* | mingw* | pw32* | cegcc*)
++  cygwin* | msys* | mingw* | pw32* | cegcc*)
+     shrext=.dll
+     library_names_spec='$libname.dll.a $libname.lib'
+     ;;
+diff -Nur archive-orig/gettext-0.18.3/intl/Makefile.in archive/gettext-0.18.3/intl/Makefile.in
+--- archive-orig/gettext-0.18.3/intl/Makefile.in	2014-01-07 07:32:14.000000000 +0100
++++ archive/gettext-0.18.3/intl/Makefile.in	2022-01-02 18:33:56.893119000 +0100
+@@ -418,7 +418,7 @@
+ 	    case '@host_os@' in \
+ 	      darwin[56]*) \
+ 	        need_charset_alias=true ;; \
+-	      darwin* | cygwin* | mingw* | pw32* | cegcc*) \
++	      darwin* | cygwin* | msys* | mingw* | pw32* | cegcc*) \
+ 	        need_charset_alias=false ;; \
+ 	      *) \
+ 	        need_charset_alias=true ;; \
+@@ -504,7 +504,7 @@
+ 	    case '@host_os@' in \
+ 	      darwin[56]*) \
+ 	        need_charset_alias=true ;; \
+-	      darwin* | cygwin* | mingw* | pw32* | cegcc*) \
++	      darwin* | cygwin* | msys* | mingw* | pw32* | cegcc*) \
+ 	        need_charset_alias=false ;; \
+ 	      *) \
+ 	        need_charset_alias=true ;; \
+diff -Nur archive-orig/gettext-0.18.3/m4/intl.m4 archive/gettext-0.18.3/m4/intl.m4
+--- archive-orig/gettext-0.18.3/m4/intl.m4	2014-01-07 07:32:15.000000000 +0100
++++ archive/gettext-0.18.3/m4/intl.m4	2022-01-02 18:33:56.894872600 +0100
+@@ -112,7 +112,7 @@
+   dnl    exported variables _also_ in the static library.
+   if test "$enable_shared" = yes; then
+     case "$host_os" in
+-      mingw* | cygwin*) is_woe32dll=yes ;;
++      mingw* | cygwin* | msys*) is_woe32dll=yes ;;
+       *) is_woe32dll=no ;;
+     esac
+   else
+@@ -124,7 +124,7 @@
+   dnl On mingw and Cygwin, we can activate special Makefile rules which add
+   dnl version information to the shared libraries and executables.
+   case "$host_os" in
+-    mingw* | cygwin*) is_woe32=yes ;;
++    mingw* | cygwin* | msys*) is_woe32=yes ;;
+     *) is_woe32=no ;;
+   esac
+   WOE32=$is_woe32
+diff -Nur archive-orig/gettext-0.19/config.rpath archive/gettext-0.19/config.rpath
+--- archive-orig/gettext-0.19/config.rpath	2014-06-02 01:26:46.000000000 +0200
++++ archive/gettext-0.19/config.rpath	2022-01-02 18:33:56.896874400 +0100
+@@ -57,7 +57,7 @@
+     aix*)
+       wl='-Wl,'
+       ;;
+-    mingw* | cygwin* | pw32* | os2* | cegcc*)
++    mingw* | cygwin* | msys* | pw32* | os2* | cegcc*)
+       ;;
+     hpux9* | hpux10* | hpux11*)
+       wl='-Wl,'
+@@ -149,7 +149,7 @@
+ hardcode_minus_L=no
+ 
+ case "$host_os" in
+-  cygwin* | mingw* | pw32* | cegcc*)
++  cygwin* | msys* | mingw* | pw32* | cegcc*)
+     # FIXME: the MSVC++ port hasn't been tested in a loooong time
+     # When not using gcc, we currently assume that we are using
+     # Microsoft Visual C++.
+@@ -198,7 +198,7 @@
+         ld_shlibs=no
+       fi
+       ;;
+-    cygwin* | mingw* | pw32* | cegcc*)
++    cygwin* | msys* | mingw* | pw32* | cegcc*)
+       # hardcode_libdir_flag_spec is actually meaningless, as there is
+       # no search path for DLLs.
+       hardcode_libdir_flag_spec='-L$libdir'
+@@ -348,7 +348,7 @@
+       ;;
+     bsdi[45]*)
+       ;;
+-    cygwin* | mingw* | pw32* | cegcc*)
++    cygwin* | msys* | mingw* | pw32* | cegcc*)
+       # When not using gcc, we currently assume that we are using
+       # Microsoft Visual C++.
+       # hardcode_libdir_flag_spec is actually meaningless, as there is
+@@ -537,7 +537,7 @@
+   bsdi[45]*)
+     library_names_spec='$libname$shrext'
+     ;;
+-  cygwin* | mingw* | pw32* | cegcc*)
++  cygwin* | msys* | mingw* | pw32* | cegcc*)
+     shrext=.dll
+     library_names_spec='$libname.dll.a $libname.lib'
+     ;;
+diff -Nur archive-orig/gettext-0.19/intl/Makefile.in archive/gettext-0.19/intl/Makefile.in
+--- archive-orig/gettext-0.19/intl/Makefile.in	2014-06-02 01:26:33.000000000 +0200
++++ archive/gettext-0.19/intl/Makefile.in	2022-01-02 18:33:56.898631600 +0100
+@@ -418,7 +418,7 @@
+ 	    case '@host_os@' in \
+ 	      darwin[56]*) \
+ 	        need_charset_alias=true ;; \
+-	      darwin* | cygwin* | mingw* | pw32* | cegcc*) \
++	      darwin* | cygwin* | msys* | mingw* | pw32* | cegcc*) \
+ 	        need_charset_alias=false ;; \
+ 	      *) \
+ 	        need_charset_alias=true ;; \
+@@ -504,7 +504,7 @@
+ 	    case '@host_os@' in \
+ 	      darwin[56]*) \
+ 	        need_charset_alias=true ;; \
+-	      darwin* | cygwin* | mingw* | pw32* | cegcc*) \
++	      darwin* | cygwin* | msys* | mingw* | pw32* | cegcc*) \
+ 	        need_charset_alias=false ;; \
+ 	      *) \
+ 	        need_charset_alias=true ;; \
+diff -Nur archive-orig/gettext-0.19/m4/intl.m4 archive/gettext-0.19/m4/intl.m4
+--- archive-orig/gettext-0.19/m4/intl.m4	2014-06-02 01:26:35.000000000 +0200
++++ archive/gettext-0.19/m4/intl.m4	2022-01-02 18:33:56.899632600 +0100
+@@ -112,7 +112,7 @@
+   dnl    exported variables _also_ in the static library.
+   if test "$enable_shared" = yes; then
+     case "$host_os" in
+-      mingw* | cygwin*) is_woe32dll=yes ;;
++      mingw* | cygwin* | msys*) is_woe32dll=yes ;;
+       *) is_woe32dll=no ;;
+     esac
+   else
+@@ -124,7 +124,7 @@
+   dnl On mingw and Cygwin, we can activate special Makefile rules which add
+   dnl version information to the shared libraries and executables.
+   case "$host_os" in
+-    mingw* | cygwin*) is_woe32=yes ;;
++    mingw* | cygwin* | msys*) is_woe32=yes ;;
+     *) is_woe32=no ;;
+   esac
+   WOE32=$is_woe32
+diff -Nur archive-orig/gettext-0.19.1/config.rpath archive/gettext-0.19.1/config.rpath
+--- archive-orig/gettext-0.19.1/config.rpath	2014-06-10 07:55:08.000000000 +0200
++++ archive/gettext-0.19.1/config.rpath	2022-01-02 18:33:56.901998800 +0100
+@@ -57,7 +57,7 @@
+     aix*)
+       wl='-Wl,'
+       ;;
+-    mingw* | cygwin* | pw32* | os2* | cegcc*)
++    mingw* | cygwin* | msys* | pw32* | os2* | cegcc*)
+       ;;
+     hpux9* | hpux10* | hpux11*)
+       wl='-Wl,'
+@@ -149,7 +149,7 @@
+ hardcode_minus_L=no
+ 
+ case "$host_os" in
+-  cygwin* | mingw* | pw32* | cegcc*)
++  cygwin* | msys* | mingw* | pw32* | cegcc*)
+     # FIXME: the MSVC++ port hasn't been tested in a loooong time
+     # When not using gcc, we currently assume that we are using
+     # Microsoft Visual C++.
+@@ -198,7 +198,7 @@
+         ld_shlibs=no
+       fi
+       ;;
+-    cygwin* | mingw* | pw32* | cegcc*)
++    cygwin* | msys* | mingw* | pw32* | cegcc*)
+       # hardcode_libdir_flag_spec is actually meaningless, as there is
+       # no search path for DLLs.
+       hardcode_libdir_flag_spec='-L$libdir'
+@@ -348,7 +348,7 @@
+       ;;
+     bsdi[45]*)
+       ;;
+-    cygwin* | mingw* | pw32* | cegcc*)
++    cygwin* | msys* | mingw* | pw32* | cegcc*)
+       # When not using gcc, we currently assume that we are using
+       # Microsoft Visual C++.
+       # hardcode_libdir_flag_spec is actually meaningless, as there is
+@@ -537,7 +537,7 @@
+   bsdi[45]*)
+     library_names_spec='$libname$shrext'
+     ;;
+-  cygwin* | mingw* | pw32* | cegcc*)
++  cygwin* | msys* | mingw* | pw32* | cegcc*)
+     shrext=.dll
+     library_names_spec='$libname.dll.a $libname.lib'
+     ;;
+diff -Nur archive-orig/gettext-0.19.1/intl/Makefile.in archive/gettext-0.19.1/intl/Makefile.in
+--- archive-orig/gettext-0.19.1/intl/Makefile.in	2014-06-10 07:55:00.000000000 +0200
++++ archive/gettext-0.19.1/intl/Makefile.in	2022-01-02 18:33:56.903914200 +0100
+@@ -418,7 +418,7 @@
+ 	    case '@host_os@' in \
+ 	      darwin[56]*) \
+ 	        need_charset_alias=true ;; \
+-	      darwin* | cygwin* | mingw* | pw32* | cegcc*) \
++	      darwin* | cygwin* | msys* | mingw* | pw32* | cegcc*) \
+ 	        need_charset_alias=false ;; \
+ 	      *) \
+ 	        need_charset_alias=true ;; \
+@@ -504,7 +504,7 @@
+ 	    case '@host_os@' in \
+ 	      darwin[56]*) \
+ 	        need_charset_alias=true ;; \
+-	      darwin* | cygwin* | mingw* | pw32* | cegcc*) \
++	      darwin* | cygwin* | msys* | mingw* | pw32* | cegcc*) \
+ 	        need_charset_alias=false ;; \
+ 	      *) \
+ 	        need_charset_alias=true ;; \
+diff -Nur archive-orig/gettext-0.19.1/m4/intl.m4 archive/gettext-0.19.1/m4/intl.m4
+--- archive-orig/gettext-0.19.1/m4/intl.m4	2014-06-10 07:55:01.000000000 +0200
++++ archive/gettext-0.19.1/m4/intl.m4	2022-01-02 18:33:56.904915100 +0100
+@@ -112,7 +112,7 @@
+   dnl    exported variables _also_ in the static library.
+   if test "$enable_shared" = yes; then
+     case "$host_os" in
+-      mingw* | cygwin*) is_woe32dll=yes ;;
++      mingw* | cygwin* | msys*) is_woe32dll=yes ;;
+       *) is_woe32dll=no ;;
+     esac
+   else
+@@ -124,7 +124,7 @@
+   dnl On mingw and Cygwin, we can activate special Makefile rules which add
+   dnl version information to the shared libraries and executables.
+   case "$host_os" in
+-    mingw* | cygwin*) is_woe32=yes ;;
++    mingw* | cygwin* | msys*) is_woe32=yes ;;
+     *) is_woe32=no ;;
+   esac
+   WOE32=$is_woe32
+diff -Nur archive-orig/gettext-0.19.2/config.rpath archive/gettext-0.19.2/config.rpath
+--- archive-orig/gettext-0.19.2/config.rpath	2014-07-14 09:51:32.000000000 +0200
++++ archive/gettext-0.19.2/config.rpath	2022-01-02 18:33:56.907272800 +0100
+@@ -57,7 +57,7 @@
+     aix*)
+       wl='-Wl,'
+       ;;
+-    mingw* | cygwin* | pw32* | os2* | cegcc*)
++    mingw* | cygwin* | msys* | pw32* | os2* | cegcc*)
+       ;;
+     hpux9* | hpux10* | hpux11*)
+       wl='-Wl,'
+@@ -149,7 +149,7 @@
+ hardcode_minus_L=no
+ 
+ case "$host_os" in
+-  cygwin* | mingw* | pw32* | cegcc*)
++  cygwin* | msys* | mingw* | pw32* | cegcc*)
+     # FIXME: the MSVC++ port hasn't been tested in a loooong time
+     # When not using gcc, we currently assume that we are using
+     # Microsoft Visual C++.
+@@ -198,7 +198,7 @@
+         ld_shlibs=no
+       fi
+       ;;
+-    cygwin* | mingw* | pw32* | cegcc*)
++    cygwin* | msys* | mingw* | pw32* | cegcc*)
+       # hardcode_libdir_flag_spec is actually meaningless, as there is
+       # no search path for DLLs.
+       hardcode_libdir_flag_spec='-L$libdir'
+@@ -348,7 +348,7 @@
+       ;;
+     bsdi[45]*)
+       ;;
+-    cygwin* | mingw* | pw32* | cegcc*)
++    cygwin* | msys* | mingw* | pw32* | cegcc*)
+       # When not using gcc, we currently assume that we are using
+       # Microsoft Visual C++.
+       # hardcode_libdir_flag_spec is actually meaningless, as there is
+@@ -533,7 +533,7 @@
+   bsdi[45]*)
+     library_names_spec='$libname$shrext'
+     ;;
+-  cygwin* | mingw* | pw32* | cegcc*)
++  cygwin* | msys* | mingw* | pw32* | cegcc*)
+     shrext=.dll
+     library_names_spec='$libname.dll.a $libname.lib'
+     ;;
+diff -Nur archive-orig/gettext-0.19.2/intl/Makefile.in archive/gettext-0.19.2/intl/Makefile.in
+--- archive-orig/gettext-0.19.2/intl/Makefile.in	2014-07-14 09:51:23.000000000 +0200
++++ archive/gettext-0.19.2/intl/Makefile.in	2022-01-02 18:33:56.909137500 +0100
+@@ -418,7 +418,7 @@
+ 	    case '@host_os@' in \
+ 	      darwin[56]*) \
+ 	        need_charset_alias=true ;; \
+-	      darwin* | cygwin* | mingw* | pw32* | cegcc*) \
++	      darwin* | cygwin* | msys* | mingw* | pw32* | cegcc*) \
+ 	        need_charset_alias=false ;; \
+ 	      *) \
+ 	        need_charset_alias=true ;; \
+@@ -503,7 +503,7 @@
+ 	    case '@host_os@' in \
+ 	      darwin[56]*) \
+ 	        need_charset_alias=true ;; \
+-	      darwin* | cygwin* | mingw* | pw32* | cegcc*) \
++	      darwin* | cygwin* | msys* | mingw* | pw32* | cegcc*) \
+ 	        need_charset_alias=false ;; \
+ 	      *) \
+ 	        need_charset_alias=true ;; \
+diff -Nur archive-orig/gettext-0.19.2/m4/intl.m4 archive/gettext-0.19.2/m4/intl.m4
+--- archive-orig/gettext-0.19.2/m4/intl.m4	2014-07-14 09:51:24.000000000 +0200
++++ archive/gettext-0.19.2/m4/intl.m4	2022-01-02 18:33:56.911139200 +0100
+@@ -112,7 +112,7 @@
+   dnl    exported variables _also_ in the static library.
+   if test "$enable_shared" = yes; then
+     case "$host_os" in
+-      mingw* | cygwin*) is_woe32dll=yes ;;
++      mingw* | cygwin | msys* is_woe32dll=yes ;;
+       *) is_woe32dll=no ;;
+     esac
+   else
+@@ -124,7 +124,7 @@
+   dnl On mingw and Cygwin, we can activate special Makefile rules which add
+   dnl version information to the shared libraries and executables.
+   case "$host_os" in
+-    mingw* | cygwin*) is_woe32=yes ;;
++    mingw* | cygwin* | msys*) is_woe32=yes ;;
+     *) is_woe32=no ;;
+   esac
+   WOE32=$is_woe32
+diff -Nur archive-orig/gettext-0.19.2/m4/threadlib.m4 archive/gettext-0.19.2/m4/threadlib.m4
+--- archive-orig/gettext-0.19.2/m4/threadlib.m4	2014-07-14 09:51:24.000000000 +0200
++++ archive/gettext-0.19.2/m4/threadlib.m4	2022-01-02 18:34:56.313785700 +0100
+@@ -68,7 +68,7 @@
+          dnl bugs that lead to endless loops or crashes. See
+          dnl <http://cygwin.com/ml/cygwin/2009-08/msg00283.html>.
+          osf*) gl_use_threads=no ;;
+-         cygwin*)
++         cygwin* | msys*)
+                case `uname -r` in
+                  1.[0-5].*) gl_use_threads=no ;;
+                  *)         gl_use_threads=yes ;;
+diff -Nur archive-orig/gettext-0.19.3/config.rpath archive/gettext-0.19.3/config.rpath
+--- archive-orig/gettext-0.19.3/config.rpath	2014-10-16 08:09:16.000000000 +0200
++++ archive/gettext-0.19.3/config.rpath	2022-01-02 18:33:56.913140900 +0100
+@@ -57,7 +57,7 @@
+     aix*)
+       wl='-Wl,'
+       ;;
+-    mingw* | cygwin* | pw32* | os2* | cegcc*)
++    mingw* | cygwin* | msys* | pw32* | os2* | cegcc*)
+       ;;
+     hpux9* | hpux10* | hpux11*)
+       wl='-Wl,'
+@@ -149,7 +149,7 @@
+ hardcode_minus_L=no
+ 
+ case "$host_os" in
+-  cygwin* | mingw* | pw32* | cegcc*)
++  cygwin* | msys* | mingw* | pw32* | cegcc*)
+     # FIXME: the MSVC++ port hasn't been tested in a loooong time
+     # When not using gcc, we currently assume that we are using
+     # Microsoft Visual C++.
+@@ -198,7 +198,7 @@
+         ld_shlibs=no
+       fi
+       ;;
+-    cygwin* | mingw* | pw32* | cegcc*)
++    cygwin* | msys* | mingw* | pw32* | cegcc*)
+       # hardcode_libdir_flag_spec is actually meaningless, as there is
+       # no search path for DLLs.
+       hardcode_libdir_flag_spec='-L$libdir'
+@@ -348,7 +348,7 @@
+       ;;
+     bsdi[45]*)
+       ;;
+-    cygwin* | mingw* | pw32* | cegcc*)
++    cygwin* | msys* | mingw* | pw32* | cegcc*)
+       # When not using gcc, we currently assume that we are using
+       # Microsoft Visual C++.
+       # hardcode_libdir_flag_spec is actually meaningless, as there is
+@@ -533,7 +533,7 @@
+   bsdi[45]*)
+     library_names_spec='$libname$shrext'
+     ;;
+-  cygwin* | mingw* | pw32* | cegcc*)
++  cygwin* | msys* | mingw* | pw32* | cegcc*)
+     shrext=.dll
+     library_names_spec='$libname.dll.a $libname.lib'
+     ;;
+diff -Nur archive-orig/gettext-0.19.3/intl/Makefile.in archive/gettext-0.19.3/intl/Makefile.in
+--- archive-orig/gettext-0.19.3/intl/Makefile.in	2014-10-16 08:09:07.000000000 +0200
++++ archive/gettext-0.19.3/intl/Makefile.in	2022-01-02 18:33:56.914141900 +0100
+@@ -418,7 +418,7 @@
+ 	    case '@host_os@' in \
+ 	      darwin[56]*) \
+ 	        need_charset_alias=true ;; \
+-	      darwin* | cygwin* | mingw* | pw32* | cegcc*) \
++	      darwin* | cygwin* | msys* | mingw* | pw32* | cegcc*) \
+ 	        need_charset_alias=false ;; \
+ 	      *) \
+ 	        need_charset_alias=true ;; \
+@@ -503,7 +503,7 @@
+ 	    case '@host_os@' in \
+ 	      darwin[56]*) \
+ 	        need_charset_alias=true ;; \
+-	      darwin* | cygwin* | mingw* | pw32* | cegcc*) \
++	      darwin* | cygwin* | msys* | mingw* | pw32* | cegcc*) \
+ 	        need_charset_alias=false ;; \
+ 	      *) \
+ 	        need_charset_alias=true ;; \
+diff -Nur archive-orig/gettext-0.19.3/m4/intl.m4 archive/gettext-0.19.3/m4/intl.m4
+--- archive-orig/gettext-0.19.3/m4/intl.m4	2014-10-16 08:09:09.000000000 +0200
++++ archive/gettext-0.19.3/m4/intl.m4	2022-01-02 18:33:56.916380700 +0100
+@@ -113,7 +113,7 @@
+   dnl    exported variables _also_ in the static library.
+   if test "$enable_shared" = yes; then
+     case "$host_os" in
+-      mingw* | cygwin*) is_woe32dll=yes ;;
++      mingw* | cygwin* | msys*) is_woe32dll=yes ;;
+       *) is_woe32dll=no ;;
+     esac
+   else
+@@ -125,7 +125,7 @@
+   dnl On mingw and Cygwin, we can activate special Makefile rules which add
+   dnl version information to the shared libraries and executables.
+   case "$host_os" in
+-    mingw* | cygwin*) is_woe32=yes ;;
++    mingw* | cygwin* | msys*) is_woe32=yes ;;
+     *) is_woe32=no ;;
+   esac
+   WOE32=$is_woe32
+diff -Nur archive-orig/gettext-0.19.4/config.rpath archive/gettext-0.19.4/config.rpath
+--- archive-orig/gettext-0.19.4/config.rpath	2014-12-24 08:34:53.000000000 +0100
++++ archive/gettext-0.19.4/config.rpath	2022-01-02 18:33:56.918046000 +0100
+@@ -57,7 +57,7 @@
+     aix*)
+       wl='-Wl,'
+       ;;
+-    mingw* | cygwin* | pw32* | os2* | cegcc*)
++    mingw* | cygwin* | msys* | pw32* | os2* | cegcc*)
+       ;;
+     hpux9* | hpux10* | hpux11*)
+       wl='-Wl,'
+@@ -149,7 +149,7 @@
+ hardcode_minus_L=no
+ 
+ case "$host_os" in
+-  cygwin* | mingw* | pw32* | cegcc*)
++  cygwin* | msys* | mingw* | pw32* | cegcc*)
+     # FIXME: the MSVC++ port hasn't been tested in a loooong time
+     # When not using gcc, we currently assume that we are using
+     # Microsoft Visual C++.
+@@ -198,7 +198,7 @@
+         ld_shlibs=no
+       fi
+       ;;
+-    cygwin* | mingw* | pw32* | cegcc*)
++    cygwin* | msys* | mingw* | pw32* | cegcc*)
+       # hardcode_libdir_flag_spec is actually meaningless, as there is
+       # no search path for DLLs.
+       hardcode_libdir_flag_spec='-L$libdir'
+@@ -348,7 +348,7 @@
+       ;;
+     bsdi[45]*)
+       ;;
+-    cygwin* | mingw* | pw32* | cegcc*)
++    cygwin* | msys* | mingw* | pw32* | cegcc*)
+       # When not using gcc, we currently assume that we are using
+       # Microsoft Visual C++.
+       # hardcode_libdir_flag_spec is actually meaningless, as there is
+@@ -533,7 +533,7 @@
+   bsdi[45]*)
+     library_names_spec='$libname$shrext'
+     ;;
+-  cygwin* | mingw* | pw32* | cegcc*)
++  cygwin* | msys* | mingw* | pw32* | cegcc*)
+     shrext=.dll
+     library_names_spec='$libname.dll.a $libname.lib'
+     ;;
+diff -Nur archive-orig/gettext-0.19.4/intl/Makefile.in archive/gettext-0.19.4/intl/Makefile.in
+--- archive-orig/gettext-0.19.4/intl/Makefile.in	2014-12-24 08:34:43.000000000 +0100
++++ archive/gettext-0.19.4/intl/Makefile.in	2022-01-02 18:33:56.919811600 +0100
+@@ -429,7 +429,7 @@
+ 	    case '@host_os@' in \
+ 	      darwin[56]*) \
+ 	        need_charset_alias=true ;; \
+-	      darwin* | cygwin* | mingw* | pw32* | cegcc*) \
++	      darwin* | cygwin* | msys* | mingw* | pw32* | cegcc*) \
+ 	        need_charset_alias=false ;; \
+ 	      *) \
+ 	        need_charset_alias=true ;; \
+@@ -514,7 +514,7 @@
+ 	    case '@host_os@' in \
+ 	      darwin[56]*) \
+ 	        need_charset_alias=true ;; \
+-	      darwin* | cygwin* | mingw* | pw32* | cegcc*) \
++	      darwin* | cygwin* | msys* | mingw* | pw32* | cegcc*) \
+ 	        need_charset_alias=false ;; \
+ 	      *) \
+ 	        need_charset_alias=true ;; \
+diff -Nur archive-orig/gettext-0.19.4/m4/intl.m4 archive/gettext-0.19.4/m4/intl.m4
+--- archive-orig/gettext-0.19.4/m4/intl.m4	2014-12-24 08:34:46.000000000 +0100
++++ archive/gettext-0.19.4/m4/intl.m4	2022-01-02 18:33:56.921652200 +0100
+@@ -113,7 +113,7 @@
+   dnl    exported variables _also_ in the static library.
+   if test "$enable_shared" = yes; then
+     case "$host_os" in
+-      mingw* | cygwin*) is_woe32dll=yes ;;
++      mingw* | cygwin* | msys*) is_woe32dll=yes ;;
+       *) is_woe32dll=no ;;
+     esac
+   else
+@@ -125,7 +125,7 @@
+   dnl On mingw and Cygwin, we can activate special Makefile rules which add
+   dnl version information to the shared libraries and executables.
+   case "$host_os" in
+-    mingw* | cygwin*) is_woe32=yes ;;
++    mingw* | cygwin* | msys*) is_woe32=yes ;;
+     *) is_woe32=no ;;
+   esac
+   WOE32=$is_woe32
+diff -Nur archive-orig/gettext-0.19.4/m4/threadlib.m4 archive/gettext-0.19.4/m4/threadlib.m4
+--- archive-orig/gettext-0.19.4/m4/threadlib.m4	2014-12-24 08:34:46.000000000 +0100
++++ archive/gettext-0.19.4/m4/threadlib.m4	2022-01-02 18:35:05.670611800 +0100
+@@ -68,7 +68,7 @@
+          dnl bugs that lead to endless loops or crashes. See
+          dnl <http://cygwin.com/ml/cygwin/2009-08/msg00283.html>.
+          osf*) gl_use_threads=no ;;
+-         cygwin*)
++         cygwin* | msys*)
+                case `uname -r` in
+                  1.[0-5].*) gl_use_threads=no ;;
+                  *)         gl_use_threads=yes ;;
+diff -Nur archive-orig/gettext-0.19.5/config.rpath archive/gettext-0.19.5/config.rpath
+--- archive-orig/gettext-0.19.5/config.rpath	2015-07-10 08:54:22.000000000 +0200
++++ archive/gettext-0.19.5/config.rpath	2022-01-02 18:33:56.923324900 +0100
+@@ -57,7 +57,7 @@
+     aix*)
+       wl='-Wl,'
+       ;;
+-    mingw* | cygwin* | pw32* | os2* | cegcc*)
++    mingw* | cygwin* | msys* | pw32* | os2* | cegcc*)
+       ;;
+     hpux9* | hpux10* | hpux11*)
+       wl='-Wl,'
+@@ -149,7 +149,7 @@
+ hardcode_minus_L=no
+ 
+ case "$host_os" in
+-  cygwin* | mingw* | pw32* | cegcc*)
++  cygwin* | msys* | mingw* | pw32* | cegcc*)
+     # FIXME: the MSVC++ port hasn't been tested in a loooong time
+     # When not using gcc, we currently assume that we are using
+     # Microsoft Visual C++.
+@@ -198,7 +198,7 @@
+         ld_shlibs=no
+       fi
+       ;;
+-    cygwin* | mingw* | pw32* | cegcc*)
++    cygwin* | msys* | mingw* | pw32* | cegcc*)
+       # hardcode_libdir_flag_spec is actually meaningless, as there is
+       # no search path for DLLs.
+       hardcode_libdir_flag_spec='-L$libdir'
+@@ -348,7 +348,7 @@
+       ;;
+     bsdi[45]*)
+       ;;
+-    cygwin* | mingw* | pw32* | cegcc*)
++    cygwin* | msys* | mingw* | pw32* | cegcc*)
+       # When not using gcc, we currently assume that we are using
+       # Microsoft Visual C++.
+       # hardcode_libdir_flag_spec is actually meaningless, as there is
+@@ -533,7 +533,7 @@
+   bsdi[45]*)
+     library_names_spec='$libname$shrext'
+     ;;
+-  cygwin* | mingw* | pw32* | cegcc*)
++  cygwin* | msys* | mingw* | pw32* | cegcc*)
+     shrext=.dll
+     library_names_spec='$libname.dll.a $libname.lib'
+     ;;
+diff -Nur archive-orig/gettext-0.19.5/intl/Makefile.in archive/gettext-0.19.5/intl/Makefile.in
+--- archive-orig/gettext-0.19.5/intl/Makefile.in	2015-07-10 08:54:13.000000000 +0200
++++ archive/gettext-0.19.5/intl/Makefile.in	2022-01-02 18:33:56.925326600 +0100
+@@ -430,7 +430,7 @@
+ 	    case '@host_os@' in \
+ 	      darwin[56]*) \
+ 	        need_charset_alias=true ;; \
+-	      darwin* | cygwin* | mingw* | pw32* | cegcc*) \
++	      darwin* | cygwin* | msys* | mingw* | pw32* | cegcc*) \
+ 	        need_charset_alias=false ;; \
+ 	      *) \
+ 	        need_charset_alias=true ;; \
+@@ -515,7 +515,7 @@
+ 	    case '@host_os@' in \
+ 	      darwin[56]*) \
+ 	        need_charset_alias=true ;; \
+-	      darwin* | cygwin* | mingw* | pw32* | cegcc*) \
++	      darwin* | cygwin* | msys* | mingw* | pw32* | cegcc*) \
+ 	        need_charset_alias=false ;; \
+ 	      *) \
+ 	        need_charset_alias=true ;; \
+diff -Nur archive-orig/gettext-0.19.5/m4/intl.m4 archive/gettext-0.19.5/m4/intl.m4
+--- archive-orig/gettext-0.19.5/m4/intl.m4	2015-07-10 08:54:15.000000000 +0200
++++ archive/gettext-0.19.5/m4/intl.m4	2022-01-02 18:33:56.926328100 +0100
+@@ -113,7 +113,7 @@
+   dnl    exported variables _also_ in the static library.
+   if test "$enable_shared" = yes; then
+     case "$host_os" in
+-      mingw* | cygwin*) is_woe32dll=yes ;;
++      mingw* | cygwin* | msys*) is_woe32dll=yes ;;
+       *) is_woe32dll=no ;;
+     esac
+   else
+@@ -125,7 +125,7 @@
+   dnl On mingw and Cygwin, we can activate special Makefile rules which add
+   dnl version information to the shared libraries and executables.
+   case "$host_os" in
+-    mingw* | cygwin*) is_woe32=yes ;;
++    mingw* | cygwin* | msys*) is_woe32=yes ;;
+     *) is_woe32=no ;;
+   esac
+   WOE32=$is_woe32
+diff -Nur archive-orig/gettext-0.19.5/m4/threadlib.m4 archive/gettext-0.19.5/m4/threadlib.m4
+--- archive-orig/gettext-0.19.5/m4/threadlib.m4	2015-07-10 08:54:15.000000000 +0200
++++ archive/gettext-0.19.5/m4/threadlib.m4	2022-01-02 18:35:13.746994800 +0100
+@@ -68,7 +68,7 @@
+          dnl bugs that lead to endless loops or crashes. See
+          dnl <http://cygwin.com/ml/cygwin/2009-08/msg00283.html>.
+          osf*) gl_use_threads=no ;;
+-         cygwin*)
++         cygwin* | msys*)
+                case `uname -r` in
+                  1.[0-5].*) gl_use_threads=no ;;
+                  *)         gl_use_threads=yes ;;
+diff -Nur archive-orig/gettext-0.19.6/config.rpath archive/gettext-0.19.6/config.rpath
+--- archive-orig/gettext-0.19.6/config.rpath	2015-09-11 05:14:04.000000000 +0200
++++ archive/gettext-0.19.6/config.rpath	2022-01-02 18:33:56.928329500 +0100
+@@ -57,7 +57,7 @@
+     aix*)
+       wl='-Wl,'
+       ;;
+-    mingw* | cygwin* | pw32* | os2* | cegcc*)
++    mingw* | cygwin* | msys* | pw32* | os2* | cegcc*)
+       ;;
+     hpux9* | hpux10* | hpux11*)
+       wl='-Wl,'
+@@ -149,7 +149,7 @@
+ hardcode_minus_L=no
+ 
+ case "$host_os" in
+-  cygwin* | mingw* | pw32* | cegcc*)
++  cygwin* | msys* | mingw* | pw32* | cegcc*)
+     # FIXME: the MSVC++ port hasn't been tested in a loooong time
+     # When not using gcc, we currently assume that we are using
+     # Microsoft Visual C++.
+@@ -198,7 +198,7 @@
+         ld_shlibs=no
+       fi
+       ;;
+-    cygwin* | mingw* | pw32* | cegcc*)
++    cygwin* | msys* | mingw* | pw32* | cegcc*)
+       # hardcode_libdir_flag_spec is actually meaningless, as there is
+       # no search path for DLLs.
+       hardcode_libdir_flag_spec='-L$libdir'
+@@ -348,7 +348,7 @@
+       ;;
+     bsdi[45]*)
+       ;;
+-    cygwin* | mingw* | pw32* | cegcc*)
++    cygwin* | msys* | mingw* | pw32* | cegcc*)
+       # When not using gcc, we currently assume that we are using
+       # Microsoft Visual C++.
+       # hardcode_libdir_flag_spec is actually meaningless, as there is
+@@ -533,7 +533,7 @@
+   bsdi[45]*)
+     library_names_spec='$libname$shrext'
+     ;;
+-  cygwin* | mingw* | pw32* | cegcc*)
++  cygwin* | msys* | mingw* | pw32* | cegcc*)
+     shrext=.dll
+     library_names_spec='$libname.dll.a $libname.lib'
+     ;;
+diff -Nur archive-orig/gettext-0.19.6/intl/Makefile.in archive/gettext-0.19.6/intl/Makefile.in
+--- archive-orig/gettext-0.19.6/intl/Makefile.in	2015-09-11 05:13:55.000000000 +0200
++++ archive/gettext-0.19.6/intl/Makefile.in	2022-01-02 18:33:56.930331500 +0100
+@@ -430,7 +430,7 @@
+ 	    case '@host_os@' in \
+ 	      darwin[56]*) \
+ 	        need_charset_alias=true ;; \
+-	      darwin* | cygwin* | mingw* | pw32* | cegcc*) \
++	      darwin* | cygwin* | msys* | mingw* | pw32* | cegcc*) \
+ 	        need_charset_alias=false ;; \
+ 	      *) \
+ 	        need_charset_alias=true ;; \
+@@ -515,7 +515,7 @@
+ 	    case '@host_os@' in \
+ 	      darwin[56]*) \
+ 	        need_charset_alias=true ;; \
+-	      darwin* | cygwin* | mingw* | pw32* | cegcc*) \
++	      darwin* | cygwin* | msys* | mingw* | pw32* | cegcc*) \
+ 	        need_charset_alias=false ;; \
+ 	      *) \
+ 	        need_charset_alias=true ;; \
+diff -Nur archive-orig/gettext-0.19.6/m4/intl.m4 archive/gettext-0.19.6/m4/intl.m4
+--- archive-orig/gettext-0.19.6/m4/intl.m4	2015-09-11 05:13:57.000000000 +0200
++++ archive/gettext-0.19.6/m4/intl.m4	2022-01-02 18:33:56.932639500 +0100
+@@ -113,7 +113,7 @@
+   dnl    exported variables _also_ in the static library.
+   if test "$enable_shared" = yes; then
+     case "$host_os" in
+-      mingw* | cygwin*) is_woe32dll=yes ;;
++      mingw* | cygwin* | msys*) is_woe32dll=yes ;;
+       *) is_woe32dll=no ;;
+     esac
+   else
+@@ -125,7 +125,7 @@
+   dnl On mingw and Cygwin, we can activate special Makefile rules which add
+   dnl version information to the shared libraries and executables.
+   case "$host_os" in
+-    mingw* | cygwin*) is_woe32=yes ;;
++    mingw* | cygwin* | msys*) is_woe32=yes ;;
+     *) is_woe32=no ;;
+   esac
+   WOE32=$is_woe32
+diff -Nur archive-orig/gettext-0.19.6/m4/threadlib.m4 archive/gettext-0.19.6/m4/threadlib.m4
+--- archive-orig/gettext-0.19.6/m4/threadlib.m4	2015-09-11 05:13:57.000000000 +0200
++++ archive/gettext-0.19.6/m4/threadlib.m4	2022-01-02 18:34:24.443693000 +0100
+@@ -68,7 +68,7 @@
+          dnl bugs that lead to endless loops or crashes. See
+          dnl <http://cygwin.com/ml/cygwin/2009-08/msg00283.html>.
+          osf*) gl_use_threads=no ;;
+-         cygwin*)
++         cygwin* | msys*)
+                case `uname -r` in
+                  1.[0-5].*) gl_use_threads=no ;;
+                  *)         gl_use_threads=yes ;;
+diff -Nur archive-orig/gettext-0.19.7/config.rpath archive/gettext-0.19.7/config.rpath
+--- archive-orig/gettext-0.19.7/config.rpath	2015-12-28 01:05:49.000000000 +0100
++++ archive/gettext-0.19.7/config.rpath	2022-01-02 18:33:56.934418100 +0100
+@@ -57,7 +57,7 @@
+     aix*)
+       wl='-Wl,'
+       ;;
+-    mingw* | cygwin* | pw32* | os2* | cegcc*)
++    mingw* | cygwin* | msys* | pw32* | os2* | cegcc*)
+       ;;
+     hpux9* | hpux10* | hpux11*)
+       wl='-Wl,'
+@@ -149,7 +149,7 @@
+ hardcode_minus_L=no
+ 
+ case "$host_os" in
+-  cygwin* | mingw* | pw32* | cegcc*)
++  cygwin* | msys* | mingw* | pw32* | cegcc*)
+     # FIXME: the MSVC++ port hasn't been tested in a loooong time
+     # When not using gcc, we currently assume that we are using
+     # Microsoft Visual C++.
+@@ -198,7 +198,7 @@
+         ld_shlibs=no
+       fi
+       ;;
+-    cygwin* | mingw* | pw32* | cegcc*)
++    cygwin* | msys* | mingw* | pw32* | cegcc*)
+       # hardcode_libdir_flag_spec is actually meaningless, as there is
+       # no search path for DLLs.
+       hardcode_libdir_flag_spec='-L$libdir'
+@@ -348,7 +348,7 @@
+       ;;
+     bsdi[45]*)
+       ;;
+-    cygwin* | mingw* | pw32* | cegcc*)
++    cygwin* | msys* | mingw* | pw32* | cegcc*)
+       # When not using gcc, we currently assume that we are using
+       # Microsoft Visual C++.
+       # hardcode_libdir_flag_spec is actually meaningless, as there is
+@@ -533,7 +533,7 @@
+   bsdi[45]*)
+     library_names_spec='$libname$shrext'
+     ;;
+-  cygwin* | mingw* | pw32* | cegcc*)
++  cygwin* | msys* | mingw* | pw32* | cegcc*)
+     shrext=.dll
+     library_names_spec='$libname.dll.a $libname.lib'
+     ;;
+diff -Nur archive-orig/gettext-0.19.7/intl/Makefile.in archive/gettext-0.19.7/intl/Makefile.in
+--- archive-orig/gettext-0.19.7/intl/Makefile.in	2015-12-28 01:05:40.000000000 +0100
++++ archive/gettext-0.19.7/intl/Makefile.in	2022-01-02 18:33:56.936420300 +0100
+@@ -430,7 +430,7 @@
+ 	    case '@host_os@' in \
+ 	      darwin[56]*) \
+ 	        need_charset_alias=true ;; \
+-	      darwin* | cygwin* | mingw* | pw32* | cegcc*) \
++	      darwin* | cygwin* | msys* | mingw* | pw32* | cegcc*) \
+ 	        need_charset_alias=false ;; \
+ 	      *) \
+ 	        need_charset_alias=true ;; \
+@@ -515,7 +515,7 @@
+ 	    case '@host_os@' in \
+ 	      darwin[56]*) \
+ 	        need_charset_alias=true ;; \
+-	      darwin* | cygwin* | mingw* | pw32* | cegcc*) \
++	      darwin* | cygwin* | msys* | mingw* | pw32* | cegcc*) \
+ 	        need_charset_alias=false ;; \
+ 	      *) \
+ 	        need_charset_alias=true ;; \
+diff -Nur archive-orig/gettext-0.19.7/m4/intl.m4 archive/gettext-0.19.7/m4/intl.m4
+--- archive-orig/gettext-0.19.7/m4/intl.m4	2015-12-28 01:05:42.000000000 +0100
++++ archive/gettext-0.19.7/m4/intl.m4	2022-01-02 18:33:56.938029200 +0100
+@@ -113,7 +113,7 @@
+   dnl    exported variables _also_ in the static library.
+   if test "$enable_shared" = yes; then
+     case "$host_os" in
+-      mingw* | cygwin*) is_woe32dll=yes ;;
++      mingw* | cygwin* | msys*) is_woe32dll=yes ;;
+       *) is_woe32dll=no ;;
+     esac
+   else
+@@ -125,7 +125,7 @@
+   dnl On mingw and Cygwin, we can activate special Makefile rules which add
+   dnl version information to the shared libraries and executables.
+   case "$host_os" in
+-    mingw* | cygwin*) is_woe32=yes ;;
++    mingw* | cygwin* | msys*) is_woe32=yes ;;
+     *) is_woe32=no ;;
+   esac
+   WOE32=$is_woe32
+diff -Nur archive-orig/gettext-0.19.7/m4/threadlib.m4 archive/gettext-0.19.7/m4/threadlib.m4
+--- archive-orig/gettext-0.19.7/m4/threadlib.m4	2015-12-28 01:05:42.000000000 +0100
++++ archive/gettext-0.19.7/m4/threadlib.m4	2022-01-02 18:35:33.417747100 +0100
+@@ -68,7 +68,7 @@
+          dnl bugs that lead to endless loops or crashes. See
+          dnl <http://cygwin.com/ml/cygwin/2009-08/msg00283.html>.
+          osf*) gl_use_threads=no ;;
+-         cygwin*)
++         cygwin* | msys*)
+                case `uname -r` in
+                  1.[0-5].*) gl_use_threads=no ;;
+                  *)         gl_use_threads=yes ;;
+diff -Nur archive-orig/gettext-0.19.8/config.rpath archive/gettext-0.19.8/config.rpath
+--- archive-orig/gettext-0.19.8/config.rpath	2016-06-09 08:59:09.000000000 +0200
++++ archive/gettext-0.19.8/config.rpath	2022-01-02 18:38:02.088771500 +0100
+@@ -149,7 +149,7 @@
+ hardcode_minus_L=no
+ 
+ case "$host_os" in
+-  cygwin* | mingw* | pw32* | cegcc*)
++  cygwin* | msys* | mingw* | pw32* | cegcc*)
+     # FIXME: the MSVC++ port hasn't been tested in a loooong time
+     # When not using gcc, we currently assume that we are using
+     # Microsoft Visual C++.
+@@ -198,7 +198,7 @@
+         ld_shlibs=no
+       fi
+       ;;
+-    cygwin* | mingw* | pw32* | cegcc*)
++    cygwin* | msys* | mingw* | pw32* | cegcc*)
+       # hardcode_libdir_flag_spec is actually meaningless, as there is
+       # no search path for DLLs.
+       hardcode_libdir_flag_spec='-L$libdir'
+@@ -348,7 +348,7 @@
+       ;;
+     bsdi[45]*)
+       ;;
+-    cygwin* | mingw* | pw32* | cegcc*)
++    cygwin* | msys* | mingw* | pw32* | cegcc*)
+       # When not using gcc, we currently assume that we are using
+       # Microsoft Visual C++.
+       # hardcode_libdir_flag_spec is actually meaningless, as there is
+@@ -533,7 +533,7 @@
+   bsdi[45]*)
+     library_names_spec='$libname$shrext'
+     ;;
+-  cygwin* | mingw* | pw32* | cegcc*)
++  cygwin* | msys* | mingw* | pw32* | cegcc*)
+     shrext=.dll
+     library_names_spec='$libname.dll.a $libname.lib'
+     ;;
+diff -Nur archive-orig/gettext-0.19.8/intl/Makefile.in archive/gettext-0.19.8/intl/Makefile.in
+--- archive-orig/gettext-0.19.8/intl/Makefile.in	2016-06-09 08:59:00.000000000 +0200
++++ archive/gettext-0.19.8/intl/Makefile.in	2022-01-02 18:38:12.841559300 +0100
+@@ -429,7 +429,7 @@
+ 	    case '@host_os@' in \
+ 	      darwin[56]*) \
+ 	        need_charset_alias=true ;; \
+-	      darwin* | cygwin* | mingw* | pw32* | cegcc*) \
++	      darwin* | cygwin* | msys* | mingw* | pw32* | cegcc*) \
+ 	        need_charset_alias=false ;; \
+ 	      *) \
+ 	        need_charset_alias=true ;; \
+@@ -514,7 +514,7 @@
+ 	    case '@host_os@' in \
+ 	      darwin[56]*) \
+ 	        need_charset_alias=true ;; \
+-	      darwin* | cygwin* | mingw* | pw32* | cegcc*) \
++	      darwin* | cygwin* | msys* | mingw* | pw32* | cegcc*) \
+ 	        need_charset_alias=false ;; \
+ 	      *) \
+ 	        need_charset_alias=true ;; \
+diff -Nur archive-orig/gettext-0.19.8/m4/threadlib.m4 archive/gettext-0.19.8/m4/threadlib.m4
+--- archive-orig/gettext-0.19.8/m4/threadlib.m4	2016-06-09 08:59:01.000000000 +0200
++++ archive/gettext-0.19.8/m4/threadlib.m4	2022-01-02 18:35:38.488431800 +0100
+@@ -68,7 +68,7 @@
+          dnl bugs that lead to endless loops or crashes. See
+          dnl <http://cygwin.com/ml/cygwin/2009-08/msg00283.html>.
+          osf*) gl_use_threads=no ;;
+-         cygwin*)
++         cygwin* | msys*)
+                case `uname -r` in
+                  1.[0-5].*) gl_use_threads=no ;;
+                  *)         gl_use_threads=yes ;;
+diff -Nur archive-orig/gettext-0.20/config.rpath archive/gettext-0.20/config.rpath
+--- archive-orig/gettext-0.20/config.rpath	2019-05-08 21:23:52.000000000 +0200
++++ archive/gettext-0.20/config.rpath	2022-01-02 18:36:15.913869300 +0100
+@@ -57,7 +57,7 @@
+     aix*)
+       wl='-Wl,'
+       ;;
+-    mingw* | cygwin* | pw32* | os2* | cegcc*)
++    mingw* | cygwin* | msys* | pw32* | os2* | cegcc*)
+       ;;
+     hpux9* | hpux10* | hpux11*)
+       wl='-Wl,'
+@@ -149,7 +149,7 @@
+ hardcode_minus_L=no
+ 
+ case "$host_os" in
+-  cygwin* | mingw* | pw32* | cegcc*)
++  cygwin* | msys* | mingw* | pw32* | cegcc*)
+     # FIXME: the MSVC++ port hasn't been tested in a loooong time
+     # When not using gcc, we currently assume that we are using
+     # Microsoft Visual C++.
+@@ -198,7 +198,7 @@
+         ld_shlibs=no
+       fi
+       ;;
+-    cygwin* | mingw* | pw32* | cegcc*)
++    cygwin* | msys* | mingw* | pw32* | cegcc*)
+       # hardcode_libdir_flag_spec is actually meaningless, as there is
+       # no search path for DLLs.
+       hardcode_libdir_flag_spec='-L$libdir'
+@@ -348,7 +348,7 @@
+       ;;
+     bsdi[45]*)
+       ;;
+-    cygwin* | mingw* | pw32* | cegcc*)
++    cygwin* | msys* | mingw* | pw32* | cegcc*)
+       # When not using gcc, we currently assume that we are using
+       # Microsoft Visual C++.
+       # hardcode_libdir_flag_spec is actually meaningless, as there is
+@@ -533,7 +533,7 @@
+   bsdi[45]*)
+     library_names_spec='$libname$shrext'
+     ;;
+-  cygwin* | mingw* | pw32* | cegcc*)
++  cygwin* | msys* | mingw* | pw32* | cegcc*)
+     shrext=.dll
+     library_names_spec='$libname.dll.a $libname.lib'
+     ;;
+diff -Nur archive-orig/gettext-0.20.2/config.rpath archive/gettext-0.20.2/config.rpath
+--- archive-orig/gettext-0.20.2/config.rpath	2020-04-13 16:48:13.000000000 +0200
++++ archive/gettext-0.20.2/config.rpath	2022-01-02 18:36:36.745376100 +0100
+@@ -57,7 +57,7 @@
+     aix*)
+       wl='-Wl,'
+       ;;
+-    mingw* | cygwin* | pw32* | os2* | cegcc*)
++    mingw* | cygwin* | msys* | pw32* | os2* | cegcc*)
+       ;;
+     hpux9* | hpux10* | hpux11*)
+       wl='-Wl,'
+@@ -149,7 +149,7 @@
+ hardcode_minus_L=no
+ 
+ case "$host_os" in
+-  cygwin* | mingw* | pw32* | cegcc*)
++  cygwin* | msys* | mingw* | pw32* | cegcc*)
+     # FIXME: the MSVC++ port hasn't been tested in a loooong time
+     # When not using gcc, we currently assume that we are using
+     # Microsoft Visual C++.
+@@ -198,7 +198,7 @@
+         ld_shlibs=no
+       fi
+       ;;
+-    cygwin* | mingw* | pw32* | cegcc*)
++    cygwin* | msys* | mingw* | pw32* | cegcc*)
+       # hardcode_libdir_flag_spec is actually meaningless, as there is
+       # no search path for DLLs.
+       hardcode_libdir_flag_spec='-L$libdir'
+@@ -348,7 +348,7 @@
+       ;;
+     bsdi[45]*)
+       ;;
+-    cygwin* | mingw* | pw32* | cegcc*)
++    cygwin* | msys* | mingw* | pw32* | cegcc*)
+       # When not using gcc, we currently assume that we are using
+       # Microsoft Visual C++.
+       # hardcode_libdir_flag_spec is actually meaningless, as there is
+@@ -533,7 +533,7 @@
+   bsdi[45]*)
+     library_names_spec='$libname$shrext'
+     ;;
+-  cygwin* | mingw* | pw32* | cegcc*)
++  cygwin* | msys* | mingw* | pw32* | cegcc*)
+     shrext=.dll
+     library_names_spec='$libname.dll.a $libname.lib'
+     ;;
+diff -Nur archive-orig/gettext-0.21/config.rpath archive/gettext-0.21/config.rpath
+--- archive-orig/gettext-0.21/config.rpath	2020-07-26 23:52:12.000000000 +0200
++++ archive/gettext-0.21/config.rpath	2022-01-02 18:37:19.582943400 +0100
+@@ -57,7 +57,7 @@
+     aix*)
+       wl='-Wl,'
+       ;;
+-    mingw* | cygwin* | pw32* | os2* | cegcc*)
++    mingw* | cygwin* | msys* | pw32* | os2* | cegcc*)
+       ;;
+     hpux9* | hpux10* | hpux11*)
+       wl='-Wl,'
+@@ -149,7 +149,7 @@
+ hardcode_minus_L=no
+ 
+ case "$host_os" in
+-  cygwin* | mingw* | pw32* | cegcc*)
++  cygwin* | msys* | mingw* | pw32* | cegcc*)
+     # FIXME: the MSVC++ port hasn't been tested in a loooong time
+     # When not using gcc, we currently assume that we are using
+     # Microsoft Visual C++.
+@@ -198,7 +198,7 @@
+         ld_shlibs=no
+       fi
+       ;;
+-    cygwin* | mingw* | pw32* | cegcc*)
++    cygwin* | msys* | mingw* | pw32* | cegcc*)
+       # hardcode_libdir_flag_spec is actually meaningless, as there is
+       # no search path for DLLs.
+       hardcode_libdir_flag_spec='-L$libdir'
+@@ -348,7 +348,7 @@
+       ;;
+     bsdi[45]*)
+       ;;
+-    cygwin* | mingw* | pw32* | cegcc*)
++    cygwin* | msys* | mingw* | pw32* | cegcc*)
+       # When not using gcc, we currently assume that we are using
+       # Microsoft Visual C++.
+       # hardcode_libdir_flag_spec is actually meaningless, as there is
+@@ -533,7 +533,7 @@
+   bsdi[45]*)
+     library_names_spec='$libname$shrext'
+     ;;
+-  cygwin* | mingw* | pw32* | cegcc*)
++  cygwin* | msys* | mingw* | pw32* | cegcc*)
+     shrext=.dll
+     library_names_spec='$libname.dll.a $libname.lib'
+     ;;
+--- archive-orig/gettext-0.22/m4/build-to-host.m4.orig	2023-06-29 21:38:02.580298900 +0200
++++ archive/gettext-0.22/m4/build-to-host.m4	2023-06-29 21:38:13.957674100 +0200
+@@ -39,7 +39,7 @@
+   gl_final_[$1]="$[$1]"
+   dnl Translate it from build syntax to host syntax.
+   case "$build_os" in
+-    cygwin*)
++    cygwin* | msys*)
+       case "$host_os" in
+         mingw*)
+           gl_final_[$1]=`cygpath -w "$gl_final_[$1]"` ;;
+--- archive-orig/gettext-0.22.1/m4/build-to-host.m4.orig	2023-06-29 21:38:02.580298900 +0200
++++ archive/gettext-0.22.1/m4/build-to-host.m4	2023-06-29 21:38:13.957674100 +0200
+@@ -39,7 +39,7 @@
+   gl_final_[$1]="$[$1]"
+   dnl Translate it from build syntax to host syntax.
+   case "$build_os" in
+-    cygwin*)
++    cygwin* | msys*)
+       case "$host_os" in
+         mingw*)
+           gl_final_[$1]=`cygpath -w "$gl_final_[$1]"` ;;
+--- archive-orig/gettext-0.22.2/m4/build-to-host.m4.orig	2023-06-29 21:38:02.580298900 +0200
++++ archive/gettext-0.22.2/m4/build-to-host.m4	2023-06-29 21:38:13.957674100 +0200
+@@ -39,7 +39,7 @@
+   gl_final_[$1]="$[$1]"
+   dnl Translate it from build syntax to host syntax.
+   case "$build_os" in
+-    cygwin*)
++    cygwin* | msys*)
+       case "$host_os" in
+         mingw*)
+           gl_final_[$1]=`cygpath -w "$gl_final_[$1]"` ;;
+--- archive-orig/gettext-0.22.3/m4/build-to-host.m4.orig	2023-06-29 21:38:02.580298900 +0200
++++ archive/gettext-0.22.3/m4/build-to-host.m4	2023-06-29 21:38:13.957674100 +0200
+@@ -39,7 +39,7 @@
+   gl_final_[$1]="$[$1]"
+   dnl Translate it from build syntax to host syntax.
+   case "$build_os" in
+-    cygwin*)
++    cygwin* | msys*)
+       case "$host_os" in
+         mingw*)
+           gl_final_[$1]=`cygpath -w "$gl_final_[$1]"` ;;
+--- archive-orig/gettext-0.22.4/m4/build-to-host.m4.orig	2023-06-29 21:38:02.580298900 +0200
++++ archive/gettext-0.22.4/m4/build-to-host.m4	2023-06-29 21:38:13.957674100 +0200
+@@ -39,7 +39,7 @@
+   gl_final_[$1]="$[$1]"
+   dnl Translate it from build syntax to host syntax.
+   case "$build_os" in
+-    cygwin*)
++    cygwin* | msys*)
+       case "$host_os" in
+         mingw*)
+           gl_final_[$1]=`cygpath -w "$gl_final_[$1]"` ;;
+--- archive-orig/gettext-0.22.5/m4/build-to-host.m4     2025-02-08 19:55:55.356513500 -0300
++++ archive/gettext-0.22.5/m4/build-to-host.m4  2025-02-08 19:57:37.912654100 -0300
+@@ -39,7 +39,7 @@
+   gl_final_[$1]="$[$1]"
+   dnl Translate it from build syntax to host syntax.
+   case "$build_os" in
+-    cygwin*)
++    cygwin* | msys*)
+       case "$host_os" in
+         mingw* | windows*)
+           gl_final_[$1]=`cygpath -w "$gl_final_[$1]"` ;;
