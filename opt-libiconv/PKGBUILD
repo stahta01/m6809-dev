@@ -1,16 +1,20 @@
-# Maintainer: Alexey Pavlov <Alexpux@gmail.com>
+# Contributor: Alexey Pavlov <Alexpux@gmail.com>
 
-pkgname=('libiconv' 'libiconv-devel')
+_install_prefix="/opt${MSYSTEM_PREFIX}"
+
+_realname='libiconv'
+pkgbase=opt-${_realname}
+pkgname=('opt-libiconv' 'opt-libiconv-devel')
 pkgver=1.18
 pkgrel=1
 pkgdesc='Libiconv is a conversion library'
 groups=('libraries')
 arch=('i686' 'x86_64')
-makedepends=('autotools' 'gcc' 'gettext-devel')
+makedepends=('autotools' 'opt-gcc' 'gettext-devel')
 url='https://www.gnu.org/software/libiconv/'
 msys2_repository_url='https://git.savannah.gnu.org/gitweb/?p=libiconv.git'
 license=('LGPL')
-source=("https://ftp.gnu.org/pub/gnu/${pkgname}/${pkgname}-${pkgver}.tar.gz"
+source=("https://ftp.gnu.org/pub/gnu/${_realname}/${_realname}-${pkgver}.tar.gz"
         1.16-aliases.patch
         1.16-cross-install.patch
         1.16-wchar.patch
@@ -31,7 +35,7 @@ apply_patch_with_msg() {
 }
 
 prepare() {
-  cd ${srcdir}/${pkgname}-${pkgver}
+  cd ${srcdir}/${_realname}-${pkgver}
 
   apply_patch_with_msg \
     1.16-aliases.patch \
@@ -46,10 +50,20 @@ prepare() {
 }
 
 build() {
-  cd ${srcdir}/${pkgname}-${pkgver}
+  cd ${srcdir}/${_realname}-${pkgver}
+
+  export PATH="/opt/usr/bin:$PATH"
+  export CC=/opt/usr/bin/gcc.exe
+  export CXX=/opt/usr/bin/g++.exe
+
+  echo ""
+  echo "CC [gcc] := ${CC-gcc}"
+  echo "CXX [g++] := ${CXX-g++}"
+  ${CC-gcc} --version | head -1
+  echo ""
 
   ./configure \
-    --prefix=/usr \
+    --prefix=${_install_prefix} \
     --build=${CHOST} \
     --without-libintl-prefix \
     --enable-static \
@@ -61,26 +75,26 @@ build() {
 }
 
 check() {
-  cd ${srcdir}/${pkgname}-${pkgver}
+  cd ${srcdir}/${_realname}-${pkgver}
   make check
 }
 
-package_libiconv() {
-  depends=('gcc-libs' 'libintl')
+package_opt-libiconv() {
+  depends=('opt-gcc-libs' 'libintl')
 
-  mkdir -p ${pkgdir}/usr
-  cp -rf ${srcdir}/dest/usr/bin ${pkgdir}/usr/
-  cp -rf ${srcdir}/dest/usr/share ${pkgdir}/usr/
+  mkdir -p ${pkgdir}${_install_prefix}
+  cp -rf ${srcdir}/dest/usr/bin ${pkgdir}${_install_prefix}
+  cp -rf ${srcdir}/dest/usr/share ${pkgdir}${_install_prefix}
 }
 
-package_libiconv-devel() {
+package_opt-libiconv-devel() {
   groups=('development')
   options=('staticlibs')
-  depends=("libiconv=${pkgver}")
+  depends=("opt-libiconv=${pkgver}")
   pkgdesc="libiconv headers and libraries"
 
-  mkdir -p ${pkgdir}/usr
-  cp -rf $srcdir/dest/usr/include ${pkgdir}/usr/
-  cp -rf $srcdir/dest/usr/lib ${pkgdir}/usr/
-  rm -f ${pkgdir}/usr/lib/charset.alias
+  mkdir -p ${pkgdir}${_install_prefix}
+  cp -rf $srcdir/dest/usr/include ${pkgdir}${_install_prefix}
+  cp -rf $srcdir/dest/usr/lib ${pkgdir}${_install_prefix}
+  rm -f ${pkgdir}${_install_prefix}/lib/charset.alias
 }
