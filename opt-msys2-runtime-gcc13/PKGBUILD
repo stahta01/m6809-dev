@@ -1,10 +1,13 @@
-# Maintainer: Alexey Pavlov <alexpux@gmail.com>
+# Contributor: Alexey Pavlov <alexpux@gmail.com>
 # Contributor: Ray Donnelly <mingw.android@gmail.com>
 
-pkgbase=msys2-runtime
-pkgname=('msys2-runtime' 'msys2-runtime-devel')
+_install_prefix="/opt${MSYSTEM_PREFIX}"
+
+_realname=msys2-runtime
+pkgbase=opt-${_realname}
+pkgname=('opt-msys2-runtime' 'opt-msys2-runtime-devel')
 pkgver=3.6.3
-pkgrel=4
+pkgrel=1
 pkgdesc="Cygwin POSIX emulation engine"
 arch=('x86_64')
 url="https://www.cygwin.com/"
@@ -199,6 +202,16 @@ build() {
   [[ -d "${srcdir}"/build-${CHOST} ]] && rm -rf "${srcdir}"/build-${CHOST}
   mkdir -p "${srcdir}"/build-${CHOST} && cd "${srcdir}"/build-${CHOST}
 
+  export PATH="/opt/usr/bin:$PATH"
+  export CC=/opt/usr/bin/gcc.exe
+  export CXX=/opt/usr/bin/g++.exe
+
+  echo ""
+  echo "CC [gcc] := ${CC-gcc}"
+  echo "CXX [g++] := ${CXX-g++}"
+  ${CC-gcc} --version | head -1
+  echo ""
+
   # Gives more verbose compile output when debugging.
   local -a extra_config
   if check_option "debug" "y"; then
@@ -219,7 +232,7 @@ build() {
 
   "${srcdir}"/msys2-runtime/configure \
     --with-msys2-runtime-commit="$(cat "${srcdir}/msys2-runtime.commit")" \
-    --prefix=/usr \
+    --prefix=${_install_prefix} \
     --build=${CHOST} \
     --sysconfdir=/etc \
     "${extra_config[@]}"
@@ -235,40 +248,38 @@ build() {
   mv -f usr/bin/msys-2.0.dll.new usr/bin/msys-2.0.dll
 }
 
-package_msys2-runtime() {
+package_opt-msys2-runtime() {
   pkgdesc="Posix emulation engine for Windows"
   conflicts=('catgets' 'libcatgets' 'msys2-runtime-3.6')
   replaces=('catgets' 'libcatgets' 'msys2-runtime-3.6')
 
-  mkdir -p "${pkgdir}"/usr
-  cp -rf "${srcdir}"/dest/usr/bin "${pkgdir}"/usr/
-  cp -rf "${srcdir}"/dest/usr/libexec "${pkgdir}"/usr/
-  rm -f "${pkgdir}"/usr/bin/msys-2.0.dbg
-  rm -f "${pkgdir}"/usr/bin/cyglsa-config
-  rm -f "${pkgdir}"/usr/bin/cyglsa.dll
-  rm -f "${pkgdir}"/usr/bin/cyglsa64.dll
-  rm -f "${pkgdir}"/usr/bin/cygserver-config
-  cp -rf "${srcdir}"/dest/usr/share "${pkgdir}"/usr/
+  mkdir -p "${pkgdir}"${_install_prefix}
+  cp -rf "${srcdir}"/dest/usr/bin "${pkgdir}"${_install_prefix}/
+  cp -rf "${srcdir}"/dest/usr/libexec "${pkgdir}"${_install_prefix}/
+  rm -f "${pkgdir}"${_install_prefix}/bin/msys-2.0.dbg
+  rm -f "${pkgdir}"${_install_prefix}/bin/cyglsa-config
+  rm -f "${pkgdir}"${_install_prefix}/bin/cyglsa.dll
+  rm -f "${pkgdir}"${_install_prefix}/bin/cyglsa64.dll
+  rm -f "${pkgdir}"${_install_prefix}/bin/cygserver-config
+  cp -rf "${srcdir}"/dest/usr/share "${pkgdir}"${_install_prefix}/
 }
 
-package_msys2-runtime-devel() {
+package_opt-msys2-runtime-devel() {
   pkgdesc="MSYS2 headers and libraries"
-  depends=("msys2-runtime=${pkgver}")
-  conflicts=('libcatgets-devel' 'msys2-runtime-3.6-devel')
-  replaces=('libcatgets-devel' 'msys2-runtime-3.6-devel')
+  depends=("opt-msys2-runtime=${pkgver}")
   # strip breaks the split debug info.  msys2/msys2-pacman#52
   options=('!strip')
 
-  mkdir -p "${pkgdir}"/usr/bin
-  cp -f "${srcdir}"/dest/usr/bin/msys-2.0.dbg "${pkgdir}"/usr/bin/
-  cp -rLf "${srcdir}"/dest/usr/${CHOST}/include "${pkgdir}"/usr/
-  rm -f "${pkgdir}"/usr/include/iconv.h
-  rm -f "${pkgdir}"/usr/include/unctrl.h
+  mkdir -p "${pkgdir}"${_install_prefix}/bin
+  cp -f "${srcdir}"/dest/usr/bin/msys-2.0.dbg "${pkgdir}"${_install_prefix}/bin/
+  cp -rLf "${srcdir}"/dest/usr/${CHOST}/include "${pkgdir}"${_install_prefix}/
+  rm -f "${pkgdir}"${_install_prefix}/include/iconv.h
+  rm -f "${pkgdir}"${_install_prefix}/include/unctrl.h
   # provided by libtirpc
-  rm -fr "${pkgdir}"/usr/include/rpc/
+  rm -fr "${pkgdir}"${_install_prefix}/include/rpc/
 
-  cp -rLf "${srcdir}"/dest/usr/${CHOST}/lib "${pkgdir}"/usr/
+  cp -rLf "${srcdir}"/dest/usr/${CHOST}/lib "${pkgdir}"${_install_prefix}/
 
   # compatibility with Cygwin toolchains
-  cp "${srcdir}"/dest/usr/${CHOST}/lib/libmsys-2.0.a "${pkgdir}"/usr/lib/libcygwin.a
+  cp "${srcdir}"/dest/usr/${CHOST}/lib/libmsys-2.0.a "${pkgdir}"${_install_prefix}/lib/libcygwin.a
 }
