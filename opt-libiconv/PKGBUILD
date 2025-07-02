@@ -83,8 +83,8 @@ package_opt-libiconv() {
   depends=('opt-gcc-libs' 'libintl')
 
   mkdir -p ${pkgdir}${_install_prefix}
-  cp -rf ${srcdir}/dest/usr/bin ${pkgdir}${_install_prefix}
-  cp -rf ${srcdir}/dest/usr/share ${pkgdir}${_install_prefix}
+  cp -rf ${srcdir}/dest${_install_prefix}/bin ${pkgdir}${_install_prefix}
+  cp -rf ${srcdir}/dest${_install_prefix}/share ${pkgdir}${_install_prefix}
 }
 
 package_opt-libiconv-devel() {
@@ -94,7 +94,7 @@ package_opt-libiconv-devel() {
   pkgdesc="libiconv headers and libraries"
 
   mkdir -p ${pkgdir}${_install_prefix}
-  cp -rf $srcdir/dest/usr/include ${pkgdir}${_install_prefix}
-  cp -rf $srcdir/dest/usr/lib ${pkgdir}${_install_prefix}
+  cp -rf $srcdir/dest${_install_prefix}/include ${pkgdir}${_install_prefix}
+  cp -rf $srcdir/dest${_install_prefix}/lib ${pkgdir}${_install_prefix}
   rm -f ${pkgdir}${_install_prefix}/lib/charset.alias
 }
