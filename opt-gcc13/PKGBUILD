@@ -8,8 +8,8 @@
 # Contributor: Tim Stahlhut <stahta01@gmail.com>
 #
 ##
-# toolchain initial build order: opt-zlib opt-binutils opt-gcc
-# toolchain rebuild order: win32-api-headers->msys2-runtime->binutils->gcc->binutils->msys2-runtime
+# toolchain initial build order: opt-zlib opt-binutils opt-gcc opt-libiconv opt-gettext opt-msys2-runtime opt-gcc opt-libtool
+# toolchain rebuild order: opt-msys2-runtime->opt-binutils->opt-gcc->opt-binutils->opt-msys2-runtime
 
 # NOTE: gdb must be rebuilt with each new gcc version.
 # NOTE: libtool must be rebuilt with each new gcc version.
@@ -17,6 +17,7 @@
 _install_prefix="/opt${MSYSTEM_PREFIX}"
 
 ### Major build options
+_enable_gcc_bootmode=no    # Use no for production; yes to use normal GCC to build
 _enable_bootstrap=no       # Use yes for production
 options=('staticlibs' '!emptydirs' '!strip' '!debug')
 #options=('!emptydirs') # '!strip' 'debug')
@@ -46,6 +47,14 @@ if [[ "$_enable_static_libgcc" == "yes" && "$_enable_libgomp" != "no" ]]; then
   warning "when building static GCC; libgomp is disabled"
   _enable_libgomp=no
 fi
+if [[ "$_enable_gcc_bootmode" == "yes" && "$_enable_lto" != "no" ]]; then
+  warning "when building _enable_gcc_bootmode GCC; LTO is disabled"
+  _enable_lto=no
+fi
+if [[ "$_enable_gcc_bootmode" == "yes" && "$_enable_libgomp" != "no" ]]; then
+  warning "when building _enable_gcc_bootmode GCC; libgomp is disabled"
+  _enable_libgomp=no
+fi
 # =========================================== #
 
 _realname=gcc
@@ -66,8 +75,14 @@ msys2_references=(
   "cpe: cpe:/a:gnu:gcc"
 )
 makedepends=('autotools' 'git'
-             'opt-zlib-devel' 'opt-binutils' 'opt-gcc'
+             'opt-zlib-devel'
              'windows-default-manifest' 'gperf')
+if [[ "$_enable_gcc_bootmode" == "yes" ]]; then
+  makedepends+=('gcc')
+else
+  makedepends+=('opt-gcc')
+  makedepends+=('opt-binutils')
+fi
 MPFR_VERSION=4.1.0
 GMP_VERSION=6.2.1
 MPC_VERSION=1.2.1
@@ -230,9 +245,11 @@ build() {
   [[ -d ${srcdir}/build-${MSYSTEM_CARCH} ]] && rm -rf ${srcdir}/build-${MSYSTEM_CARCH}
   mkdir -p ${srcdir}/build-${MSYSTEM_CARCH} && cd ${srcdir}/build-${MSYSTEM_CARCH}
 
-  export PATH="/opt/usr/bin:$PATH"
-  export CC=/opt/usr/bin/gcc.exe
-  export CXX=/opt/usr/bin/g++.exe
+  if [[ "$_enable_gcc_bootmode" != "yes" ]]; then
+    export PATH="/opt/usr/bin:$PATH"
+    export CC=/opt/usr/bin/gcc.exe
+    export CXX=/opt/usr/bin/g++.exe
+  fi
 
   echo ""
   echo "CC [gcc] := ${CC-gcc}"
