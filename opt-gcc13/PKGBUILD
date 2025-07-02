@@ -31,7 +31,7 @@ _enable_libquadmath=no      # Use no for production
 _enable_libgomp=no         # Use yes for production; gives undefined reference to `_pei386_runtime_relocator' maybe in msys2-runtime-devel
 _enable_graphite=yes        # Use yes for production
 _enable_static_libgcc=no    # Use no for production
-_enable_lto=yes             # Use yes for production
+_enable_lto=no             # Use yes for production; gives undefined reference to `_pei386_runtime_relocator'
 _enable_system_zlib=yes     # Use yes for production
 # =========================================== #
 if [[ "$_enable_fortran" == "yes" && "$_enable_libquadmath" != "yes" ]]; then
@@ -291,10 +291,12 @@ build() {
   if [[ "$_enable_static_libgcc" == "yes" ]]; then
     extra_config+=('--disable-shared')
     extra_config+=('--disable-shared-libgcc')
-    extra_config+=('--disable-lto')
   else
     extra_config+=('--enable-shared')
     extra_config+=('--enable-shared-libgcc')
+  fi
+  if [[ "$_enable_lto" != "yes" ]]; then
+    extra_config+=('--disable-lto')
   fi
   if [[ "$_enable_libquadmath" != "yes" ]]; then
     extra_config+=('--disable-libquadmath')
