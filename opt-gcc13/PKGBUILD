@@ -9,7 +9,7 @@
 #
 ##
 # Set _enable_gcc_bootmode to yes in part 1
-# toolchain initial build order part 1: opt-zlib opt-binutils opt-gcc opt-libiconv opt-gettext opt-msys2-runtime-gcc13
+# toolchain initial build order part 1: opt-zlib opt-binutils opt-gcc opt-libiconv opt-msys2-runtime-gcc13
 # Set _enable_gcc_bootmode to no in part 2
 # toolchain initial build order part 2: opt-gcc opt-libtool opt-zlib opt-binutils opt-libiconv opt-gettext opt-msys2-runtime-gcc13
 #
