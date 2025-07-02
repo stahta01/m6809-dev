@@ -1,7 +1,12 @@
-# Maintainer: Alexey Pavlov <alexpux@gmail.com>
+# Contributor: Alexey Pavlov <alexpux@gmail.com>
 
-pkgbase=gettext
-pkgname=('gettext' 'gettext-devel' 'libgettextpo' 'libasprintf' 'libintl')
+_install_prefix="/opt${MSYSTEM_PREFIX}"
+
+_enable_gcc_bootmode=no
+
+_realname='gettext'
+pkgbase=opt-${_realname}
+pkgname=('opt-gettext' 'opt-gettext-devel' 'opt-libgettextpo' 'opt-libasprintf' 'opt-libintl')
 pkgver=0.22.5
 pkgrel=1
 pkgdesc="GNU internationalization library"
@@ -11,9 +16,14 @@ msys2_references=(
   "cpe: cpe:/a:gnu:gettext"
 )
 license=('GPL')
-makedepends=('groff' 'libiconv-devel' 'autotools' 'gcc')
+makedepends=('groff' 'opt-libiconv-devel' 'autotools')
+if [[ "$_enable_gcc_bootmode" == "yes" ]]; then
+  makedepends+=('gcc')
+else
+  makedepends+=('opt-gcc')
+fi
 options=(!docs)
-source=(https://ftp.gnu.org/pub/gnu/gettext/${pkgname}-${pkgver}.tar.gz{,.sig}
+source=(https://ftp.gnu.org/pub/gnu/gettext/${_realname}-${pkgver}.tar.gz{,.sig}
         gettext-tools-tests-locale-ll-es.patch
         gettext-0.21.1-autopoint-V.patch
         gettext-0.21.1-cygwin-ftm.patch
@@ -54,7 +64,7 @@ validpgpkeys=('462225C3B46F34879FC8496CD605848ED7E69871'  # Daiki Ueno
               '9001B85AF9E1B83DF1BDA942F5BE8B267C6A406D') # Bruno Haible (Open Source Development)
 
 prepare() {
-  cd "${srcdir}/${pkgname}-${pkgver}"
+  cd "${srcdir}/${_realname}-${pkgver}"
 
   # Cygwin patches
   patch -p1 -i $srcdir/gettext-tools-tests-locale-ll-es.patch
@@ -92,14 +102,26 @@ prepare() {
 }
 
 build() {
-	cd "${srcdir}/${pkgname}-${pkgver}"
+  cd "${srcdir}/${_realname}-${pkgver}"
+
+  if [[ "$_enable_gcc_bootmode" != "yes" ]]; then
+    export PATH="/opt/usr/bin:$PATH"
+    export CC=/opt/usr/bin/gcc.exe
+    export CXX=/opt/usr/bin/g++.exe
+  fi
+
+  echo ""
+  echo "CC [gcc] := ${CC-gcc}"
+  echo "CXX [g++] := ${CXX-g++}"
+  ${CC-gcc} --version | head -1
+  echo ""
 
   local CHOST="$(echo "${CHOST}" | sed 's|-msys$|-cygwin|')"
 
   ./configure \
     --build=${CHOST} \
     --host=${CHOST} \
-    --prefix=/usr \
+    --prefix=${_install_prefix} \
     --with-included-libcroco \
     --with-included-libunistring \
     --with-included-libxml \
@@ -120,68 +142,81 @@ build() {
 }
 
 check() {
-  cd "${srcdir}/${pkgname}-${pkgver}"
+  cd "${srcdir}/${_realname}-${pkgver}"
   make check
 }
 
-package_gettext() {
-  depends=('libintl' 'libgettextpo' 'libasprintf')
+package_opt-gettext() {
+  depends=('opt-libintl' 'opt-libgettextpo' 'opt-libasprintf')
 
-  mkdir -p ${pkgdir}/usr/{bin,lib,share}
+  mkdir -p ${pkgdir}${_install_prefix}/{bin,lib,share}
 
-  cp -rf ${srcdir}/dest/usr/lib/gettext ${pkgdir}/usr/lib/
+  cp -rf ${srcdir}/dest/usr/lib/gettext ${pkgdir}${_install_prefix}/lib/
 
-  cp -rf ${srcdir}/dest/usr/bin ${pkgdir}/usr/
-  rm -rf ${pkgdir}/usr/bin/msys-asprintf-0.dll
-  rm -rf ${pkgdir}/usr/bin/msys-gettextpo-0.dll
-  rm -rf ${pkgdir}/usr/bin/msys-intl-8.dll
+  cp -rf ${srcdir}/dest/usr/bin ${pkgdir}${_install_prefix}/
+  rm -rf ${pkgdir}${_install_prefix}/bin/msys-asprintf-0.dll
+  rm -rf ${pkgdir}${_install_prefix}/bin/msys-gettextpo-0.dll
+  rm -rf ${pkgdir}${_install_prefix}/bin/msys-intl-8.dll
 
-  cp -rf ${srcdir}/dest/usr/share/aclocal ${pkgdir}/usr/share/
-  cp -rf ${srcdir}/dest/usr/share/doc ${pkgdir}/usr/share/
-  cp -rf ${srcdir}/dest/usr/share/info ${pkgdir}/usr/share/
-  cp -rf ${srcdir}/dest/usr/share/locale ${pkgdir}/usr/share/
-  cp -rf ${srcdir}/dest/usr/share/man ${pkgdir}/usr/share/
+  cp -rf ${srcdir}/dest/usr/share/aclocal ${pkgdir}${_install_prefix}/share/
+  cp -rf ${srcdir}/dest/usr/share/doc ${pkgdir}${_install_prefix}/share/
+  cp -rf ${srcdir}/dest/usr/share/info ${pkgdir}${_install_prefix}/share/
+  cp -rf ${srcdir}/dest/usr/share/locale ${pkgdir}${_install_prefix}/share/
+  cp -rf ${srcdir}/dest/usr/share/man ${pkgdir}${_install_prefix}/share/
 
 }
 
-package_gettext-devel() {
+package_opt-gettext-devel() {
   pkgdesc="GNU Internationalization development utilities"
   groups=('development')
-  depends=("gettext=${pkgver}" "libiconv-devel")
+  depends=("opt-gettext=${pkgver}" "opt-libiconv-devel")
   options=('staticlibs')
   optdepends=('cvs: for autopoint tool')
 
-  mkdir -p ${pkgdir}/usr/{bin,include,lib,share}
+  mkdir -p ${pkgdir}${_install_prefix}/{bin,include,lib,share}
 
-  cp -rf ${srcdir}/dest/usr/include ${pkgdir}/usr/
-  cp -rf ${srcdir}/dest/usr/lib ${pkgdir}/usr/
-  rm -rf ${pkgdir}/usr/lib/gettext
-  cp -rf ${srcdir}/dest/usr/share/gettext ${pkgdir}/usr/share/
+  cp -rf ${srcdir}/dest/usr/include ${pkgdir}${_install_prefix}/
+  cp -rf ${srcdir}/dest/usr/lib ${pkgdir}${_install_prefix}/
+  rm -rf ${pkgdir}${_install_prefix}/lib/gettext
+  cp -rf ${srcdir}/dest/usr/share/gettext ${pkgdir}${_install_prefix}/share/
 }
 
-package_libintl() {
+package_opt-libintl() {
   pkgdesc="GNU Internationalization runtime library"
   groups=('libraries')
-  depends=('gcc-libs' 'libiconv')
+  depends=('opt-libiconv')
+  if [[ "$_enable_gcc_bootmode" != "yes" ]]; then
+    depends+=('opt-gcc-libs')
+  else
+    depends+=('gcc-libs')
+  fi
 
-  mkdir -p ${pkgdir}/usr/bin
-  cp -f ${srcdir}/dest/usr/bin/msys-intl-8.dll ${pkgdir}/usr/bin/
+  mkdir -p ${pkgdir}${_install_prefix}/bin
+  cp -f ${srcdir}/dest/usr/bin/msys-intl-8.dll ${pkgdir}${_install_prefix}/bin/
 }
 
-package_libgettextpo() {
+package_opt-libgettextpo() {
   pkgdesc="GNU Internationalization runtime library"
   groups=('libraries')
-  depends=('gcc-libs')
+  if [[ "$_enable_gcc_bootmode" != "yes" ]]; then
+    depends=('opt-gcc-libs')
+  else
+    depends=('gcc-libs')
+  fi
 
-  mkdir -p ${pkgdir}/usr/bin
-  cp -f ${srcdir}/dest/usr/bin/msys-gettextpo-0.dll ${pkgdir}/usr/bin/
+  mkdir -p ${pkgdir}${_install_prefix}/bin
+  cp -f ${srcdir}/dest/usr/bin/msys-gettextpo-0.dll ${pkgdir}${_install_prefix}/bin/
 }
 
-package_libasprintf() {
+package_opt-libasprintf() {
   pkgdesc="C-style formatted output in C++ (runtime)"
   groups=('libraries')
-  depends=('gcc-libs')
+  if [[ "$_enable_gcc_bootmode" != "yes" ]]; then
+    depends=('opt-gcc-libs')
+  else
+    depends=('gcc-libs')
+  fi
 
-  mkdir -p ${pkgdir}/usr/bin
-  cp -f ${srcdir}/dest/usr/bin/msys-asprintf-0.dll ${pkgdir}/usr/bin/
+  mkdir -p ${pkgdir}${_install_prefix}/bin
+  cp -f ${srcdir}/dest/usr/bin/msys-asprintf-0.dll ${pkgdir}${_install_prefix}/bin/
 }
