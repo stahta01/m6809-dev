@@ -8,8 +8,13 @@
 # Contributor: Tim Stahlhut <stahta01@gmail.com>
 #
 ##
-# toolchain initial build order: opt-zlib opt-binutils opt-gcc opt-libiconv opt-gettext opt-msys2-runtime opt-gcc opt-libtool
-# toolchain rebuild order: opt-msys2-runtime->opt-binutils->opt-gcc->opt-binutils->opt-msys2-runtime
+# Set _enable_gcc_bootmode to yes in part 1
+# toolchain initial build order part 1: opt-zlib opt-binutils opt-gcc opt-libiconv opt-gettext opt-msys2-runtime-gcc13
+# Set _enable_gcc_bootmode to no in part 2
+# toolchain initial build order part 2: opt-gcc opt-libtool
+#
+# Set _enable_gcc_bootmode to no in rebuild
+# toolchain rebuild order: opt-msys2-runtime-gcc13->opt-binutils->opt-gcc->opt-binutils->opt-msys2-runtime-gcc13
 
 # NOTE: gdb must be rebuilt with each new gcc version.
 # NOTE: libtool must be rebuilt with each new gcc version.
