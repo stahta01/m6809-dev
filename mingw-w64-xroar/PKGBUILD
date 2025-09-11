@@ -3,7 +3,7 @@
 _realname=xroar
 pkgbase=mingw-w64-${_realname}
 pkgname=(${MINGW_PACKAGE_PREFIX}-${_realname})
-pkgver=1.8.2
+pkgver=1.9
 pkgrel=1
 _sourcedir=${_realname}-${pkgver}
 pkgdesc="Color Computer 1/2/3 emulator (mingw-w64)"
@@ -24,7 +24,7 @@ makedepends=(
 checkdepends=()
 options=('!strip')
 source=("https://www.6809.org.uk/xroar/dl/xroar-${pkgver}.tar.gz")
-sha256sums=('34431cc352bad47f70570243644a96bce54e877a6f7e348208fcae259835ae31')
+sha256sums=('d98ddf3b985ca4742adcf18896549dc42210739a6933d38838a12a543db2c25e')
 
 prepare() {
   cd "${srcdir}/${_sourcedir}"
@@ -64,6 +64,6 @@ package() {
   install -Dm644 -t "$pkgdir${MINGW_PREFIX}/share/doc/${_realname}" README.SDS
   install -Dm644 -t "$pkgdir${MINGW_PREFIX}/share/doc/${_realname}" README
   cd doc
-  install -Dm644 -t "$pkgdir${MINGW_PREFIX}/share/doc/${_realname}" xroar.conf.example
+  install -Dm644 -t "$pkgdir${MINGW_PREFIX}/share/doc/${_realname}" xroar-example.conf
   #install -Dm644 -t "$pkgdir${MINGW_PREFIX}/share/doc/${_realname}" xroar.pdf
 }
