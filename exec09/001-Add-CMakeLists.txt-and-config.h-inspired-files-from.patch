@@ -1,0 +1,61 @@
+From d850bc0dfd0ce94c5f8030d323ffe7ad74f7ce72 Mon Sep 17 00:00:00 2001
+From: Tim Stahlhut <stahta01@gmail.com>
+Date: Sun, 12 Oct 2025 01:46:38 -0400
+Subject: Add CMakeLists.txt and config.h inspired files from
+
+https://github.com/codesmythe/exec09
+---
+ CMakeLists.txt |  8 ++++++++
+ config.h       | 25 +++++++++++++++++++++++++
+ 2 files changed, 33 insertions(+)
+ create mode 100644 CMakeLists.txt
+ create mode 100644 config.h
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+new file mode 100644
+index 0000000..a02878d
+--- /dev/null
++++ b/CMakeLists.txt
+@@ -0,0 +1,8 @@
++
++cmake_minimum_required(VERSION 3.10)
++
++project(exec09)
++
++add_executable(exec09 6809.c command.c disk.c eon.c fileio.c imux.c ioexpand.c machine.c main.c miscsbc.c mmu.c monitor.c serial.c symtab.c timer.c wpc.c wpclib.c)
++target_compile_definitions(exec09 PUBLIC HAVE_READLINE)
++target_link_libraries(exec09 PUBLIC readline)
+diff --git a/config.h b/config.h
+new file mode 100644
+index 0000000..d231aed
+--- /dev/null
++++ b/config.h
+@@ -0,0 +1,25 @@
++/* config.h */
++
++/* Use 6309 extensions */
++/* #undef H6309 */
++
++/* Use readline library */
++#define HAVE_READLINE 1
++
++/* Define to 1 if you have the <stdint.h> header file. */
++#define HAVE_STDINT_H 1
++
++/* Define to 1 if you have the <stdlib.h> header file. */
++#define HAVE_STDLIB_H 1
++
++/* Define to 1 if you have the <string.h> header file. */
++#define HAVE_STRING_H 1
++
++/* Define to 1 if you have the <sys/time.h> header file. */
++#define HAVE_SYS_TIME_H 1
++
++/* Define to 1 if you have the <termios.h> header file. */
++#define HAVE_TERMIOS_H 1
++
++/* Define to the version of this package. */
++#define PACKAGE_VERSION "0.92"
+-- 
+2.48.1.windows.1
+

@@ -1,0 +1,56 @@
+_realname=exec09
+pkgname=${_realname}
+pkgver=0.92
+pkgrel=1
+pkgdesc='Motorola 6809 Simulator'
+arch=(x86_64 i686)
+url=https://github.com/nealcrook/exec09
+license=('spdx:GPL-2.0-or-later')
+depends=(libreadline)
+makedepends=(
+  gcc
+  cmake
+  make
+)
+source=("${_realname}"::"git+https://github.com/nealcrook/exec09.git#branch=trunk"
+        '001-Add-CMakeLists.txt-and-config.h-inspired-files-from.patch'
+        '002-Replace-m6809-run-with-exec09-in-source-and-wpc-run-.patch')
+sha256sums=('SKIP'
+            '2c3994902de61d9f810d532b63dfa4edd0a749dae9804dc354f52b181013d996'
+            'f62f7429c2ac6d5028f73eac081fb0c9cd74efbdc077128737a8381a7509b609')
+
+# Helper macros to help make tasks easier #
+apply_patch_with_msg() {
+  for _patch in "$@"
+  do
+    msg2 "Applying ${_patch}"
+    patch -Nbp1 -i "${srcdir}/${_patch}"
+  done
+}
+
+prepare() {
+  cd "${srcdir}/${_realname}"
+
+  apply_patch_with_msg \
+    001-Add-CMakeLists.txt-and-config.h-inspired-files-from.patch \
+    002-Replace-m6809-run-with-exec09-in-source-and-wpc-run-.patch
+}
+
+build() {
+  cd "${srcdir}/${_realname}"
+
+  cmake \
+    -B "build-${CARCH}"
+
+  cmake --build "build-${CARCH}"
+}
+
+package() {
+  #cd "${srcdir}/${_realname}"
+
+  mkdir -p "$pkgdir"/usr/bin
+  
+  cp ${srcdir}/${_realname}/build-${CARCH}/${_realname}.exe "$pkgdir"/usr/bin/
+
+  #DESTDIR="$pkgdir" cmake --install "build-${CARCH}"
+}

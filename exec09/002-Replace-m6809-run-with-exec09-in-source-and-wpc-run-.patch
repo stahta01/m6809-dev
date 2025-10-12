@@ -1,0 +1,66 @@
+From 7862aad3ba8eeeddf04791b206c19e654bbbd9ca Mon Sep 17 00:00:00 2001
+From: Tim Stahlhut <stahta01@gmail.com>
+Date: Sun, 12 Oct 2025 07:35:14 -0400
+Subject: Replace "m6809-run" with "exec09" in source and wpc-run file
+
+---
+ 6809.c  | 6 +++---
+ main.c  | 2 +-
+ wpc-run | 2 +-
+ 3 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/6809.c b/6809.c
+index dccd27f..2f640fe 100644
+--- a/6809.c
++++ b/6809.c
+@@ -123,7 +123,7 @@ void sim_error (const char *format, ...)
+ 	va_list ap;
+ 
+ 	va_start (ap, format);
+-	fprintf (stderr, "m6809-run: (at PC=%04X) ", iPC);
++	fprintf (stderr, "exec09: (at PC=%04X) ", iPC);
+ 	vfprintf (stderr, format, ap);
+ 	va_end (ap);
+ 
+@@ -147,7 +147,7 @@ void sim_exit (uint8_t exit_code)
+ 	/* On a nonzero exit, always print an error message. */
+ 	if (exit_code != 0)
+ 	{
+-		printf ("m6809-run: program exited with %d\n", exit_code);
++		printf ("exec09: program exited with %d\n", exit_code);
+ 		if (exit_code)
+ 			monitor_backtrace ();
+ 	}
+@@ -179,7 +179,7 @@ static inline void change_pc (unsigned newPC)
+   /* TODO - will let some RAM execute for trampolines */
+   if ((newPC < 0x1C00) || (newPC > 0xFFFF))
+   {
+-	  fprintf (stderr, "m6809-run: invalid PC = %04X, previous was %s\n",
++	  fprintf (stderr, "exec09: invalid PC = %04X, previous was %s\n",
+ 	  	newPC, monitor_addr_name (PC));
+ 	  keybuffering (1);
+ 	  exit (2);
+diff --git a/main.c b/main.c
+index 8ffa5d9..624c94c 100644
+--- a/main.c
++++ b/main.c
+@@ -212,7 +212,7 @@ do_help (const char *arg __attribute__((unused)))
+ 	struct option *opt = option_table;
+ 
+ 	printf ("Motorola 6809 Simulator     Version %s\n", PACKAGE_VERSION);
+-	printf ("m6809-run [options] [program]\n\n");
++	printf ("exec09 [options] [program]\n\n");
+ 	printf ("Options:\n");
+ 	while (opt->o_long != NULL)
+ 	{
+diff --git a/wpc-run b/wpc-run
+index 214880f..c84530c 100755
+--- a/wpc-run
++++ b/wpc-run
+@@ -1,2 +1,2 @@
+ #!/bin/sh
+-m6809-run -s wpc -I 2049 -b -C -d -m -1 $*
++exec09 -s wpc -I 2049 -b -C -d -m -1 $*
+-- 
+2.48.1.windows.1
+
