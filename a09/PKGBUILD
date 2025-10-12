@@ -1,0 +1,56 @@
+_realname=a09
+pkgname=${_realname}
+pkgver=1.62+c0.gf3d0a14
+pkgrel=1
+pkgdesc='Motorola 6809 Simulator'
+arch=(x86_64 i686)
+url=https://github.com/Arakula/A09
+license=('spdx:GPL-2.0')
+depends=()
+makedepends=(
+  gcc
+  make
+  git
+)
+source=("${_realname}"::"git+https://github.com/Arakula/A09.git#branch=master")
+sha256sums=('SKIP')
+
+# Helper macros to help make tasks easier #
+apply_patch_with_msg() {
+  for _patch in "$@"
+  do
+    msg2 "Applying ${_patch}"
+    patch -Nbp1 -i "${srcdir}/${_patch}"
+  done
+}
+
+# Declare global variables; begin with underscore to avoid name conflicts
+_git_base_commit=
+
+pkgver() {
+  cd "${srcdir}/${_realname}"
+  local _version=$(head -n 500 a09.c | grep '#define VERSION' | sed -e 's/.* //' | tr '\n' '.' | sed -e 's/\"//g' | sed 's/.$/\n/')
+
+  printf "%s+c%s.g%s" ${_version} $(git rev-list --count ${_git_base_commit}..HEAD) $(git rev-parse --short ${_git_base_commit})
+}
+
+prepare() {
+  cd "${srcdir}/${_realname}"
+
+  _git_base_commit=$(git rev-parse HEAD)
+
+  GIT_AM="git am --committer-date-is-author-date"
+}
+
+build() {
+  cd "${srcdir}/${_realname}"
+
+  make clean
+  make
+}
+
+package() {
+  mkdir -p "$pkgdir"/usr/bin
+
+  cp ${srcdir}/${_realname}/${_realname}.exe "$pkgdir"/usr/bin/
+}
