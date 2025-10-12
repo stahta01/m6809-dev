@@ -11,6 +11,7 @@ makedepends=(
   gcc
   cmake
   make
+  libreadline-devel
 )
 source=("${_realname}"::"git+https://github.com/nealcrook/exec09.git#branch=trunk"
         '001-Add-CMakeLists.txt-and-config.h-inspired-files-from.patch'
