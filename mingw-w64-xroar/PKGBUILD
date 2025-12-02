@@ -3,7 +3,7 @@
 _realname=xroar
 pkgbase=mingw-w64-${_realname}
 pkgname=(${MINGW_PACKAGE_PREFIX}-${_realname})
-pkgver=1.9
+pkgver=1.10
 pkgrel=1
 _sourcedir=${_realname}-${pkgver}
 pkgdesc="Color Computer 1/2/3 emulator (mingw-w64)"
@@ -24,7 +24,7 @@ makedepends=(
 checkdepends=()
 options=('!strip')
 source=("https://www.6809.org.uk/xroar/dl/xroar-${pkgver}.tar.gz")
-sha256sums=('d98ddf3b985ca4742adcf18896549dc42210739a6933d38838a12a543db2c25e')
+sha256sums=('b16b83f75a55e685658155e13ca393d5bc9553d120dd78a76febdd4a54ff9d58')
 
 prepare() {
   cd "${srcdir}/${_sourcedir}"
