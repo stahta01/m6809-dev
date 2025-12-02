@@ -12,7 +12,7 @@
 
 pkgbase=mingw-w64-mame-tools
 pkgname=("${MINGW_PACKAGE_PREFIX}-mame-tools")
-pkgver=0.281
+pkgver=0.283
 pkgrel=1
 _sourcedir=mame-git
 pkgdesc='Port of the popular Multiple Arcade Machine Emulator using SDL with OpenGL support tools (mingw-w64)'
