@@ -13,7 +13,7 @@ pkgname=(
   "${_realname}${_cpu1}"
   "${_realname}${_cpu2}"
 )
-pkgver=2_0c
+pkgver=2_0d
 pkgrel=1
 pkgdesc="Assembler for microprocessors"
 arch=('i686' 'x86_64')
@@ -27,7 +27,7 @@ source=(
   '001-fix-for-6809-LBEQ-out-of-range-error.patch'
   'LICENSE'
 )
-sha256sums=('ca9c5b260762790c23017184e406fbf242aed8c3e7a722b12266cd7bff70af9e'
+sha256sums=('a818b0cef018c3b88be998de2c15ece83303cbe4a15f0b391c0203710b262f2e'
             'b9676fb57241c9e55c3405720ff167b57dca76470852cef3597e7e8389458e9d'
             '63b3e08e9a45ce5284263fb2a36cf6880c910b789ceda42781eb298ce8175dca')
 
