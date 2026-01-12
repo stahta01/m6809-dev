@@ -8,7 +8,7 @@ _basepkgver=2.2
 
 pkgname=${_realname}
 conflicts=(${_realname}-hg)
-pkgver=2.2+r876.g4d3bff2
+pkgver=2.2+r878.g90fb33d
 pkgrel=1
 pkgdesc="Utilities for Tandy Color Computer and Dragon microcomputers cross-development"
 arch=('i686' 'x86_64')
