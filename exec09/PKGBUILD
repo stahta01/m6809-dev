@@ -1,7 +1,7 @@
 _realname=exec09
 pkgname=${_realname}
 pkgver=0.92+c2.gc8d8eb9
-pkgrel=1
+pkgrel=2
 pkgdesc='Motorola 6809 Simulator'
 arch=(x86_64 i686)
 url=https://github.com/nealcrook/exec09
@@ -46,6 +46,9 @@ prepare() {
   _git_base_commit=$(git rev-parse HEAD)
 
   GIT_AM="git am --committer-date-is-author-date"
+
+  git config --local user.name  "nobody"
+  git config --local user.email "nobody@example.com"
 
   ${GIT_AM} ${srcdir}/001-Add-CMakeLists.txt-and-config.h-inspired-files-from.patch
   ${GIT_AM} ${srcdir}/002-Replace-m6809-run-with-exec09-in-source-and-wpc-run-.patch
