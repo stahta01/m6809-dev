@@ -4,7 +4,7 @@
 _realname=xroar
 pkgbase=${_realname}
 pkgname=(${_realname})
-pkgver=1.10
+pkgver=1.11
 pkgrel=1
 _sourcedir=${_realname}-${pkgver}
 pkgdesc="Color Computer 1/2/3 emulator"
@@ -24,7 +24,7 @@ checkdepends=()
 options=('!strip')
 source=("https://www.6809.org.uk/xroar/dl/xroar-${pkgver}.tar.gz"
         '002-Disable-OPENGL-files.patch')
-sha256sums=('b16b83f75a55e685658155e13ca393d5bc9553d120dd78a76febdd4a54ff9d58'
+sha256sums=('70270805ebd52c0b62237cc2f28b32b5c7df9764d10a7c7190de584cfc6e95af'
             '5d2f6b1d09346331eeffdde3edbeda05203cff7ac714fb482eda045d136231f0')
 prepare() {
   cd "${srcdir}/${_sourcedir}"
@@ -51,11 +51,17 @@ build() {
 
   echo "CC := $CC"
 
+  # these two exports needed for sdl2-compact package because of sdl2-config bug
+  export SDL_LIBS="-L/usr/lib -lmsys-2.0 -mwindows -lSDL2main -lSDL2"
+  export SDL_CFLAGS="-I/usr/include/SDL2 -I/usr/include/mingw -Dmain=SDL_main"
+
   ac_cv_func_malloc_0_nonnull=yes ac_cv_func_realloc_0_nonnull=yes \
   ./configure --enable-coco3 -verbose \
     --build=${MSYSTEM_CHOST} \
     --prefix=${MSYSTEM_PREFIX} \
     --with-libpng \
+    --enable-sdltest \
+    --without-sdl3 --enable-mc10 --enable-coco3 \
     --without-gtk3 --without-gtk2 --without-gtkgl \
     --enable-filereq-cli --without-alsa \
     --without-oss --without-pulse --without-joydev
