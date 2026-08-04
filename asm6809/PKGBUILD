@@ -5,14 +5,11 @@ _realname=asm6809
 pkgbase=${_realname}
 pkgname="${_realname}"
 pkgver=2.17
-pkgrel=1
+pkgrel=2
 pkgdesc="Cross Assembler for the Motorola 6809 and Hitachi 6309 microprocessors"
 arch=('i686' 'x86_64')
-if [[ $MSYSTEM_CARCH == "i686" ]] ; then
-  makedepends=('gcc')
-else
-  makedepends=('opt-gcc')
-fi
+makedepends=('opt-gcc')
+
 url="https://www.6809.org.uk/asm6809/"
 license=('GPL3')
 groups=('m6809-toolchain')
@@ -25,9 +22,7 @@ prepare() {
 }
 
 build() {
-  if [[ $MSYSTEM_CARCH != "i686" ]] ; then
-    export PATH="/opt/usr/bin:$PATH"
-  fi
+  export PATH="/opt/usr/bin:$PATH"
 
   echo ""
   echo "CC [gcc] := ${CC-gcc}"
