@@ -3,7 +3,7 @@
 _realname=xroar
 pkgbase=mingw-w64-${_realname}
 pkgname=(${MINGW_PACKAGE_PREFIX}-${_realname})
-pkgver=1.11
+pkgver=1.12.1
 pkgrel=1
 _sourcedir=${_realname}-${pkgver}
 pkgdesc="Color Computer 1/2/3 emulator (mingw-w64)"
@@ -12,7 +12,7 @@ mingw_arch=('mingw32' 'mingw64' 'ucrt64' 'clang64' 'clang32' 'clangarm64')
 license=("GPL3")
 url="https://www.6809.org.uk/xroar"
 depends=("${MINGW_PACKAGE_PREFIX}-gcc-libs" # no idea if this is required at run-time
-         "${MINGW_PACKAGE_PREFIX}-SDL2"
+         "${MINGW_PACKAGE_PREFIX}-sdl3"
          "${MINGW_PACKAGE_PREFIX}-libpng"
          "${MINGW_PACKAGE_PREFIX}-libsystre"
          "${MINGW_PACKAGE_PREFIX}-zlib"
@@ -24,7 +24,7 @@ makedepends=(
 checkdepends=()
 options=('!strip')
 source=("https://www.6809.org.uk/xroar/dl/xroar-${pkgver}.tar.gz")
-sha256sums=('70270805ebd52c0b62237cc2f28b32b5c7df9764d10a7c7190de584cfc6e95af')
+sha256sums=('ba525225fbd732c4dbf2cbb571dc9d2810fd9dcedf0482133cf637e2eef61f88')
 
 prepare() {
   cd "${srcdir}/${_sourcedir}"
@@ -43,7 +43,7 @@ build() {
     --build=${MINGW_CHOST} \
     --prefix=${MINGW_PREFIX} \
     --with-libpng \
-    --enable-mc10 --without-sdl3 \
+    --enable-mc10 --with-sdl3 \
     --without-gtk3 --without-gtk2 --without-gtkgl \
     --enable-filereq-cli --without-alsa \
     --without-oss --without-pulse --without-joydev
