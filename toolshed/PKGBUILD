@@ -8,7 +8,7 @@ _basepkgver=2.2
 
 pkgname=${_realname}
 conflicts=(${_realname}-hg)
-pkgver=2.2+r885.ga739e6b
+pkgver=2.2+r920.g8917635
 pkgrel=1
 pkgdesc="Utilities for Tandy Color Computer and Dragon microcomputers cross-development"
 arch=('i686' 'x86_64')
@@ -49,9 +49,6 @@ package() {
   # Install license file
   sed -n '/Copyright/,/PARTICULAR PURPOSE./p' casm/src/util.h > LICENSE
   install -Dm644 -t "$pkgdir${MSYSTEM_PREFIX}/share/licenses/${_realname}" LICENSE
-
-  # Install image for HTML manual
-  install -m644 doc/cover.jpg "$pkgdir${MSYSTEM_PREFIX}/share/doc/${_realname}/"
 }
 
 # vim:set ts=2 sw=2 et:
