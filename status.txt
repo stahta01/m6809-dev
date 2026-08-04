@@ -34,7 +34,7 @@ vasm                Built with GCC 15.2.0 under MSYS environment
 vlink               Built with GCC 15.2.0 under MSYS environment; Never tested run-time
 vbcc                Built with GCC 15.2.0 under MSYS environment; Never tested run-time
 
-packages that can be built using opt-gcc13 under 64 bit; GCC 15.1.0 version give build errors
+packages that can be built using opt-gcc13 under 32 and 64 bit; GCC 15.1.0 version give build errors
 asm6809             Built with GCC 13.3/13.4+ under MSYS environment
 
 m6809 emulator packages listed in normal build order
@@ -43,7 +43,7 @@ mingw-w64-xroar     Built with GCC 15.2.0 under MINGW32, MINGW64, and UCRT64 env
 mame-tools          Built with GCC 15.2.0 under MINGW32 environment
 mame-coco3          Built with GCC 15.2.0 under MINGW64 and UCRT64 environments
 
-packages needing msys2 gcc13 under 64 bit to build; GCC 15.1.0 version give build errors
+packages needing msys2 gcc13 under 64 bit to build; GCC 15.1.0 version give build errors (not normally built)
 ONLY add GPL packages to this sub-list; the GCC used is static libgcc (GPL Lic. only)
 gcc6809lw           Built with GCC 13.3/13.4+ under MSYS environment
 newlib6809lw        Built with GCC 13.3/13.4+ under MSYS environment; Never tested run-time
