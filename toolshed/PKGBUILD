@@ -4,11 +4,10 @@
 _realname=toolshed
 _machine=m6809
 _target=${_machine}-unknown
-_basepkgver=2.2
 
 pkgname=${_realname}
 conflicts=(${_realname}-hg)
-pkgver=2.2+r920.g8917635
+pkgver=2.6.1+r946.g9b8ac74
 pkgrel=1
 pkgdesc="Utilities for Tandy Color Computer and Dragon microcomputers cross-development"
 arch=('i686' 'x86_64')
@@ -21,7 +20,8 @@ sha256sums=('SKIP')
 
 pkgver() {
   cd "$srcdir/${_realname}"
-  printf "${_basepkgver}+r%s.g%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+  local _version=$(head -n 80 build/unix/rules.mak | grep 'VERSION =' | sed -e 's/.* //' | tr '\n' '.' | sed -e 's/\"//g' | sed 's/.$/\n/')
+  printf "${_version}+r%s.g%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
 }
 
 prepare() {
